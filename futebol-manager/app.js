@@ -33,6 +33,7 @@ class FootballApp {
         this.bindEvents();
         this.updateDate();
         await this.loadDataFromCloud();
+        this.checkAuth();
         this.renderAll();
     }
 
@@ -70,6 +71,17 @@ class FootballApp {
             console.error("Erro ao salvar no Firebase:", error);
             alert("Erro ao salvar dados na nuvem!");
         }
+    }
+
+    checkAuth() {
+        const isAdmin = localStorage.getItem('resenha_admin') === 'true';
+        document.body.classList.toggle('is-admin', isAdmin);
+    }
+
+    logout() {
+        localStorage.removeItem('resenha_admin');
+        this.checkAuth();
+        this.renderAll();
     }
 
     renderAll() {
@@ -111,6 +123,25 @@ class FootballApp {
         // Form submits
         document.getElementById('player-form').addEventListener('submit', (e) => this.handlePlayerSubmit(e));
         document.getElementById('transaction-form').addEventListener('submit', (e) => this.handleTransactionSubmit(e));
+
+        // Admin login
+        document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+            const err = document.getElementById('admin-login-error');
+            if (u === 'kim' && p === '220688') {
+                localStorage.setItem('resenha_admin', 'true');
+                this.checkAuth();
+                document.getElementById('login-modal').classList.remove('active');
+                err.style.display = 'none';
+                document.getElementById('admin-user').value = '';
+                document.getElementById('admin-pass').value = '';
+                this.renderAll();
+            } else {
+                err.style.display = 'block';
+            }
+        });
         
         // Attendance date change
         document.getElementById('match-date-select').addEventListener('change', () => {
