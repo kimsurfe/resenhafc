@@ -739,6 +739,39 @@ body.is-admin .financial-section {
     display: block !important;
 }
 
+.dash-player-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.dash-player-card .info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pos-badge {
+    font-size: 10px;
+    color: var(--neon-blue);
+    border: 1px solid var(--neon-blue);
+    padding: 1px 4px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.draw-name {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--neon-green);
+}
+
 /* Ocultar valores (Modo Privacidade Total) */
 body.hide-finances .financial-section {
     display: none !important;
