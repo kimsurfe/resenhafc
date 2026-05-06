@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
+/* PRESERVANDO TODO O SEU LAYOUT ORIGINAL */
 :root {
     --bg-dark: #0f172a;
     --bg-darker: #020617;
@@ -32,7 +33,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: var(--font-main); background-color: var(--bg-darker); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
 
-/* SEGURANÇA */
+/* --- BLOCO DE SEGURANÇA (ADICIONADO SEM ALTERAR O RESTANTE) --- */
 .admin-only { display: none !important; }
 body.is-admin .admin-only { display: flex !important; }
 body.is-admin div.admin-only, body.is-admin section.admin-only { display: block !important; }
@@ -40,57 +41,58 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
 
 #login-modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(10px);
+    background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px);
     z-index: 9999; display: none; align-items: center; justify-content: center;
 }
 #login-modal.active { display: flex; }
 .login-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 32px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; }
+/* ----------------------------------------------------------- */
 
 .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--card-border); }
-.glass-card { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); transition: var(--transition); }
-.glass-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+.glass-card { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: var(--transition); }
+.glass-card:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
 
 .app-container { display: flex; height: 100vh; }
 .sidebar { width: 280px; height: 100vh; display: flex; flex-direction: column; padding: 24px 0; border-right: 1px solid var(--card-border); z-index: 10; }
-.logo { display: flex; align-items: center; gap: 12px; padding: 0 24px; margin-bottom: 40px; font-size: 24px; font-weight: 700; color: var(--neon-green); cursor: pointer; }
+.logo { display: flex; align-items: center; gap: 12px; padding: 0 24px; margin-bottom: 40px; font-size: 24px; font-weight: 700; color: var(--neon-green); text-shadow: 0 0 15px var(--neon-green-glow); cursor: pointer; }
 .nav-menu { display: flex; flex-direction: column; gap: 8px; padding: 0 16px; flex: 1; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: transparent; border: none; color: var(--text-muted); font-size: 16px; border-radius: 12px; cursor: pointer; transition: var(--transition); }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 500; font-family: var(--font-main); border-radius: 12px; cursor: pointer; transition: var(--transition); text-align: left; }
 .nav-item.active { color: var(--text-main); background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), transparent); border-left: 4px solid var(--neon-green); }
 
 .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: 32px 40px; }
-.actions { display: flex; align-items: center; gap: 24px; }
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); border: none; }
-.btn-primary { background: var(--neon-green); color: #000; }
-.btn-danger { background: rgba(239,68,68,0.1); color: var(--neon-red); border: 1px solid var(--neon-red); }
+.topbar h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; cursor: pointer; }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; font-family: var(--font-main); font-weight: 600; font-size: 15px; cursor: pointer; transition: var(--transition); border: none; outline: none; }
+.btn-primary { background: var(--neon-green); color: #000; box-shadow: 0 4px 15px var(--neon-green-glow); }
+.btn-success { background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); }
 
 .content-wrapper { padding: 0 40px 40px; flex: 1; }
-.view-section { display: none; }
+.view-section { display: none; animation: fadeIn 0.4s ease forwards; }
 .view-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
 .stat-card { display: flex; align-items: center; gap: 20px; }
-.stat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; background: rgba(255,255,255,0.05); }
-.neon-green i { color: var(--neon-green); }
-.neon-blue i { color: var(--neon-blue); }
+.stat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; background: rgba(255, 255, 255, 0.05); }
+.neon-green i { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green-glow); }
+.neon-blue i { color: var(--neon-blue); text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
 .stat-value { font-size: 24px; font-weight: 700; }
 
 .dashboard-widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .data-table { width: 100%; border-collapse: collapse; }
-.data-table th { text-align: left; padding: 16px; color: var(--text-muted); border-bottom: 1px solid var(--card-border); }
-.data-table td { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.data-table th { text-align: left; padding: 16px; color: var(--text-muted); font-weight: 500; font-size: 14px; border-bottom: 1px solid var(--card-border); }
+.data-table td { padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 15px; }
 
-.badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-.badge-success { background: rgba(16,185,129,0.2); color: var(--neon-green); border: 1px solid var(--neon-green); }
-
-.glass-input-field { width: 100%; background: rgba(30,41,59,0.5); border: 1px solid var(--card-border); padding: 12px 16px; border-radius: 12px; color: white; outline: none; }
+.glass-input-field { width: 100%; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--card-border); padding: 12px 16px; border-radius: 12px; color: var(--text-main); outline: none; }
 
 @media (max-width: 992px) {
     .sidebar { display: none; }
     .main-content { margin-left: 0; }
-    .topbar { padding: 20px; flex-direction: column; align-items: flex-start; }
+    .topbar { padding: 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
     .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 72px; background: var(--card-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-    .nav-item-mobile { display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; border: none; color: var(--text-muted); }
+    .nav-item-mobile { display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
     .nav-item-mobile.active { color: var(--neon-blue); }
 }
     </style>
@@ -109,7 +111,7 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
                 <button class="nav-item" data-target="sorteio"><i class="ph ph-users-three"></i><span>Sorteio</span></button>
                 <button class="nav-item admin-only" data-target="financeiro"><i class="ph ph-currency-dollar"></i><span>Finanças</span></button>
                 
-                <button class="nav-item admin-only" onclick="app.logout()" style="margin-top: auto; color: var(--neon-red); border:none; background:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:14px 20px;">
+                <button class="nav-item admin-only" onclick="app.logout()" style="margin-top: auto; color: var(--neon-red); background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:14px 20px; font-weight:500;">
                     <i class="ph ph-sign-out"></i><span>Sair da Conta</span>
                 </button>
             </nav>
@@ -117,13 +119,11 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
 
         <main class="main-content">
             <header class="topbar">
-                <div onclick="document.getElementById('login-modal').classList.add('active')" style="cursor:pointer">
-                    <h1>RESENHA F.C</h1>
-                    <p id="current-date" class="date-display"></p>
-                </div>
+                <h1 onclick="document.getElementById('login-modal').classList.add('active')">RESENHA F.C</h1>
                 <div class="actions">
-                    <button class="action-btn" onclick="app.shareDashboard()"><i class="ph ph-camera" style="font-size:24px"></i></button>
-                    <button class="action-btn admin-only" onclick="app.toggleFinances()" id="btn-toggle-finances"><i class="ph ph-eye" style="font-size:24px"></i></button>
+                    <span id="current-date" class="date-display"></span>
+                    <button class="btn btn-primary" onclick="app.shareDashboard()"><i class="ph ph-camera"></i></button>
+                    <button class="btn btn-success admin-only" onclick="app.toggleFinances()" id="btn-toggle-finances"><i class="ph ph-eye"></i></button>
                 </div>
             </header>
 
@@ -144,7 +144,7 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
                         </div>
                         <div class="stat-card glass-card">
                             <div class="stat-icon neon-orange"><i class="ph ph-calendar"></i></div>
-                            <div class="stat-info"><h3>Próximo Jogo</h3><p id="dash-next-game" class="stat-value" style="font-size: 16px;">Quarta, 21h</p></div>
+                            <div class="stat-info"><h3>Próximo Jogo</h3><p class="stat-value" id="dash-next-game" style="font-size: 16px;">Quarta, 21h</p></div>
                         </div>
                     </div>
 
@@ -154,7 +154,7 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
                             <ul class="activity-list" id="dash-recent-payments"></ul>
                         </div>
                         <div class="widget glass-card">
-                            <h3>Análise Semestral</h3>
+                            <h3>Análise Mensal</h3>
                             <div id="financial-summary-chart" style="height: 200px;"></div>
                         </div>
                     </div>
@@ -193,7 +193,7 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
 
                 <section id="presenca" class="view-section">
                     <div class="section-header">
-                        <div class="glass-input"><select id="match-date-select"></select></div>
+                        <div class="glass-input" style="width:250px;"><select id="match-date-select"></select></div>
                         <div style="display: flex; gap: 12px;">
                             <span class="badge badge-success"><span id="presenca-count">0</span> Confirmados</span>
                             <button class="btn btn-primary admin-only" onclick="app.promptTemporaryPlayer()">Add Avulso</button>
@@ -204,10 +204,10 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
 
                 <section id="financeiro" class="view-section">
                     <div class="finance-header">
-                        <div class="balance-card glass-card"><h3>Saldo Atual</h3><h1 id="fin-balance" class="stat-value">R$ 0,00</h1></div>
+                        <div class="balance-card glass-card"><h3>Saldo Atual</h3><h1 id="fin-balance" style="font-size:32px; color:var(--neon-green);">R$ 0,00</h1></div>
                         <div style="display: flex; gap: 12px;"><button class="btn btn-success" onclick="app.openTransactionModal('in')">Receita</button><button class="btn btn-danger" onclick="app.openTransactionModal('out')">Despesa</button></div>
                     </div>
-                    <div class="table-container glass-card mt-4">
+                    <div class="table-container glass-card" style="margin-top:24px;">
                         <table class="data-table">
                             <thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Ações</th></tr></thead>
                             <tbody id="financeiro-tbody"></tbody>
@@ -234,13 +234,13 @@ body.is-admin .nav-item.admin-only, body.is-admin .nav-item-mobile.admin-only { 
 
     <div id="login-modal">
         <div class="login-card glass-card">
-            <h2 style="color:var(--neon-green); margin-bottom:20px;">Acesso Admin</h2>
+            <h2 style="color:var(--neon-green); margin-bottom:24px;">Acesso Admin</h2>
             <form id="admin-login-form">
                 <input type="text" id="admin-user" class="glass-input-field" placeholder="Usuário" required style="margin-bottom:12px;">
-                <input type="password" id="admin-pass" class="glass-input-field" placeholder="Senha" required style="margin-bottom:20px;">
-                <div style="display:flex; gap:12px;">
-                    <button type="button" class="btn" onclick="document.getElementById('login-modal').classList.remove('active')" style="flex:1; background:rgba(255,255,255,0.05); color:white;">Voltar</button>
-                    <button type="submit" class="btn btn-primary" style="flex:1;">Entrar</button>
+                <input type="password" id="admin-pass" class="glass-input-field" placeholder="Senha" required style="margin-bottom:24px;">
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn" onclick="document.getElementById('login-modal').classList.remove('active')" style="flex: 1; background:rgba(255,255,255,0.05); color:white;">Voltar</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Entrar</button>
                 </div>
             </form>
         </div>

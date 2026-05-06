@@ -21,6 +21,7 @@ class FootballApp {
     constructor() {
         this.data = DEFAULT_DATA;
         this.docId = 'mainData';
+        this.financesHidden = false;
         this.init();
     }
 
@@ -60,7 +61,14 @@ class FootballApp {
         localStorage.removeItem('resenha_admin');
         this.checkAuth();
         this.renderAll();
-        alert("Sessão encerrada.");
+        alert("Sessão Admin encerrada.");
+    }
+
+    toggleFinances() {
+        this.financesHidden = !this.financesHidden;
+        const btn = document.getElementById('btn-toggle-finances');
+        document.body.classList.toggle('hide-finances', this.financesHidden);
+        if(btn) btn.innerHTML = this.financesHidden ? '<i class="ph ph-eye-slash"></i>' : '<i class="ph ph-eye"></i>';
     }
 
     renderAll() {
@@ -111,7 +119,7 @@ class FootballApp {
             const s = att[p.id] || 'doubt';
             if (p.type === 'avulso' && s === 'doubt') return;
             const color = s === 'present' ? 'var(--neon-green)' : (s === 'absent' ? 'var(--neon-red)' : 'var(--neon-orange)');
-            const html = `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;"><span>${p.nickname || p.name}</span><span style="color:${color}">${s.toUpperCase()}</span></div>`;
+            const html = `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;"><span>${p.nickname || p.name}</span><span style="color:${color}; font-weight:bold;">${s.toUpperCase()}</span></div>`;
             if (s === 'present') { pList += html; pCount++; }
             else if (s === 'absent') { aList += html; aCount++; }
             else { dList += html; dCount++; }
@@ -132,7 +140,7 @@ class FootballApp {
         if (!list) return;
         list.innerHTML = '';
         this.data.transactions.filter(t => t.type === 'in').sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 4).forEach(t => {
-            list.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05)">${t.description} - R$ ${t.amount.toFixed(2)}</li>`;
+            list.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;"><span>${t.description}</span><span style="color:var(--neon-green)">+R$ ${t.amount.toFixed(2)}</span></li>`;
         });
     }
 
@@ -143,8 +151,8 @@ class FootballApp {
         const isAdmin = localStorage.getItem('resenha_admin') === 'true';
         this.getSortedPlayers().filter(p => p.type === 'mensalista').forEach((p, i) => {
             const badge = p.status === 'paid' ? '<span class="badge badge-success">Pago</span>' : '<span class="badge badge-warning">Pendente</span>';
-            const actionBtn = isAdmin ? `<td style="text-align:right"><button class="btn btn-primary" style="padding:4px 8px;" onclick="app.registerPayment('${p.id}')">Pagar</button></td>` : '';
-            tbody.innerHTML += `<tr><td><b>${p.nickname || p.name}</b></td><td>${p.position}</td><td>${badge}</td>${actionBtn}<td style="text-align:right">${i+1}</td></tr>`;
+            const actionBtn = isAdmin ? `<td style="text-align:right"><button class="btn btn-primary" style="padding:4px 8px; font-size:12px;" onclick="app.registerPayment('${p.id}')">Pagar</button></td>` : '';
+            tbody.innerHTML += `<tr><td><b>${p.nickname || p.name}</b></td><td>${p.position}</td><td>${badge}</td>${actionBtn}<td style="text-align:right; color:var(--text-muted)">${i+1}</td></tr>`;
         });
     }
 
@@ -157,8 +165,8 @@ class FootballApp {
         this.getSortedPlayers(date).forEach(p => {
             const s = this.data.attendance[date]?.[p.id] || 'doubt';
             const color = s === 'present' ? 'var(--neon-green)' : (s === 'absent' ? 'var(--neon-red)' : 'var(--neon-orange)');
-            const controls = isAdmin ? `<div style="display:flex; gap:8px;"><button onclick="app.setAttendance('${date}','${p.id}','present')">✔</button><button onclick="app.setAttendance('${date}','${p.id}','doubt')">?</button><button onclick="app.setAttendance('${date}','${p.id}','absent')">✘</button></div>` : '';
-            list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; border-left:4px solid ${color}"><span><b>${p.nickname || p.name}</b></span>${controls}</div>`;
+            const controls = isAdmin ? `<div style="display:flex; gap:8px;"><button class="btn" style="padding:4px 8px; background:rgba(255,255,255,0.05);" onclick="app.setAttendance('${date}','${p.id}','present')">✔</button><button class="btn" style="padding:4px 8px; background:rgba(255,255,255,0.05);" onclick="app.setAttendance('${date}','${p.id}','doubt')">?</button><button class="btn" style="padding:4px 8px; background:rgba(255,255,255,0.05);" onclick="app.setAttendance('${date}','${p.id}','absent')">✘</button></div>` : '';
+            list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; border-left:4px solid ${color}; padding:12px 20px;"><span><b>${p.nickname || p.name}</b></span>${controls}</div>`;
         });
     }
 
@@ -167,10 +175,10 @@ class FootballApp {
         if (!tbody) return;
         tbody.innerHTML = '';
         let bal = 0;
-        this.data.transactions.forEach(t => {
+        this.data.transactions.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(t => {
             const isIn = t.type === 'in';
             bal += isIn ? t.amount : -t.amount;
-            tbody.innerHTML += `<tr><td>${t.date}</td><td>${t.description}</td><td>R$ ${t.amount.toFixed(2)}</td><td>Admin Only</td></tr>`;
+            tbody.innerHTML += `<tr><td>${t.date}</td><td>${t.description}</td><td style="color:${isIn?'var(--neon-green)':'var(--neon-red)'}">R$ ${t.amount.toFixed(2)}</td><td style="text-align:right"><button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="app.deleteTransaction('${t.id}')">Excluir</button></td></tr>`;
         });
         document.getElementById('fin-balance').textContent = `R$ ${bal.toFixed(2).replace('.', ',')}`;
     }
@@ -184,8 +192,18 @@ class FootballApp {
         this.saveData();
     }
 
+    deleteTransaction(id) {
+        if(confirm("Excluir lançamento?")) {
+            this.data.transactions = this.data.transactions.filter(t => t.id !== id);
+            this.saveData();
+        }
+    }
+
     getSortedPlayers(d=null) { return [...this.data.players].sort((a,b) => (a.nickname||a.name).localeCompare(b.nickname||b.name)); }
-    updateDate() { const d = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}); document.getElementById('current-date').textContent = d; }
+    updateDate() { 
+        const d = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}); 
+        document.getElementById('current-date').textContent = d.charAt(0).toUpperCase() + d.slice(1); 
+    }
 }
 
 const app = new FootballApp();
