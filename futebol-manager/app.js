@@ -33,7 +33,6 @@ class FootballApp {
         this.bindEvents();
         this.updateDate();
         await this.loadDataFromCloud();
-        this.checkAuth();
         this.renderAll();
     }
 
@@ -80,49 +79,7 @@ class FootballApp {
         this.renderFinance();
     }
 
-    checkAuth() {
-        const isAdmin = localStorage.getItem('resenha_admin') === 'true';
-        if (isAdmin) {
-            document.body.classList.add('is-admin');
-        } else {
-            document.body.classList.remove('is-admin');
-        }
-    }
-
-    logout() {
-        localStorage.removeItem('resenha_admin');
-        this.checkAuth();
-        this.renderAll();
-    }
-
     bindEvents() {
-        // Auth / Login Modal Trigger (Robust)
-        const logoTriggers = document.querySelectorAll('.logo, .logo-mobile-trigger');
-        logoTriggers.forEach(el => {
-            el.style.cursor = 'pointer';
-            el.addEventListener('click', () => {
-                const modal = document.getElementById('login-modal');
-                if (modal) modal.classList.add('active');
-            });
-        });
-
-        const loginForm = document.getElementById('admin-login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const u = document.getElementById('admin-user').value;
-                const p = document.getElementById('admin-pass').value;
-                if (u === 'kim' && p === '220688') {
-                    localStorage.setItem('resenha_admin', 'true');
-                    this.checkAuth();
-                    document.getElementById('login-modal').classList.remove('active');
-                    this.renderAll();
-                } else {
-                    const err = document.getElementById('admin-login-error');
-                    if (err) err.style.display = 'block';
-                }
-            });
-        }
         // Navigation (Desktop and Mobile)
         const navItems = document.querySelectorAll('.nav-item, .nav-item-mobile');
         navItems.forEach(btn => {
