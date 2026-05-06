@@ -33,6 +33,7 @@ class FootballApp {
         this.bindEvents();
         this.updateDate();
         await this.loadDataFromCloud();
+        this.checkAuth();
         this.renderAll();
     }
 
@@ -79,7 +80,33 @@ class FootballApp {
         this.renderFinance();
     }
 
+    checkAuth() {
+        const isAdmin = localStorage.getItem('resenha_admin') === 'true';
+        if (isAdmin) {
+            document.body.classList.add('is-admin');
+        } else {
+            document.body.classList.remove('is-admin');
+        }
+    }
+
     bindEvents() {
+        // Auth / Login Modal
+        const loginForm = document.getElementById('admin-login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const u = document.getElementById('admin-user').value;
+                const p = document.getElementById('admin-pass').value;
+                if (u === 'kim' && p === '220688') {
+                    localStorage.setItem('resenha_admin', 'true');
+                    this.checkAuth();
+                    document.getElementById('login-modal').classList.remove('active');
+                    this.renderAll();
+                } else {
+                    document.getElementById('admin-login-error').style.display = 'block';
+                }
+            });
+        }
         // Navigation (Desktop and Mobile)
         const navItems = document.querySelectorAll('.nav-item, .nav-item-mobile');
         navItems.forEach(btn => {
