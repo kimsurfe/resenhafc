@@ -195,7 +195,7 @@ class FootballApp {
 
     renderDashboard() {
         const todosMensalistas = this.data.players.filter(p => p.type === 'mensalista');
-        const mensalistasPagantes = todosMensalistas.filter(p => p.position.toLowerCase().trim() !== 'goleiro');
+        const mensalistasPagantes = todosMensalistas.filter(p => (p.position || '').toLowerCase().trim() !== 'goleiro');
         
         const totalMensalistas = todosMensalistas.length;
         const totalEsperados = mensalistasPagantes.length;
@@ -413,7 +413,7 @@ class FootballApp {
 
         const renderRow = (p, rowNumber) => {
             let statusBadge = '';
-            const isGoleiro = p.position.toLowerCase().trim() === 'goleiro';
+            const isGoleiro = (p.position || '').toLowerCase().trim() === 'goleiro';
 
             if (isGoleiro) {
                 statusBadge = '<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3)">Isento</span>';
@@ -440,9 +440,7 @@ class FootballApp {
                 <td data-label="Posição">${p.position}</td>
                 <td data-label="Status">${statusBadge}</td>
                 <td data-label="Ações" style="text-align: right;">
-                    ${paymentBtn}
-                    <button class="action-btn" title="Editar" onclick="app.openPlayerModal('${p.id}')"><i class="ph ph-pencil-simple"></i></button>
-                    <button class="action-btn" title="Excluir" onclick="app.deletePlayer('${p.id}')" style="color: var(--neon-red)"><i class="ph ph-trash"></i></button>
+                    ${localStorage.getItem('resenha_admin') === 'true' ? `${paymentBtn}<button class="action-btn" title="Editar" onclick="app.openPlayerModal('${p.id}')"><i class="ph ph-pencil-simple"></i></button><button class="action-btn" title="Excluir" onclick="app.deletePlayer('${p.id}')" style="color: var(--neon-red)"><i class="ph ph-trash"></i></button>` : ''}
                 </td>
             `;
             return tr;
@@ -494,7 +492,8 @@ class FootballApp {
                             </div>
                         </div>
                         <div class="card-actions" style="display: flex; gap: 4px; align-items: center;">
-                            ${p.position.toLowerCase().trim() !== 'goleiro' ? `
+                            ${localStorage.getItem('resenha_admin') === 'true' ? `
+                            ${(p.position || '').toLowerCase().trim() !== 'goleiro' ? `
                                 <button class="action-btn" title="${p.status === 'paid' ? 'Mudar para Pendente' : 'Registrar Pagamento'}" 
                                         onclick="app.${p.status === 'paid' ? 'undoPayment' : 'registerPayment'}('${p.id}')" 
                                         style="padding: 4px; font-size: 16px; color: ${p.status === 'paid' ? 'var(--neon-orange)' : 'var(--neon-green)'}; opacity: 0.8;">
@@ -503,6 +502,7 @@ class FootballApp {
                             ` : ''}
                             <button class="action-btn" onclick="app.openPlayerModal('${p.id}')" style="padding: 4px; font-size: 16px; color: var(--text-muted); opacity: 0.6;"><i class="ph ph-pencil-simple"></i></button>
                             <button class="action-btn" onclick="app.deletePlayer('${p.id}')" style="padding: 4px; font-size: 16px; color: var(--neon-red); opacity: 0.6;"><i class="ph ph-trash"></i></button>
+                            ` : ''}
                         </div>
                     </div>
                     <div class="attendance-controls" style="display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 8px; margin-top: 8px;">

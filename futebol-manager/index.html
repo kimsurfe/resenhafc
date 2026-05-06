@@ -921,12 +921,34 @@ body {
 /* Fallback para esconder bottom-nav no desktop */
 .bottom-nav { display: none; }
 
+/* ==============================================
+   CAMADA DE SEGURANÇA ADMINISTRATIVA
+   Apenas estas regras foram adicionadas ao backup
+   ============================================== */
+.admin-only { display: none !important; }
+body.is-admin .admin-only { display: flex !important; }
+body.is-admin div.admin-only { display: flex !important; }
+body.is-admin .nav-item.admin-only { display: flex !important; }
+body.is-admin .nav-item-mobile.admin-only { display: flex !important; }
+
+#login-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(2, 6, 23, 0.97); backdrop-filter: blur(12px);
+    z-index: 99999; display: none; align-items: center; justify-content: center;
+}
+#login-modal.active { display: flex; }
+.login-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    padding: 36px 32px; border-radius: 20px; width: 90%; max-width: 360px;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
 </style>
 </head>
 <body>
     <div class="app-container">
         <aside class="sidebar glass">
-            <div class="logo">
+            <div class="logo" onclick="document.getElementById('login-modal').classList.add('active')" style="cursor:pointer" title="Acesso Admin">
                 <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
                 <span>RESENHA F.C</span>
             </div>
@@ -961,8 +983,8 @@ body {
         <main class="main-content">
             <header class="topbar">
             <header class="topbar">
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;" onclick="document.getElementById('login-modal').classList.add('active')" title="Acesso Admin" class="logo-trigger" >
+                    <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                         <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
                         <span style="font-weight: 800; font-size: 14px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
@@ -970,7 +992,7 @@ body {
                 </div>
                 <div class="actions">
                     <button class="action-btn" onclick="app.shareDashboard()" style="font-size: 20px; color: var(--neon-blue);" title="Gerar Foto do Dashboard"><i class="ph ph-camera"></i></button>
-                    <button class="action-btn" onclick="app.toggleFinances()" id="btn-toggle-finances" style="font-size: 20px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
+                    <button class="action-btn admin-only" onclick="app.toggleFinances()" id="btn-toggle-finances" style="font-size: 20px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
                     <div class="date-display" id="current-date"></div>
                 </div>
             </header>
@@ -993,7 +1015,7 @@ body {
                                 <p class="stat-value" id="dash-pagantes">0</p>
                             </div>
                         </div>
-                        <div class="stat-card glass-card financial-section">
+                        <div class="stat-card glass-card financial-section admin-only">
                             <div class="stat-icon neon-purple"><i class="ph ph-trend-up"></i></div>
                             <div class="stat-info">
                                 <h3>Em Caixa</h3>
@@ -1009,7 +1031,7 @@ body {
                         </div>
                     </div>
                     
-                    <div class="dashboard-widgets financial-section" style="margin-bottom: 24px;">
+                    <div class="dashboard-widgets financial-section admin-only" style="margin-bottom: 24px;">
                         <div class="widget glass-card">
                             <h2>Últimos Pagamentos</h2>
                             <ul class="activity-list" id="dash-recent-payments">
@@ -1062,7 +1084,7 @@ body {
                             <i class="ph ph-magnifying-glass"></i>
                             <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
                         </div>
-                        <div style="display: flex; gap: 12px;">
+                        <div style="display: flex; gap: 12px;" class="admin-only">
                             <button class="btn btn-danger" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
                             <button class="btn btn-primary" onclick="app.openPlayerModal()"><i class="ph ph-user-plus"></i> Adicionar Jogador</button>
                         </div>
@@ -1104,7 +1126,7 @@ body {
                                 <i class="ph ph-question"></i> <span id="doubt-count">0</span> Lista de Dúvidas
                             </button>
                             <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);" onclick="app.copyAttendanceToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Lista</button>
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="app.promptTemporaryPlayer()"><i class="ph ph-user-plus"></i> Add Avulso</button>
+                            <button class="btn btn-primary admin-only" style="padding: 6px 12px; font-size: 13px;" onclick="app.promptTemporaryPlayer()"><i class="ph ph-user-plus"></i> Add Avulso</button>
                         </div>
                     </div>
                     <div class="pitch-container glass-card">
@@ -1299,6 +1321,30 @@ body {
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="app.closeModal('transaction-modal')">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Login Admin (Adicionado ao backup sem alterar o resto) -->
+    <div id="login-modal">
+        <div class="login-card">
+            <div style="margin-bottom: 24px;">
+                <i class="ph ph-lock" style="font-size: 40px; color: var(--neon-green);"></i>
+                <h2 style="margin-top: 12px; font-size: 22px; color: var(--text-main);">Acesso Admin</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">RESENHA F.C</p>
+            </div>
+            <form id="admin-login-form">
+                <div style="margin-bottom: 12px;">
+                    <input type="text" id="admin-user" class="glass-input-field" placeholder="Usuário" autocomplete="username" required>
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <input type="password" id="admin-pass" class="glass-input-field" placeholder="Senha" autocomplete="current-password" required>
+                </div>
+                <p id="admin-login-error" style="color: var(--neon-red); font-size: 13px; margin-bottom: 16px; display: none;">Usuário ou senha incorretos.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn" style="flex:1; background:rgba(255,255,255,0.05); color:var(--text-muted);" onclick="document.getElementById('login-modal').classList.remove('active')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Entrar</button>
                 </div>
             </form>
         </div>
