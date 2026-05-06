@@ -91,6 +91,18 @@ class FootballApp {
         }
     }
 
+    toggleFinances() {
+        this.financesHidden = !this.financesHidden;
+        const btn = document.getElementById('btn-toggle-finances');
+        if (this.financesHidden) {
+            document.body.classList.add('hide-finances');
+            if(btn) btn.innerHTML = '<i class="ph ph-eye-slash"></i>';
+        } else {
+            document.body.classList.remove('hide-finances');
+            if(btn) btn.innerHTML = '<i class="ph ph-eye"></i>';
+        }
+    }
+
     bindEvents() {
         // Navigation (Desktop and Mobile)
         const navItems = document.querySelectorAll('.nav-item, .nav-item-mobile');

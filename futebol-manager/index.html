@@ -739,6 +739,14 @@ body.is-admin .financial-section {
     display: block !important;
 }
 
+/* Ocultar valores (Modo Privacidade) */
+body.hide-finances .sensitive-amount,
+body.hide-finances .act-amount {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+}
+
 #login-modal {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
