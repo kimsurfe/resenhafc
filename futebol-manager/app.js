@@ -265,7 +265,8 @@ class FootballApp {
         const pool = document.getElementById('sorteio-pool');
         if (!pool) return;
         pool.innerHTML = '';
-        const date = document.getElementById('match-date-select').value;
+        const dateSelect = document.getElementById('match-date-select');
+        const date = dateSelect ? dateSelect.value : new Date().toISOString().split('T')[0];
         const confirmed = this.getSortedPlayers(date).filter(p => (this.data.attendance[date]?.[p.id] || 'doubt') === 'present');
         
         if (confirmed.length === 0) {
@@ -287,8 +288,32 @@ class FootballApp {
         });
     }
 
-    setAttendance(d, p, s) { if(!this.data.attendance[d]) this.data.attendance[d]={}; this.data.attendance[d][p]=s; this.saveData(); this.renderAttendance(); this.renderDashboard(); }
-    registerPayment(id) { const p = this.data.players.find(x => x.id == id); p.status='paid'; this.data.transactions.push({id:Date.now().toString(), date:new Date().toISOString().split('T')[0], description:`Pgto - ${p.nickname}`, amount:p.type==='mensalista'?70:25, type:'in'}); this.saveData(); }
+    setAttendance(d, p, s) { if(!this.data.attendance[d]) this.data.attendance[d]={}; this.data.attendance[d][p]=s; this.saveData(); }
+    
+    registerPayment(id) { 
+        const p = this.data.players.find(x => x.id == id);
+        if(!p) return;
+        p.status = 'paid';
+        const amount = p.type === 'mensalista' ? 70 : 25;
+        this.data.transactions.push({
+            id: Date.now().toString(), 
+            date: new Date().toISOString().split('T')[0], 
+            description: `Pgto - ${p.nickname}`, 
+            amount: amount, 
+            type: 'in'
+        });
+        this.saveData();
+        alert(`Pagamento de ${p.nickname} registrado com sucesso!`);
+    }
+
+    resetMonth() {
+        if(confirm('Isso vai mudar o status de todos os jogadores para "Pendente". Deseja continuar?')) {
+            this.data.players.forEach(p => p.status = 'unpaid');
+            this.saveData();
+            alert('Mês virado com sucesso!');
+        }
+    }
+
     getSortedPlayers(d=null) { return [...this.data.players].filter(p => !p.isTemporary || d === p.validDate).sort((a,b) => (a.nickname||a.name).localeCompare(b.nickname||b.name)); }
     updateDate() { const d = new Date().toLocaleDateString('pt-BR', {weekday:'long', year:'numeric', month:'long', day:'numeric'}); document.getElementById('current-date').textContent = d.charAt(0).toUpperCase() + d.slice(1); }
     formatDateBR(d) { const p = d.split('-'); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d; }

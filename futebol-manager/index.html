@@ -1120,7 +1120,7 @@ body.hide-finances .act-amount {
                             <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
                         </div>
                         <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-danger" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
+                            <button class="btn btn-danger admin-only" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
                             <button class="btn btn-primary" onclick="app.openPlayerModal()"><i class="ph ph-user-plus"></i> Adicionar Jogador</button>
                         </div>
                     </div>
@@ -1128,10 +1128,10 @@ body.hide-finances .act-amount {
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">#</th>
-                                    <th>Jogador</th>
-                                    <th>Posição</th>
-                                    <th>Status (Mês)</th>
+                                    <th style="text-align: left; width: 50px;">#</th>
+                                    <th style="text-align: left;">Jogador</th>
+                                    <th style="text-align: left;">Posição</th>
+                                    <th style="text-align: left;">Status (Mês)</th>
                                     <th style="text-align: right;">Ações</th>
                                 </tr>
                             </thead>
@@ -1204,10 +1204,11 @@ body.hide-finances .act-amount {
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Tipo</th>
-                                    <th>Valor</th>
+                                    <th style="text-align: left; width: 40px;">#</th>
+                                    <th style="text-align: left;">Data</th>
+                                    <th style="text-align: left;">Descrição</th>
+                                    <th style="text-align: left;">Tipo</th>
+                                    <th style="text-align: left;">Valor</th>
                                     <th style="text-align: right;">Ações</th>
                                 </tr>
                             </thead>
