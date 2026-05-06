@@ -923,14 +923,20 @@ body {
 
 /* ==============================================
    CAMADA DE SEGURANÇA ADMINISTRATIVA
-   Apenas estas regras foram adicionadas ao backup
    ============================================== */
-.admin-only { display: none !important; }
-body.is-admin .admin-only { display: flex !important; }
-body.is-admin div.admin-only { display: flex !important; }
-body.is-admin .nav-item.admin-only { display: flex !important; }
-body.is-admin .nav-item-mobile.admin-only { display: flex !important; }
 
+/* Esconde tudo que é admin-only por padrão */
+.admin-only { display: none !important; }
+
+/* Quando logado: mostra cada tipo com o display correto */
+body.is-admin .stat-card.admin-only       { display: flex  !important; }
+body.is-admin .dashboard-widgets.admin-only { display: grid  !important; }
+body.is-admin button.admin-only           { display: inline-flex !important; }
+body.is-admin .nav-item.admin-only        { display: flex  !important; }
+body.is-admin .nav-item-mobile.admin-only { display: flex  !important; }
+body.is-admin div.admin-only              { display: flex  !important; }
+
+/* Modal de Login */
 #login-modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(2, 6, 23, 0.97); backdrop-filter: blur(12px);
@@ -965,8 +971,11 @@ body.is-admin .nav-item-mobile.admin-only { display: flex !important; }
                 <button class="nav-item" data-target="sorteio">
                     <i class="ph ph-users-three"></i> Sorteio de Times
                 </button>
-                <button class="nav-item financial-section" data-target="financeiro">
+                <button class="nav-item admin-only" data-target="financeiro">
                     <i class="ph ph-currency-dollar"></i> Financeiro
+                </button>
+                <button class="nav-item admin-only" onclick="app.logout()" style="color: var(--neon-red); margin-top: auto;">
+                    <i class="ph ph-sign-out"></i> Sair da Conta
                 </button>
             </nav>
             <div class="sidebar-footer">
@@ -1234,9 +1243,13 @@ body.is-admin .nav-item-mobile.admin-only { display: flex !important; }
             <i class="ph ph-users-three"></i>
             <span>Sorteio</span>
         </button>
-        <button class="nav-item-mobile financial-section" data-target="financeiro">
+        <button class="nav-item-mobile admin-only" data-target="financeiro">
             <i class="ph ph-currency-dollar"></i>
             <span>Finanças</span>
+        </button>
+        <button class="nav-item-mobile admin-only" onclick="app.logout()" style="color: var(--neon-red);">
+            <i class="ph ph-sign-out"></i>
+            <span>Sair</span>
         </button>
     </nav>
 
