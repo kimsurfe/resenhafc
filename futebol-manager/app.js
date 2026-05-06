@@ -89,6 +89,12 @@ class FootballApp {
         }
     }
 
+    logout() {
+        localStorage.removeItem('resenha_admin');
+        this.checkAuth();
+        this.renderAll();
+    }
+
     bindEvents() {
         // Auth / Login Modal Trigger (Robust)
         const logoTriggers = document.querySelectorAll('.logo, .logo-mobile-trigger');
