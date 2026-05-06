@@ -739,14 +739,14 @@ body.is-admin .financial-section {
     display: block !important;
 }
 
-/* Ocultar valores (Modo Privacidade) */
+/* Ocultar valores (Modo Privacidade Total) */
+body.hide-finances .financial-section {
+    display: none !important;
+}
+
 body.hide-finances .sensitive-amount,
-body.hide-finances .act-amount,
-body.hide-finances .act-details p,
-body.hide-finances .activity-item .act-amount {
-    filter: blur(8px) !important;
-    pointer-events: none;
-    user-select: none;
+body.hide-finances .act-amount {
+    display: none !important;
 }
 
 #login-modal {
@@ -1155,10 +1155,10 @@ body.hide-finances .activity-item .act-amount {
                             </select>
                         </div>
                         <div class="attendance-stats" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                            <span class="badge badge-success"><i class="ph ph-check-circle"></i> <span id="presenca-count">0</span>&nbsp;Confirmados</span>
-                            <span class="badge badge-danger"><i class="ph ph-x-circle"></i> <span id="absent-count">0</span>&nbsp;Ausentes</span>
+                            <span class="badge badge-success"><i class="ph ph-check-circle"></i> <span id="presenca-count" style="margin-right: 4px;">0</span> Confirmados</span>
+                            <span class="badge badge-danger"><i class="ph ph-x-circle"></i> <span id="absent-count" style="margin-right: 4px;">0</span> Ausentes</span>
                             <button class="btn btn-warning" onclick="app.copyDoubtListToWhatsApp()" style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
-                                <i class="ph ph-question"></i> <span id="doubt-count">0</span>&nbsp;Lista de Dúvidas
+                                <i class="ph ph-question"></i> <span id="doubt-count" style="margin-right: 4px;">0</span> Lista de Dúvidas
                             </button>
                             <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);" onclick="app.copyAttendanceToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Lista</button>
                             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="app.promptTemporaryPlayer()"><i class="ph ph-user-plus"></i> Add Avulso</button>
