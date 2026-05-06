@@ -229,18 +229,18 @@ class FootballApp {
             }
             else if (status === 'absent') { 
                 color = 'var(--neon-red)'; 
-                iconHtml = '<i class="ph-fill ph-x-circle" style="color: var(--neon-red);"></i>'; 
+                icon = 'ph-x-circle'; 
             }
 
-            const posBadge = p.position ? `<span style="font-size: 10px; color: var(--neon-blue); border: 1px solid var(--neon-blue); padding: 1px 4px; border-radius: 4px; margin-left: 6px; font-weight: 600; vertical-align: middle;">${p.position}</span>` : '';
-
             const html = `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid ${color}">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div class="act-avatar" style="width: 32px; height: 32px;"><i class="ph ph-user"></i></div>
-                        <div>
-                            <div style="font-weight: 500; line-height: 1.4;">
-                                ${p.nickname || p.name || ''} ${posBadge} ${badge}
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.03); border-radius:8px; margin-bottom:8px; border-left:3px solid ${color}; overflow: hidden;">
+                    <div style="display:flex; align-items:center; gap:12px; min-width: 0; flex: 1;">
+                        <div class="act-avatar" style="flex-shrink: 0;"><i class="ph ph-user"></i></div>
+                        <div style="min-width: 0;">
+                            <div style="font-weight:600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px;">
+                                ${p.nickname || p.name}
+                                <span style="font-size: 10px; color: var(--neon-blue); border: 1px solid var(--neon-blue); padding: 1px 6px; border-radius: 4px; flex-shrink: 0;">${p.position}</span>
+                                ${badge}
                             </div>
                             <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${p.fullName || ''}</div>
                         </div>

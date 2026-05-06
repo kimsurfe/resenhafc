@@ -741,8 +741,10 @@ body.is-admin .financial-section {
 
 /* Ocultar valores (Modo Privacidade) */
 body.hide-finances .sensitive-amount,
-body.hide-finances .act-amount {
-    filter: blur(8px);
+body.hide-finances .act-amount,
+body.hide-finances .act-details p,
+body.hide-finances .activity-item .act-amount {
+    filter: blur(8px) !important;
     pointer-events: none;
     user-select: none;
 }
