@@ -726,88 +726,9 @@ body {
     margin-top: 32px;
 }
 
-/* Camada de Segurança Administrativa */
-.admin-only {
+/* Privacy Mode */
+.hide-finances .financial-section {
     display: none !important;
-}
-
-body.is-admin .admin-only {
-    display: flex !important;
-}
-
-body.is-admin .financial-section {
-    display: block !important;
-}
-
-.dash-player-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    margin-bottom: 8px;
-}
-
-.dash-player-card .info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.pos-badge {
-    font-size: 10px;
-    color: var(--neon-blue);
-    border: 1px solid var(--neon-blue);
-    padding: 1px 4px;
-    border-radius: 4px;
-    margin-left: 8px;
-}
-
-.draw-name {
-    padding: 10px 16px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    border-left: 3px solid var(--neon-green);
-}
-
-/* Ocultar valores (Modo Privacidade Total) */
-body.hide-finances .financial-section {
-    display: none !important;
-}
-
-body.hide-finances .sensitive-amount,
-body.hide-finances .act-amount {
-    display: none !important;
-}
-
-#login-modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.98);
-    backdrop-filter: blur(10px);
-    z-index: 9999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
-#login-modal.active {
-    display: flex;
-}
-
-.login-card {
-    width: 90%;
-    max-width: 380px;
-    padding: 32px;
-    text-align: center;
-}
-
-.login-card img {
-    width: 80px; height: 80px; border-radius: 50%;
-    border: 3px solid var(--neon-green);
-    margin-bottom: 20px;
 }
 
 /* --- MOBILE RESPONSIVENESS --- */
@@ -936,34 +857,23 @@ body.hide-finances .act-amount {
         margin-bottom: 20px;
     }
 
-    .action-btn {
-        font-size: 20px !important;
-        padding: 8px !important;
-    }
-
     .attendance-stats { 
         display: grid !important;
         grid-template-columns: 1fr 1fr;
         gap: 8px !important;
         width: 100%; 
-        justify-content: center !important;
-        justify-items: center !important;
     }
     
     .attendance-stats .badge, .attendance-stats .btn {
         width: 100%;
-        max-width: 140px;
         justify-content: center;
-        margin: 0 auto !important;
+        margin: 0 !important;
         padding: 8px 4px !important;
         font-size: 12px !important;
-        display: flex !important;
-        align-items: center !important;
     }
 
     .attendance-stats .btn-primary {
         grid-column: span 2;
-        max-width: none;
     }
 
     /* Cards de Presença Compactos */
@@ -1033,7 +943,7 @@ body.hide-finances .act-amount {
                 <button class="nav-item" data-target="sorteio">
                     <i class="ph ph-users-three"></i> Sorteio de Times
                 </button>
-                <button class="nav-item admin-only financial-section" data-target="financeiro">
+                <button class="nav-item financial-section" data-target="financeiro">
                     <i class="ph ph-currency-dollar"></i> Financeiro
                 </button>
             </nav>
@@ -1050,7 +960,8 @@ body.hide-finances .act-amount {
 
         <main class="main-content">
             <header class="topbar">
-                <div style="display: flex; flex-direction: column; gap: 4px; cursor: pointer;" onclick="document.getElementById('login-modal').classList.add('active')">
+            <header class="topbar">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
                         <span style="font-weight: 800; font-size: 14px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
@@ -1058,9 +969,8 @@ body.hide-finances .act-amount {
                     <h1 id="page-title" style="margin: 0; font-size: 24px; font-weight: 700;">Dashboard</h1>
                 </div>
                 <div class="actions">
-                    <button class="action-btn admin-only" onclick="localStorage.removeItem('resenha_admin'); location.reload();" style="font-size: 20px; color: var(--neon-red); margin-right: 8px;" title="Sair (Logout)"><i class="ph ph-sign-out"></i></button>
                     <button class="action-btn" onclick="app.shareDashboard()" style="font-size: 20px; color: var(--neon-blue);" title="Gerar Foto do Dashboard"><i class="ph ph-camera"></i></button>
-                    <button class="action-btn admin-only" onclick="app.toggleFinances()" id="btn-toggle-finances" style="font-size: 20px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
+                    <button class="action-btn" onclick="app.toggleFinances()" id="btn-toggle-finances" style="font-size: 20px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
                     <div class="date-display" id="current-date"></div>
                 </div>
             </header>
@@ -1068,7 +978,7 @@ body.hide-finances .act-amount {
             <div class="content-wrapper">
                 <!-- Dashboard View -->
                 <section id="dashboard" class="view-section active">
-                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;">
+                    <div class="stats-grid">
                         <div class="stat-card glass-card">
                             <div class="stat-icon neon-green"><i class="ph ph-users"></i></div>
                             <div class="stat-info">
@@ -1083,7 +993,7 @@ body.hide-finances .act-amount {
                                 <p class="stat-value" id="dash-pagantes">0</p>
                             </div>
                         </div>
-                        <div class="stat-card glass-card admin-only financial-section">
+                        <div class="stat-card glass-card financial-section">
                             <div class="stat-icon neon-purple"><i class="ph ph-trend-up"></i></div>
                             <div class="stat-info">
                                 <h3>Em Caixa</h3>
@@ -1094,14 +1004,14 @@ body.hide-finances .act-amount {
                             <div class="stat-icon neon-orange"><i class="ph ph-calendar-check"></i></div>
                             <div class="stat-info">
                                 <h3>Próximo Jogo</h3>
-                                <p class="stat-value" id="dash-next-game" style="font-size: 16px; font-weight: 600;">Carregando...</p>
+                                <p class="stat-value" id="dash-next-game" style="font-size: 20px;">Quarta, 21:00</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="dashboard-widgets admin-only financial-section" style="margin-bottom: 24px;">
-                        <div class="widget glass-card admin-only">
-                            <h2 style="margin-bottom: 16px;">Últimos Pagamentos</h2>
+                    <div class="dashboard-widgets financial-section" style="margin-bottom: 24px;">
+                        <div class="widget glass-card">
+                            <h2>Últimos Pagamentos</h2>
                             <ul class="activity-list" id="dash-recent-payments">
                                 <!-- Populated by JS -->
                             </ul>
@@ -1153,7 +1063,7 @@ body.hide-finances .act-amount {
                             <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
                         </div>
                         <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-danger admin-only" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
+                            <button class="btn btn-danger" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
                             <button class="btn btn-primary" onclick="app.openPlayerModal()"><i class="ph ph-user-plus"></i> Adicionar Jogador</button>
                         </div>
                     </div>
@@ -1161,11 +1071,11 @@ body.hide-finances .act-amount {
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="text-align: left;">Jogador</th>
-                                    <th style="text-align: left;">Posição</th>
-                                    <th style="text-align: left;">Status (Mês)</th>
+                                    <th style="width: 50px;">#</th>
+                                    <th>Jogador</th>
+                                    <th>Posição</th>
+                                    <th>Status (Mês)</th>
                                     <th style="text-align: right;">Ações</th>
-                                    <th style="text-align: right; width: 40px;">#</th>
                                 </tr>
                             </thead>
                             <tbody id="mensalistas-tbody">
@@ -1187,11 +1097,11 @@ body.hide-finances .act-amount {
                                 <option value="2026-05-27">Quarta, 27 Maio 2026 - 21:00</option>
                             </select>
                         </div>
-                        <div class="attendance-stats" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                            <span class="badge badge-success"><i class="ph ph-check-circle"></i> <span id="presenca-count" style="margin-right: 4px;">0</span> Confirmados</span>
-                            <span class="badge badge-danger"><i class="ph ph-x-circle"></i> <span id="absent-count" style="margin-right: 4px;">0</span> Ausentes</span>
-                            <button class="btn btn-warning" onclick="app.copyDoubtListToWhatsApp()" style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
-                                <i class="ph ph-question"></i> <span id="doubt-count" style="margin-right: 4px;">0</span> Lista de Dúvidas
+                        <div class="attendance-stats" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <span class="badge badge-success"><span id="presenca-count">0</span> Confirmados</span>
+                            <span class="badge badge-danger"><span id="absent-count">0</span> Ausentes</span>
+                            <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange);" onclick="app.copyDoubtListToWhatsApp()">
+                                <i class="ph ph-question"></i> <span id="doubt-count">0</span> Lista de Dúvidas
                             </button>
                             <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);" onclick="app.copyAttendanceToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Lista</button>
                             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="app.promptTemporaryPlayer()"><i class="ph ph-user-plus"></i> Add Avulso</button>
@@ -1237,11 +1147,10 @@ body.hide-finances .act-amount {
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="text-align: left; width: 40px;">#</th>
-                                    <th style="text-align: left;">Data</th>
-                                    <th style="text-align: left;">Descrição</th>
-                                    <th style="text-align: left;">Tipo</th>
-                                    <th style="text-align: left;">Valor</th>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
                                     <th style="text-align: right;">Ações</th>
                                 </tr>
                             </thead>
@@ -1303,7 +1212,7 @@ body.hide-finances .act-amount {
             <i class="ph ph-users-three"></i>
             <span>Sorteio</span>
         </button>
-        <button class="nav-item-mobile admin-only financial-section" data-target="financeiro">
+        <button class="nav-item-mobile financial-section" data-target="financeiro">
             <i class="ph ph-currency-dollar"></i>
             <span>Finanças</span>
         </button>
@@ -1395,52 +1304,7 @@ body.hide-finances .act-amount {
         </div>
     </div>
 
-    <!-- Login Modal Isolado -->
-    <div id="login-modal">
-        <div class="modal-content glass-card login-card">
-            <img src="resenha_logotipo.jpg" alt="Logo">
-            <h2 style="margin-bottom: 8px;">Acesso Admin</h2>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Exclusivo para organizadores</p>
-            
-            <form id="admin-login-form">
-                <input type="text" id="admin-user" placeholder="Usuário" class="glass-input-field" style="margin-bottom: 12px;" required>
-                <input type="password" id="admin-pass" placeholder="Senha" class="glass-input-field" style="margin-bottom: 12px;" required>
-                <div id="admin-login-error" style="color: var(--neon-red); font-size: 13px; margin-bottom: 12px; display: none;">Dados incorretos!</div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
-                <button type="button" class="btn" onclick="document.getElementById('login-modal').classList.remove('active')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-muted);">Cancelar</button>
-            </form>
-        </div>
-    </div>
-
     <script src="app.js"></script>
-    <script>
-        // Script de Segurança Isolado (Não mexe no app.js)
-        (function() {
-            const check = () => {
-                if (localStorage.getItem('resenha_admin') === 'true') {
-                    document.body.classList.add('is-admin');
-                } else {
-                    document.body.classList.remove('is-admin');
-                }
-            };
-
-            document.getElementById('admin-login-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const u = document.getElementById('admin-user').value;
-                const p = document.getElementById('admin-pass').value;
-                
-                if (u === 'kim' && p === '220688') {
-                    localStorage.setItem('resenha_admin', 'true');
-                    check();
-                    document.getElementById('login-modal').classList.remove('active');
-                } else {
-                    document.getElementById('admin-login-error').style.display = 'block';
-                }
-            });
-
-            check();
-        })();
-    </script>
 </body>
 </html>
 
