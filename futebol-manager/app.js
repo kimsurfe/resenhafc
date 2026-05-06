@@ -90,7 +90,16 @@ class FootballApp {
     }
 
     bindEvents() {
-        // Auth / Login Modal
+        // Auth / Login Modal Trigger (Robust)
+        const logoTriggers = document.querySelectorAll('.logo, .logo-mobile-trigger');
+        logoTriggers.forEach(el => {
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', () => {
+                const modal = document.getElementById('login-modal');
+                if (modal) modal.classList.add('active');
+            });
+        });
+
         const loginForm = document.getElementById('admin-login-form');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => {
@@ -103,7 +112,8 @@ class FootballApp {
                     document.getElementById('login-modal').classList.remove('active');
                     this.renderAll();
                 } else {
-                    document.getElementById('admin-login-error').style.display = 'block';
+                    const err = document.getElementById('admin-login-error');
+                    if (err) err.style.display = 'block';
                 }
             });
         }

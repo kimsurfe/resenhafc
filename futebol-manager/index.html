@@ -964,9 +964,9 @@ body.is-admin .financial-section {
 <body>
     <div class="app-container">
         <aside class="sidebar glass">
-            <div class="logo" onclick="document.getElementById('login-modal').classList.add('active')" style="cursor: pointer;">
-                <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
-                <span>RESENHA F.C</span>
+            <div class="logo" style="padding: 24px 16px; flex-direction: column; gap: 12px; height: auto;">
+                <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);">
+                <span style="font-size: 18px; font-weight: 900; letter-spacing: 1px; color: var(--neon-green);">RESENHA F.C</span>
             </div>
             <nav class="nav-menu">
                 <button class="nav-item active" data-target="dashboard">
@@ -998,17 +998,16 @@ body.is-admin .financial-section {
 
         <main class="main-content">
             <header class="topbar">
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
-                        <span style="font-weight: 800; font-size: 14px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
+                <div class="logo-mobile-trigger" style="display: flex; flex-direction: column; gap: 6px; cursor: pointer;" onclick="document.getElementById('login-modal').classList.add('active')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);">
+                        <span style="font-weight: 900; font-size: 18px; color: var(--neon-green); letter-spacing: 1.5px;">RESENHA F.C</span>
                     </div>
-                    <h1 id="page-title" style="margin: 0; font-size: 24px; font-weight: 700;">Dashboard</h1>
+                    <p id="current-date" style="font-size: 12px; color: var(--text-muted); padding-left: 2px;"></p>
                 </div>
                 <div class="actions">
                     <button class="action-btn" onclick="app.shareDashboard()" style="font-size: 20px; color: var(--neon-blue);" title="Gerar Foto do Dashboard"><i class="ph ph-camera"></i></button>
                     <button class="action-btn" onclick="app.toggleFinances()" id="btn-toggle-finances" style="font-size: 20px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
-                    <div class="date-display" id="current-date"></div>
                 </div>
             </header>
 
