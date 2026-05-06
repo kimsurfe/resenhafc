@@ -14,7 +14,7 @@ const DEFAULT_DATA = {
     players: [],
     transactions: [],
     attendance: {},
-    config: { mensalValue: 70.00, avulsoValue: 25.00 }
+    config: { mensalValue: 70.00, avulsoValue: 20.00 }
 };
 
 class FootballApp {
@@ -30,7 +30,13 @@ class FootballApp {
         this.updateDate();
         await this.loadDataFromCloud();
         this.checkAuth();
+        this.fixMarlon();
         this.renderAll();
+    }
+
+    fixMarlon() {
+        const marlon = this.data.players.find(p => p.nickname?.includes('Marlon') || p.name?.includes('Marlon'));
+        if (marlon) marlon.type = 'avulso';
     }
 
     async loadDataFromCloud() {
@@ -38,6 +44,7 @@ class FootballApp {
             const doc = await db.collection('appData').doc(this.docId).get();
             if (doc.exists) {
                 this.data = doc.data();
+                if (!this.data.config) this.data.config = { mensalValue: 70, avulsoValue: 20 };
             } else {
                 const local = localStorage.getItem('futManagerData');
                 if (local) {
@@ -83,7 +90,6 @@ class FootballApp {
             navs.forEach(x => x.classList.toggle('active', x.dataset.target === t));
             document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('active', s.id === t));
             document.getElementById('page-title').textContent = e.currentTarget.textContent.trim();
-            if (t === 'sorteio') this.updateSorteioPool();
         }));
         
         document.getElementById('admin-login-form')?.addEventListener('submit', (e) => {
@@ -106,17 +112,6 @@ class FootballApp {
     }
 
     renderDashboard() {
-        const todos = this.data.players;
-        const mensalistas = todos.filter(p => p.type === 'mensalista');
-        const pagantes = mensalistas.filter(p => (p.position||'').toLowerCase() !== 'goleiro');
-        const paid = pagantes.filter(p => p.status === 'paid').length;
-        
-        document.getElementById('dash-total-mensalistas').textContent = mensalistas.length;
-        document.getElementById('dash-pagantes').innerHTML = `${paid}<span class="sub-value">/${pagantes.length}</span>`;
-        
-        let bal = this.data.transactions.reduce((acc, t) => t.type === 'in' ? acc + t.amount : acc - t.amount, 0);
-        document.getElementById('dash-caixa').textContent = `R$ ${bal.toFixed(2).replace('.', ',')}`;
-
         const date = document.getElementById('match-date-select').value;
         const att = this.data.attendance[date] || {};
         
@@ -142,6 +137,16 @@ class FootballApp {
         document.getElementById('dash-confirmed-count').textContent = pCount;
         document.getElementById('dash-pending-count').textContent = dCount;
         document.getElementById('dash-absent-count').textContent = aCount;
+        
+        const mensalistas = this.data.players.filter(p => p.type === 'mensalista');
+        const pagantes = mensalistas.filter(p => (p.position||'').toLowerCase() !== 'goleiro');
+        const paidCount = pagantes.filter(p => p.status === 'paid').length;
+        
+        document.getElementById('dash-total-mensalistas').textContent = mensalistas.length;
+        document.getElementById('dash-pagantes').innerHTML = `${paidCount}<span class="sub-value">/${pagantes.length}</span>`;
+        
+        let bal = this.data.transactions.reduce((acc, t) => t.type === 'in' ? acc + t.amount : acc - t.amount, 0);
+        document.getElementById('dash-caixa').textContent = `R$ ${bal.toFixed(2).replace('.', ',')}`;
         
         this.renderRecentIn();
         this.renderChart();
@@ -185,12 +190,11 @@ class FootballApp {
         this.getSortedPlayers().filter(p => p.type === 'mensalista').forEach((p, i) => {
             const isGoleiro = (p.position||'').toLowerCase() === 'goleiro';
             const badge = p.status === 'paid' ? '<span class="badge badge-success">Pago</span>' : (isGoleiro ? '<span class="badge badge-info">Isento</span>' : '<span class="badge badge-warning">Pendente</span>');
-            
             const actionBtn = p.status === 'paid' ? 
-                `<button class="action-btn admin-only" onclick="app.undoPayment('${p.id}')" style="color:var(--neon-red)" title="Estornar"><i class="ph ph-arrow-u-up-left"></i></button>` : 
-                `<button class="action-btn admin-only" onclick="app.registerPayment('${p.id}')" style="color:var(--neon-green)" title="Pagar"><i class="ph ph-money"></i></button>`;
+                `<button class="action-btn admin-only" onclick="app.undoPayment('${p.id}')" style="color:var(--neon-red); font-size:20px;"><i class="ph ph-arrow-u-up-left"></i></button>` : 
+                `<button class="action-btn admin-only" onclick="app.registerPayment('${p.id}')" style="color:var(--neon-green); font-size:20px;"><i class="ph ph-money"></i></button>`;
 
-            tbody.innerHTML += `<tr><td style="text-align:left">${i+1}</td><td style="text-align:left"><b>${p.nickname || p.name}</b><br><small>${p.fullName || ''}</small></td><td style="text-align:left">${p.position}</td><td style="text-align:left">${badge}</td><td style="text-align:right">${actionBtn}<button class="action-btn admin-only" onclick="app.openPlayerModal('${p.id}')"><i class="ph ph-pencil-simple"></i></button></td></tr>`;
+            tbody.innerHTML += `<tr><td><b>${p.nickname || p.name}</b><br><small>${p.fullName || ''}</small></td><td>${p.position}</td><td>${badge}</td><td style="text-align:right">${actionBtn}<button class="action-btn admin-only" onclick="app.openPlayerModal('${p.id}')" style="font-size:20px;"><i class="ph ph-pencil-simple"></i></button></td><td style="text-align:right; width:40px; color:var(--text-muted)">${i+1}</td></tr>`;
         });
     }
 
@@ -203,10 +207,8 @@ class FootballApp {
         this.getSortedPlayers(date).forEach(p => {
             const s = this.data.attendance[date]?.[p.id] || 'doubt';
             if (s === 'present') pc++; else if (s === 'absent') ac++; else dc++;
-            
             const color = s === 'present' ? 'var(--neon-green)' : (s === 'absent' ? 'var(--neon-red)' : 'var(--neon-orange)');
-            
-            list.innerHTML += `<div class="player-card ${s}"><div class="player-info"><b>${p.nickname || p.name}</b><br><small>${p.position}</small></div><div class="attendance-controls"><button class="att-btn ${s==='present'?'active-green':''}" onclick="app.setAttendance('${date}','${p.id}','present')" style="color:${s==='present'?color:''}"><i class="ph-fill ph-check-circle"></i></button><button class="att-btn ${s==='doubt'?'active-orange':''}" onclick="app.setAttendance('${date}','${p.id}','doubt')" style="color:${s==='doubt'?color:''}"><i class="ph-fill ph-question"></i></button><button class="att-btn ${s==='absent'?'active-red':''}" onclick="app.setAttendance('${date}','${p.id}','absent')" style="color:${s==='absent'?color:''}"><i class="ph-fill ph-x-circle"></i></button></div></div>`;
+            list.innerHTML += `<div class="player-card ${s}" style="border-left:3px solid ${color}"><div class="player-info"><b>${p.nickname || p.name}</b><br><small>${p.position}</small></div><div class="attendance-controls"><button class="att-btn ${s==='present'?'active-green':''}" onclick="app.setAttendance('${date}','${p.id}','present')" style="color:${s==='present'?'var(--neon-green)':''}"><i class="ph-fill ph-check-circle"></i></button><button class="att-btn ${s==='doubt'?'active-orange':''}" onclick="app.setAttendance('${date}','${p.id}','doubt')" style="color:${s==='doubt'?'var(--neon-orange)':''}"><i class="ph-fill ph-question"></i></button><button class="att-btn ${s==='absent'?'active-red':''}" onclick="app.setAttendance('${date}','${p.id}','absent')" style="color:${s==='absent'?'var(--neon-red)':''}"><i class="ph-fill ph-x-circle"></i></button></div></div>`;
         });
         document.getElementById('presenca-count').textContent = pc;
         document.getElementById('doubt-count').textContent = dc;
@@ -224,6 +226,8 @@ class FootballApp {
             tbody.innerHTML += `<tr><td>${this.formatDateBR(t.date)}</td><td>${t.description}</td><td>${isIn?'Entrada':'Saída'}</td><td>R$ ${t.amount.toFixed(2)}</td><td style="text-align:right"><button class="action-btn" onclick="app.deleteTransaction('${t.id}')" style="color:var(--neon-red)"><i class="ph ph-trash"></i></button></td></tr>`;
         });
         document.getElementById('fin-balance').textContent = `R$ ${bal.toFixed(2).replace('.', ',')}`;
+        document.getElementById('config-mensal').value = this.data.config?.mensalValue || 70;
+        document.getElementById('config-avulso').value = this.data.config?.avulsoValue || 20;
     }
 
     updateSorteioPool() {
@@ -240,7 +244,7 @@ class FootballApp {
     registerPayment(id) { 
         const p = this.data.players.find(x => x.id == id);
         p.status = 'paid';
-        this.data.transactions.push({id: Date.now().toString(), date: new Date().toISOString().split('T')[0], description: `Pgto - ${p.nickname}`, amount: p.type==='mensalista'?70:25, type: 'in', playerId: id});
+        this.data.transactions.push({id: Date.now().toString(), date: new Date().toISOString().split('T')[0], description: `Pgto - ${p.nickname}`, amount: p.type==='mensalista'?70:20, type: 'in', playerId: id});
         this.saveData();
     }
 
@@ -251,18 +255,39 @@ class FootballApp {
         this.saveData();
     }
 
-    resetMonth() {
-        if(confirm('Zerar status de todos para Pendente?')) {
-            this.data.players.forEach(p => p.status = 'unpaid');
+    deleteTransaction(id) {
+        if(confirm("Deseja excluir este lançamento?")) {
+            const t = this.data.transactions.find(x => x.id === id);
+            if (t && t.playerId) {
+                const p = this.data.players.find(x => x.id === t.playerId);
+                if (p) p.status = 'unpaid';
+            }
+            this.data.transactions = this.data.transactions.filter(x => x.id !== id);
             this.saveData();
         }
+    }
+
+    saveConfig() {
+        this.data.config = {
+            mensalValue: parseFloat(document.getElementById('config-mensal').value),
+            avulsoValue: parseFloat(document.getElementById('config-avulso').value)
+        };
+        this.saveData();
+        alert("Valores atualizados!");
     }
 
     getSortedPlayers(d=null) { return [...this.data.players].filter(p => !p.isTemporary || d === p.validDate).sort((a,b) => (a.nickname||a.name).localeCompare(b.nickname||b.name)); }
     updateDate() { const d = new Date().toLocaleDateString('pt-BR', {weekday:'long', year:'numeric', month:'long', day:'numeric'}); document.getElementById('current-date').textContent = d.charAt(0).toUpperCase() + d.slice(1); }
     formatDateBR(d) { const p = d.split('-'); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d; }
-    handlePlayerSubmit(e) { e.preventDefault(); /* ... */ }
-    deleteTransaction(id) { if(confirm("Excluir?")) { this.data.transactions = this.data.transactions.filter(t => t.id != id); this.saveData(); } }
+    openPlayerModal(id) { 
+        const p = id ? this.data.players.find(x => x.id == id) : null;
+        document.getElementById('modal-player-id').value = id || '';
+        document.getElementById('player-name').value = p ? p.name : '';
+        document.getElementById('player-nickname').value = p ? p.nickname : '';
+        document.getElementById('player-fullname').value = p ? p.fullName || '' : '';
+        document.getElementById('player-type').value = p ? p.type : 'mensalista';
+        document.getElementById('player-position').value = p ? p.position : 'Lateral';
+        document.getElementById('player-modal').classList.add('active');
+    }
 }
-
 const app = new FootballApp();
