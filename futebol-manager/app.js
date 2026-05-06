@@ -97,8 +97,8 @@ class FootballApp {
         navItems.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const target = e.currentTarget.dataset.target;
+                if (!target) return;
                 
-                // Update all nav icons (Desktop and Mobile)
                 navItems.forEach(b => {
                     if (b.dataset.target === target) b.classList.add('active');
                     else b.classList.remove('active');
@@ -107,16 +107,15 @@ class FootballApp {
                 document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
                 document.getElementById(target).classList.add('active');
 
-                if (target === 'sorteio') {
-                    this.updateSorteioPool();
-                }
+                if (target === 'sorteio') this.updateSorteioPool();
 
                 document.getElementById('page-title').textContent = e.currentTarget.textContent.trim();
+
+                // Olhinho: so aparece no Dashboard
+                const eyeBtn = document.getElementById('btn-toggle-finances');
+                if (eyeBtn) eyeBtn.style.display = target === 'dashboard' ? '' : 'none';
                 
-                // Scroll top on mobile when changing tabs
-                if (window.innerWidth < 992) {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                if (window.innerWidth < 992) window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
 
@@ -432,7 +431,7 @@ class FootballApp {
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td data-label="#" style="color: var(--text-muted); font-weight: 600; font-size: 14px;">${rowNumber}</td>
+                <td data-label="#" style="color: var(--text-muted); font-weight: 700; font-size: 15px; width: 44px;">${rowNumber}</td>
                 <td data-label="Jogador">
                     <div style="font-weight: 600; font-size: 16px;">${p.nickname || p.name}</div>
                     <div style="font-size: 12px; color: var(--text-muted);">${p.fullName || ''}</div>
@@ -440,7 +439,10 @@ class FootballApp {
                 <td data-label="Posição">${p.position}</td>
                 <td data-label="Status">${statusBadge}</td>
                 <td data-label="Ações" style="text-align: right;">
-                    ${localStorage.getItem('resenha_admin') === 'true' ? `${paymentBtn}<button class="action-btn" title="Editar" onclick="app.openPlayerModal('${p.id}')"><i class="ph ph-pencil-simple"></i></button><button class="action-btn" title="Excluir" onclick="app.deletePlayer('${p.id}')" style="color: var(--neon-red)"><i class="ph ph-trash"></i></button>` : ''}
+                    ${localStorage.getItem('resenha_admin') === 'true' ? `
+                    ${paymentBtn}
+                    <button class="action-btn" title="Editar" onclick="app.openPlayerModal('${p.id}')" style="font-size:22px;"><i class="ph ph-pencil-simple"></i></button>
+                    <button class="action-btn" title="Excluir" onclick="app.deletePlayer('${p.id}')" style="color:var(--neon-red);font-size:22px;"><i class="ph ph-trash"></i></button>` : ''}
                 </td>
             `;
             return tr;
@@ -718,8 +720,8 @@ class FootballApp {
                     <td data-label="Tipo">${typeStr}</td>
                     <td data-label="Valor" class="sensitive-amount" style="font-weight: 600; color: ${isInc ? 'var(--neon-green)' : 'var(--text-main)'}">${valStr}</td>
                     <td data-label="Ações" style="text-align: right;">
-                        <button class="action-btn" onclick="app.editTransactionModal('${t.id}')"><i class="ph ph-pencil-simple"></i></button>
-                        <button class="action-btn" onclick="app.deleteTransaction('${t.id}')" style="color: var(--neon-red)"><i class="ph ph-trash"></i></button>
+                        <button class="action-btn" onclick="app.editTransactionModal('${t.id}')" style="font-size:22px;"><i class="ph ph-pencil-simple"></i></button>
+                        <button class="action-btn" onclick="app.deleteTransaction('${t.id}')" style="color: var(--neon-red); font-size:22px;"><i class="ph ph-trash"></i></button>
                     </td>
                 </tr>
             `;
