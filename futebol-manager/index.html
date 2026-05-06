@@ -929,12 +929,37 @@ body {
 .admin-only { display: none !important; }
 
 /* Quando logado: mostra cada tipo com o display correto */
-body.is-admin .stat-card.admin-only       { display: flex  !important; }
-body.is-admin .dashboard-widgets.admin-only { display: grid  !important; }
-body.is-admin button.admin-only           { display: inline-flex !important; }
-body.is-admin .nav-item.admin-only        { display: flex  !important; }
-body.is-admin .nav-item-mobile.admin-only { display: flex  !important; }
-body.is-admin div.admin-only              { display: flex  !important; }
+body.is-admin .admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin div.admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin .stat-card.admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin .dashboard-widgets.admin-only:not(.financial-section) { display: grid !important; }
+body.is-admin button.admin-only:not(.financial-section) { display: inline-flex !important; }
+body.is-admin .nav-item.admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin .nav-item-mobile.admin-only:not(.financial-section) { display: flex !important; }
+
+/* Regras para o Financeiro (obedecem ao Olhinho) */
+body.is-admin .financial-section.admin-only { display: flex !important; }
+body.is-admin div.financial-section.admin-only { display: flex !important; }
+body.is-admin .dashboard-widgets.financial-section.admin-only { display: grid !important; }
+
+/* Ocultar financeiro ao clicar no olhinho - Especificidade Máxima */
+body.is-admin.hide-finances .financial-section.admin-only,
+body.hide-finances .financial-section { 
+    display: none !important; 
+}
+
+/* Botões de Presença Uniformes */
+.att-stat-btn {
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
 
 /* Modal de Login */
 #login-modal {
@@ -1101,12 +1126,12 @@ body.is-admin div.admin-only              { display: flex  !important; }
                     <div class="table-container glass-card">
                         <table class="data-table">
                             <thead>
-                                <tr>
+                            <tr>
                                     <th style="width: 50px;">#</th>
                                     <th>Jogador</th>
                                     <th>Posição</th>
                                     <th>Status (Mês)</th>
-                                    <th style="text-align: right;">Ações</th>
+                                    <th class="admin-only" style="text-align: right;">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="mensalistas-tbody">
@@ -1128,14 +1153,22 @@ body.is-admin div.admin-only              { display: flex  !important; }
                                 <option value="2026-05-27">Quarta, 27 Maio 2026 - 21:00</option>
                             </select>
                         </div>
-                        <div class="attendance-stats" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                            <span class="badge badge-success"><span id="presenca-count">0</span> Confirmados</span>
-                            <span class="badge badge-danger"><span id="absent-count">0</span> Ausentes</span>
-                            <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange);" onclick="app.copyDoubtListToWhatsApp()">
-                                <i class="ph ph-question"></i> <span id="doubt-count">0</span> Lista de Dúvidas
+                        <div class="attendance-stats" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.toggleDashList('dash-confirmed-list', this)">
+                                <i class="ph ph-check-circle"></i> <span id="presenca-count">0</span> Confirmados
                             </button>
-                            <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);" onclick="app.copyAttendanceToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Lista</button>
-                            <button class="btn btn-primary admin-only" style="padding: 6px 12px; font-size: 13px;" onclick="app.promptTemporaryPlayer()"><i class="ph ph-user-plus"></i> Add Avulso</button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.toggleDashList('dash-absent-list', this)">
+                                <i class="ph ph-x-circle"></i> <span id="absent-count">0</span> Ausentes
+                            </button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyDoubtListToWhatsApp()">
+                                <i class="ph ph-question"></i> <span id="doubt-count">0</span> Dúvidas
+                            </button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyAttendanceToWhatsApp()">
+                                <i class="ph ph-whatsapp-logo"></i> Copiar Lista
+                            </button>
+                            <button class="att-stat-btn admin-only" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.promptTemporaryPlayer()">
+                                <i class="ph ph-user-plus"></i> Add Avulso
+                            </button>
                         </div>
                     </div>
                     <div class="pitch-container glass-card">

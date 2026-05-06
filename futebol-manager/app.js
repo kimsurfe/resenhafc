@@ -111,9 +111,12 @@ class FootballApp {
 
                 document.getElementById('page-title').textContent = e.currentTarget.textContent.trim();
 
-                // Olhinho: so aparece no Dashboard
+                // Olhinho: so aparece no Dashboard para administradores logados
                 const eyeBtn = document.getElementById('btn-toggle-finances');
-                if (eyeBtn) eyeBtn.style.display = target === 'dashboard' ? '' : 'none';
+                const isAdmin = localStorage.getItem('resenha_admin') === 'true';
+                if (eyeBtn) {
+                    eyeBtn.style.display = (target === 'dashboard' && isAdmin) ? 'inline-flex' : 'none';
+                }
                 
                 if (window.innerWidth < 992) window.scrollTo({ top: 0, behavior: 'smooth' });
             });
@@ -425,20 +428,20 @@ class FootballApp {
             let paymentBtn = '';
             if (!isGoleiro) {
                 paymentBtn = p.status !== 'paid' 
-                    ? `<button class="action-btn" title="Registrar Pagamento" onclick="app.registerPayment('${p.id}')" style="color: var(--neon-green)"><i class="ph ph-money"></i></button>` 
-                    : `<button class="action-btn" title="Mudar para Pendente" onclick="app.undoPayment('${p.id}')" style="color: var(--neon-orange)"><i class="ph ph-arrow-counter-clockwise"></i></button>`;
+                    ? `<button class="action-btn" title="Registrar Pagamento" onclick="app.registerPayment('${p.id}')" style="color: var(--neon-green); font-size: 22px;"><i class="ph ph-money"></i></button>` 
+                    : `<button class="action-btn" title="Mudar para Pendente" onclick="app.undoPayment('${p.id}')" style="color: var(--neon-orange); font-size: 22px;"><i class="ph ph-arrow-counter-clockwise"></i></button>`;
             }
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td data-label="#" style="color: var(--text-muted); font-weight: 700; font-size: 15px; width: 44px;">${rowNumber}</td>
                 <td data-label="Jogador">
-                    <div style="font-weight: 600; font-size: 16px;">${p.nickname || p.name}</div>
-                    <div style="font-size: 12px; color: var(--text-muted);">${p.fullName || ''}</div>
+                    <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">${p.nickname || p.name}</div>
+                    <div style="font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px;">${p.fullName || ''}</div>
                 </td>
                 <td data-label="Posição">${p.position}</td>
                 <td data-label="Status">${statusBadge}</td>
-                <td data-label="Ações" style="text-align: right;">
+                <td data-label="Ações" class="admin-only" style="text-align: right;">
                     ${localStorage.getItem('resenha_admin') === 'true' ? `
                     ${paymentBtn}
                     <button class="action-btn" title="Editar" onclick="app.openPlayerModal('${p.id}')" style="font-size:22px;"><i class="ph ph-pencil-simple"></i></button>
