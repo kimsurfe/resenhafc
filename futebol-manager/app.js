@@ -80,6 +80,7 @@ class FootballApp {
         this.renderPlayers();
         this.renderAttendance();
         this.renderFinance();
+        this.updateSorteioPool();
     }
 
     bindEvents() {
@@ -89,6 +90,7 @@ class FootballApp {
             navs.forEach(x => x.classList.toggle('active', x.dataset.target === t));
             document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('active', s.id === t));
             document.getElementById('page-title').textContent = e.currentTarget.textContent.trim();
+            if (t === 'sorteio') this.updateSorteioPool();
         }));
         
         const loginForm = document.getElementById('admin-login-form');
@@ -166,6 +168,16 @@ class FootballApp {
         
         this.renderRecentIn();
         this.renderChart();
+        this.updateNextGameDate();
+    }
+
+    updateNextGameDate() {
+        const today = new Date();
+        const nextWed = new Date(today);
+        nextWed.setDate(today.getDate() + (3 + 7 - today.getDay()) % 7);
+        const day = String(nextWed.getDate()).padStart(2, '0');
+        const month = String(nextWed.getMonth() + 1).padStart(2, '0');
+        document.getElementById('dash-next-game').textContent = `Quarta, ${day}/${month} - 21:00`;
     }
 
     renderRecentIn() {
@@ -196,7 +208,7 @@ class FootballApp {
         this.getSortedPlayers().filter(p => p.type === 'mensalista').forEach((p, i) => {
             const isGoleiro = (p.position||'').toLowerCase() === 'goleiro';
             const badge = p.status === 'paid' ? '<span class="badge badge-success">Pago</span>' : (isGoleiro ? '<span class="badge badge-info">Isento</span>' : '<span class="badge badge-warning">Pendente</span>');
-            tbody.innerHTML += `<tr><td>${i+1}</td><td><b>${p.nickname || p.name}</b><br><small>${p.fullName || ''}</small></td><td>${p.position}</td><td>${badge}</td><td style="text-align:right"><button class="action-btn admin-only" onclick="app.registerPayment('${p.id}')" style="color:var(--neon-green)"><i class="ph ph-money"></i></button><button class="action-btn admin-only" onclick="app.openPlayerModal('${p.id}')"><i class="ph ph-pencil-simple"></i></button></td></tr>`;
+            tbody.innerHTML += `<tr><td style="text-align:left">${i+1}</td><td><b style="display:block">${p.nickname || p.name}</b><small style="color:var(--text-muted)">${p.fullName || ''}</small></td><td>${p.position}</td><td>${badge}</td><td style="text-align:right"><button class="action-btn admin-only" onclick="app.registerPayment('${p.id}')" style="color:var(--neon-green)"><i class="ph ph-money"></i></button><button class="action-btn admin-only" onclick="app.openPlayerModal('${p.id}')"><i class="ph ph-pencil-simple"></i></button></td></tr>`;
         });
     }
 
@@ -209,7 +221,27 @@ class FootballApp {
         this.getSortedPlayers(date).forEach(p => {
             const s = this.data.attendance[date]?.[p.id] || 'doubt';
             if (s === 'present') pc++; else if (s === 'absent') ac++; else dc++;
-            list.innerHTML += `<div class="player-card ${s}"><div class="player-info"><div style="display:flex;align-items:center;gap:12px;"><div class="act-avatar"><i class="ph ph-user"></i></div><div><b>${p.nickname || p.name}</b><br><small>${p.position}</small></div></div><div class="admin-only"><button class="action-btn" onclick="app.registerPayment('${p.id}')" style="color:var(--neon-green)"><i class="ph ph-money"></i></button></div></div><div class="attendance-controls"><button class="att-btn ${s==='present'?'active-green':''}" onclick="app.setAttendance('${date}','${p.id}','present')"><i class="ph-fill ph-check-circle"></i></button><button class="att-btn ${s==='doubt'?'active-orange':''}" onclick="app.setAttendance('${date}','${p.id}','doubt')"><i class="ph-fill ph-question"></i></button><button class="att-btn ${s==='absent'?'active-red':''}" onclick="app.setAttendance('${date}','${p.id}','absent')"><i class="ph-fill ph-x-circle"></i></button></div></div>`;
+            
+            const color = s === 'present' ? 'var(--neon-green)' : (s === 'absent' ? 'var(--neon-red)' : 'var(--neon-orange)');
+            const icon = s === 'present' ? 'ph-check-circle' : (s === 'absent' ? 'ph-x-circle' : 'ph-question');
+
+            list.innerHTML += `
+                <div class="player-card ${s}">
+                    <div class="player-info">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="act-avatar"><i class="ph ph-user"></i></div>
+                            <div><b>${p.nickname || p.name}</b><br><small>${p.position}</small></div>
+                        </div>
+                        <div class="admin-only">
+                            <button class="action-btn" onclick="app.registerPayment('${p.id}')" style="color:var(--neon-green)"><i class="ph ph-money"></i></button>
+                        </div>
+                    </div>
+                    <div class="attendance-controls">
+                        <button class="att-btn ${s==='present'?'active-green':''}" onclick="app.setAttendance('${date}','${p.id}','present')" style="color:${s==='present'?color:''}"><i class="ph-fill ph-check-circle"></i></button>
+                        <button class="att-btn ${s==='doubt'?'active-orange':''}" onclick="app.setAttendance('${date}','${p.id}','doubt')" style="color:${s==='doubt'?color:''}"><i class="ph-fill ph-question"></i></button>
+                        <button class="att-btn ${s==='absent'?'active-red':''}" onclick="app.setAttendance('${date}','${p.id}','absent')" style="color:${s==='absent'?color:''}"><i class="ph-fill ph-x-circle"></i></button>
+                    </div>
+                </div>`;
         });
         document.getElementById('presenca-count').textContent = pc;
         document.getElementById('doubt-count').textContent = dc;
@@ -229,7 +261,33 @@ class FootballApp {
         document.getElementById('fin-balance').textContent = `R$ ${bal.toFixed(2).replace('.', ',')}`;
     }
 
-    setAttendance(d, p, s) { if(!this.data.attendance[d]) this.data.attendance[d]={}; this.data.attendance[d][p]=s; this.saveData(); }
+    updateSorteioPool() {
+        const pool = document.getElementById('sorteio-pool');
+        if (!pool) return;
+        pool.innerHTML = '';
+        const date = document.getElementById('match-date-select').value;
+        const confirmed = this.getSortedPlayers(date).filter(p => (this.data.attendance[date]?.[p.id] || 'doubt') === 'present');
+        
+        if (confirmed.length === 0) {
+            pool.innerHTML = '<p style="padding:20px; color:var(--text-muted); text-align:center;">Nenhum jogador confirmado para esta data.</p>';
+            return;
+        }
+
+        confirmed.forEach(p => {
+            pool.innerHTML += `
+                <div class="player-draw-card" data-id="${p.id}">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" checked class="sorteio-checkbox">
+                        <div>
+                            <div style="font-weight:600;">${p.nickname || p.name}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">${p.position}</div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    setAttendance(d, p, s) { if(!this.data.attendance[d]) this.data.attendance[d]={}; this.data.attendance[d][p]=s; this.saveData(); this.renderAttendance(); this.renderDashboard(); }
     registerPayment(id) { const p = this.data.players.find(x => x.id == id); p.status='paid'; this.data.transactions.push({id:Date.now().toString(), date:new Date().toISOString().split('T')[0], description:`Pgto - ${p.nickname}`, amount:p.type==='mensalista'?70:25, type:'in'}); this.saveData(); }
     getSortedPlayers(d=null) { return [...this.data.players].filter(p => !p.isTemporary || d === p.validDate).sort((a,b) => (a.nickname||a.name).localeCompare(b.nickname||b.name)); }
     updateDate() { const d = new Date().toLocaleDateString('pt-BR', {weekday:'long', year:'numeric', month:'long', day:'numeric'}); document.getElementById('current-date').textContent = d.charAt(0).toUpperCase() + d.slice(1); }
