@@ -300,15 +300,15 @@ class FootballApp {
             
         recentIn.forEach(t => {
             recentList.innerHTML += `
-                <li class="activity-item" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <div class="act-info" style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
-                        <div class="act-avatar"><i class="ph ph-user"></i></div>
+                <li class="activity-item" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div class="act-info" style="display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0;">
+                        <div class="act-avatar" style="flex-shrink: 0;"><i class="ph ph-user"></i></div>
                         <div class="act-details" style="min-width: 0; flex: 1;">
-                            <p style="margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.description}</p>
-                            <span style="font-size: 11px; opacity: 0.6;">${this.formatDateBR(t.date)}</span>
+                            <p style="margin: 0; font-weight: 600; font-size: 13px; line-height: 1.2; color: var(--text-main); word-break: break-word;">${t.description}</p>
+                            <span style="font-size: 10px; opacity: 0.6; display: block; margin-top: 2px;">${this.formatDateBR(t.date)}</span>
                         </div>
                     </div>
-                    <div class="act-amount sensitive-amount" style="font-weight: 700; white-space: nowrap; margin-left: 10px;">+ R$ ${t.amount.toFixed(2).replace('.', ',')}</div>
+                    <div class="act-amount sensitive-amount" style="font-weight: 700; font-size: 14px; white-space: nowrap; color: var(--neon-green); margin-top: 2px;">+ R$ ${t.amount.toFixed(2).replace('.', ',')}</div>
                 </li>
             `;
         });
