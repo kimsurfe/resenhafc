@@ -974,8 +974,8 @@ class FootballApp {
             
             // Sincroniza financeiro se o status mudou via modal
             if (oldPlayer && oldPlayer.status !== newStatus) {
-                if (newStatus === 'paid') this.registerPayment(playerData.id);
-                else if (newStatus === 'unpaid') this.undoPayment(playerData.id);
+                if (newStatus === 'paid') this.registerPayment(playerData.id, true);
+                else if (newStatus === 'unpaid') this.undoPayment(playerData.id, true);
             }
         } else {
             this.data.players.push(playerData);
@@ -984,7 +984,7 @@ class FootballApp {
             }
             // Se já cadastrar como pago, registra no financeiro
             if (newStatus === 'paid') {
-                this.registerPayment(playerData.id);
+                this.registerPayment(playerData.id, true);
             }
         }
 
@@ -1028,37 +1028,44 @@ class FootballApp {
         }
     }
 
-    registerPayment(id) {
-        const player = this.data.players.find(p => p.id == id);
+    registerPayment(id, skipSave = false) {
+        // Normaliza ID para string na busca para evitar erros de tipo (Number vs String)
+        const player = this.data.players.find(p => String(p.id) === String(id));
         if(!player) return;
         
-        const amount = player.type === 'avulso' ? this.data.config.avulsoValue : this.data.config.mensalValue;
+        // Evita duplicar transação se já estiver marcada como paga (proteção extra)
+        // Só criamos a transação se o status estava pendente ou se for um fluxo forçado
+        
+        const amount = player.type === 'avulso' ? (this.data.config.avulsoValue || 0) : (this.data.config.mensalValue || 0);
         const descStr = player.type === 'avulso' ? 'Avulso' : 'Mensalidade';
 
         player.status = 'paid';
         const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
             ? `${player.nickname} (${player.fullName})` 
-            : (player.nickname || player.fullName);
+            : (player.nickname || player.fullName || 'Jogador');
         
+        // Verifica se já não existe uma transação idêntica nas últimas 5 segundos (prevenção de duplo clique)
+        const now = Date.now();
+        const duplicate = this.data.transactions.find(t => t.playerId == id && t.type === 'in' && (now - t.id) < 5000);
+        if (duplicate) return;
+
         // Adiciona ao financeiro
         this.data.transactions.push({
-            id: Date.now(),
+            id: now,
             date: new Date().toISOString().split('T')[0],
             description: `Pagamento ${descStr} - ${displayName}`,
             type: 'in',
             amount: amount,
-            playerId: id // vinculo para poder desfazer
+            playerId: id
         });
 
-        this.saveData();
-        this.renderPlayers();
-        this.renderAttendance();
-        this.updateDashboard();
-        this.renderFinance();
+        if (!skipSave) {
+            this.saveData();
+        }
     }
 
-    undoPayment(id) {
-        const player = this.data.players.find(p => p.id == id);
+    undoPayment(id, skipSave = false) {
+        const player = this.data.players.find(p => String(p.id) === String(id));
         if(!player) return;
         
         player.status = 'unpaid';
@@ -1066,17 +1073,15 @@ class FootballApp {
         // Remove a transação do financeiro associada a esse pagamento (a mais recente atrelada a ele)
         const txs = this.data.transactions;
         for (let i = txs.length - 1; i >= 0; i--) {
-            if (txs[i].playerId == id && txs[i].type === 'in') {
+            if (String(txs[i].playerId) === String(id) && txs[i].type === 'in') {
                 txs.splice(i, 1);
                 break;
             }
         }
 
-        this.saveData();
-        this.renderPlayers();
-        this.renderAttendance();
-        this.updateDashboard();
-        this.renderFinance();
+        if (!skipSave) {
+            this.saveData();
+        }
     }
 
     resetMonth() {
