@@ -33,7 +33,7 @@ class FootballApp {
     async init() {
         this.bindEvents();
         this.updateDate();
-        this.populateMatchDates();
+        this.initMatchDate();
         await this.loadDataFromCloud();
         this.checkAuth();
         this.renderAll();
@@ -160,15 +160,11 @@ class FootballApp {
         document.getElementById('current-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
     }
 
-    populateMatchDates() {
-        const select = document.getElementById('match-date-select');
-        if (!select) return;
+    initMatchDate() {
+        const dateInput = document.getElementById('match-date-select');
+        if (!dateInput) return;
 
-        select.innerHTML = '';
         const today = new Date();
-        const dates = [];
-
-        // Encontrar a primeira data (hoje se for quarta até as 21h, ou a próxima quarta)
         let current = new Date(today);
         const dayOfWeek = current.getDay();
         let daysUntilWed = (3 + 7 - dayOfWeek) % 7;
@@ -178,31 +174,16 @@ class FootballApp {
         }
         current.setDate(today.getDate() + daysUntilWed);
 
-        // Gerar 4 datas consecutivas (quartas-feiras)
-        for (let i = 0; i < 4; i++) {
-            const dateObj = new Date(current);
-            const y = dateObj.getFullYear();
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            const value = `${y}-${m}-${d}`;
+        const y = current.getFullYear();
+        const m = String(current.getMonth() + 1).padStart(2, '0');
+        const d = String(current.getDate()).padStart(2, '0');
+        const value = `${y}-${m}-${d}`;
+        
+        dateInput.value = value;
 
-            const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
-
-            const opt = document.createElement('option');
-            opt.value = value;
-            opt.textContent = `${capitalizedLabel} - 21:00`;
-            select.appendChild(opt);
-
-            // Guardar para o dashboard
-            if (i === 0) {
-                const dashNext = document.getElementById('dash-next-game');
-                if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
-            }
-
-            // Pula para a próxima semana
-            current.setDate(current.getDate() + 7);
-        }
+        // Atualizar texto do próximo jogo no dashboard
+        const dashNext = document.getElementById('dash-next-game');
+        if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
     }
 
     formatDateBR(dateString) {
@@ -317,6 +298,8 @@ class FootballApp {
         document.getElementById('dash-confirmed-count').textContent = totalPresentCount;
         document.getElementById('dash-pending-count').textContent = doubtCount;
         document.getElementById('dash-absent-count').textContent = absentCount;
+
+        this.renderRanking();
 
         const recentList = document.getElementById('dash-recent-payments');
         recentList.innerHTML = '';
@@ -597,7 +580,7 @@ class FootballApp {
     copyAttendanceToWhatsApp() {
         const dateSelect = document.getElementById('match-date-select');
         const dateValue = dateSelect.value;
-        const dateText = dateSelect.options[dateSelect.selectedIndex].text;
+        const dateText = this.getSelectedMatchDateText();
         
         let present = [];
         let absent = [];
@@ -679,7 +662,7 @@ class FootballApp {
     copyDoubtListToWhatsApp() {
         const dateSelect = document.getElementById('match-date-select');
         const dateValue = dateSelect ? dateSelect.value : new Date().toISOString().split('T')[0];
-        const dateText = dateSelect ? dateSelect.options[dateSelect.selectedIndex].text : '';
+        const dateText = this.getSelectedMatchDateText();
         
         let doubt = [];
 
@@ -1319,7 +1302,7 @@ class FootballApp {
         }
 
         const dateSelect = document.getElementById('match-date-select');
-        const dateText = dateSelect ? dateSelect.options[dateSelect.selectedIndex].text : '';
+        const dateText = this.getSelectedMatchDateText();
         
         let text = `⚽ *SORTEIO DE TIMES - RESENHA F.C* ⚽\n📅 ${dateText}\n\n`;
         
@@ -1342,6 +1325,73 @@ class FootballApp {
         navigator.clipboard.writeText(text).then(() => {
             alert('Times copiados!');
         });
+    }
+
+    renderRanking() {
+        const rankingContainer = document.getElementById('dash-ranking-list');
+        if (!rankingContainer) return;
+
+        const scores = {};
+        
+        // 1. Contabilizar presenças de todo o histórico
+        Object.keys(this.data.attendance).forEach(date => {
+            const dayData = this.data.attendance[date];
+            Object.keys(dayData).forEach(playerId => {
+                const status = dayData[playerId];
+                if (status === true || status === 'present') {
+                    scores[playerId] = (scores[playerId] || 0) + 1;
+                }
+            });
+        });
+
+        // 2. Associar nomes aos IDs e ordenar (Critério: Pontos DESC, Nome ASC)
+        const ranking = this.data.players
+            .map(p => ({
+                name: p.nickname || p.name,
+                fullName: p.fullName,
+                score: scores[p.id] || 0
+            }))
+            .filter(item => item.score > 0)
+            .sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.name.localeCompare(b.name);
+            });
+
+        // 3. Renderizar
+        rankingContainer.innerHTML = ranking.length ? ranking.map((item, index) => {
+            let rankLabel = `${index + 1}º`;
+            let color = 'var(--text-muted)';
+            
+            if (index === 0) { rankLabel = 'TOP 1'; color = 'var(--neon-orange)'; }
+            else if (index === 1) { rankLabel = 'TOP 2'; color = 'var(--neon-blue)'; }
+            else if (index === 2) { rankLabel = 'TOP 3'; color = 'var(--neon-green)'; }
+
+            return `
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="font-weight: 800; color: ${color}; font-size: 11px; letter-spacing: 0.5px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; min-width: 48px; text-align: center;">${rankLabel}</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">${item.name}</div>
+                        <div style="font-size: 10px; color: var(--text-muted);">${item.fullName || ''}</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px; color: ${color}; font-weight: 800;">
+                    ${item.score} <span style="font-size: 12px; opacity: 0.6; font-weight: 400;">PTS</span>
+                </div>
+            </div>
+            `;
+        }).join('') : '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 20px;">Nenhuma presença confirmada no histórico.</p>';
+    }
+
+    getSelectedMatchDateText() {
+        const dateInput = document.getElementById('match-date-select');
+        if (!dateInput || !dateInput.value) return '';
+        
+        const [year, month, day] = dateInput.value.split('-');
+        const dateObj = new Date(year, parseInt(month) - 1, day);
+        
+        const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+        return label.charAt(0).toUpperCase() + label.slice(1) + " - 21:00";
     }
 }
 
