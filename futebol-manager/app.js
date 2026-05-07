@@ -1172,7 +1172,7 @@ class FootballApp {
 
         if (document.getElementById('sorteio-count')) {
             const selectedCount = confirmed.filter(p => this.drawSelections.has(String(p.id))).length;
-            document.getElementById('sorteio-count').innerHTML = `<span style="color: var(--neon-green)">${selectedCount}</span>/${confirmed.length}`;
+            document.getElementById('sorteio-count').innerHTML = `<span style="color: var(--neon-green); font-weight: bold;">${selectedCount}</span> de ${confirmed.length}`;
         }
 
         pool.innerHTML = confirmed.map(p => {
@@ -1199,6 +1199,22 @@ class FootballApp {
             this.drawSelections.delete(pid);
         } else {
             this.drawSelections.add(pid);
+        }
+        this.updateSorteioPool();
+    }
+
+    selectAllForDraw(shouldSelectAll = true) {
+        const dateSelect = document.getElementById('match-date-select');
+        const date = dateSelect ? dateSelect.value : new Date().toISOString().split('T')[0];
+        
+        if (!shouldSelectAll) {
+            this.drawSelections.clear();
+        } else {
+            this.getSortedPlayers(date).forEach(p => {
+                if (this.getAttendanceStatus(date, p.id) === 'present') {
+                    this.drawSelections.add(String(p.id));
+                }
+            });
         }
         this.updateSorteioPool();
     }
