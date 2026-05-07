@@ -300,15 +300,15 @@ class FootballApp {
             
         recentIn.forEach(t => {
             recentList.innerHTML += `
-                <li class="activity-item">
-                    <div class="act-info">
+                <li class="activity-item" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div class="act-info" style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
                         <div class="act-avatar"><i class="ph ph-user"></i></div>
-                        <div class="act-details">
-                            <p>${t.description}</p>
-                            <span>${this.formatDateBR(t.date)}</span>
+                        <div class="act-details" style="min-width: 0; flex: 1;">
+                            <p style="margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.description}</p>
+                            <span style="font-size: 11px; opacity: 0.6;">${this.formatDateBR(t.date)}</span>
                         </div>
                     </div>
-                    <div class="act-amount sensitive-amount">+ R$ ${t.amount.toFixed(2).replace('.', ',')}</div>
+                    <div class="act-amount sensitive-amount" style="font-weight: 700; white-space: nowrap; margin-left: 10px;">+ R$ ${t.amount.toFixed(2).replace('.', ',')}</div>
                 </li>
             `;
         });
