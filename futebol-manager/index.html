@@ -1089,6 +1089,7 @@ body.hide-finances .financial-section {
 }
 @media (max-width: 991px) {
     .desktop-only-flex { display: none !important; }
+    .mobile-only-flex { display: flex !important; }
 }
 
 
@@ -1162,7 +1163,7 @@ body.hide-finances .financial-section {
             <header class="topbar">
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <!-- Logo no Topbar: Só aparece no Mobile porque o Desktop já tem na Sidebar -->
-                    <div onclick="document.getElementById('login-modal').classList.add('active')" class="logo-trigger mobile-only-flex" style="align-items: center; gap: 10px; cursor: pointer;">
+                    <div onclick="document.getElementById('login-modal').classList.add('active')" class="logo-trigger mobile-only-flex" style="align-items: center; gap: 10px; cursor: pointer; flex-direction: row; white-space: nowrap;">
                         <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
                         <span style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
