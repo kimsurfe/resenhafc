@@ -33,7 +33,7 @@ class FootballApp {
     async init() {
         this.bindEvents();
         this.updateDate();
-        this.populateMatchDates();
+        this.initMatchDate();
         await this.loadDataFromCloud();
         this.checkAuth();
         this.renderAll();
@@ -160,15 +160,11 @@ class FootballApp {
         document.getElementById('current-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
     }
 
-    populateMatchDates() {
-        const select = document.getElementById('match-date-select');
-        if (!select) return;
+    initMatchDate() {
+        const dateInput = document.getElementById('match-date-select');
+        if (!dateInput) return;
 
-        select.innerHTML = '';
         const today = new Date();
-        const dates = [];
-
-        // Encontrar a primeira data (hoje se for quarta até as 21h, ou a próxima quarta)
         let current = new Date(today);
         const dayOfWeek = current.getDay();
         let daysUntilWed = (3 + 7 - dayOfWeek) % 7;
@@ -178,31 +174,16 @@ class FootballApp {
         }
         current.setDate(today.getDate() + daysUntilWed);
 
-        // Gerar 4 datas consecutivas (quartas-feiras)
-        for (let i = 0; i < 4; i++) {
-            const dateObj = new Date(current);
-            const y = dateObj.getFullYear();
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            const value = `${y}-${m}-${d}`;
+        const y = current.getFullYear();
+        const m = String(current.getMonth() + 1).padStart(2, '0');
+        const d = String(current.getDate()).padStart(2, '0');
+        const value = `${y}-${m}-${d}`;
+        
+        dateInput.value = value;
 
-            const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
-
-            const opt = document.createElement('option');
-            opt.value = value;
-            opt.textContent = `${capitalizedLabel} - 21:00`;
-            select.appendChild(opt);
-
-            // Guardar para o dashboard
-            if (i === 0) {
-                const dashNext = document.getElementById('dash-next-game');
-                if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
-            }
-
-            // Pula para a próxima semana
-            current.setDate(current.getDate() + 7);
-        }
+        // Atualizar texto do próximo jogo no dashboard
+        const dashNext = document.getElementById('dash-next-game');
+        if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
     }
 
     formatDateBR(dateString) {
