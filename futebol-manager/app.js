@@ -25,6 +25,7 @@ class FootballApp {
     constructor() {
         this.data = DEFAULT_DATA;
         this.financesHidden = false;
+        this.drawSelections = new Set();
         this.docId = 'mainData'; // Documento único no Firestore
         this.init();
     }
@@ -189,7 +190,8 @@ class FootballApp {
 
     getAttendanceStatus(date, playerId) {
         if (!this.data.attendance[date]) return 'doubt';
-        const val = this.data.attendance[date][playerId];
+        // Garantir que o ID seja tratado como string para buscar no objeto de presenca
+        const val = this.data.attendance[date][String(playerId)];
         if (val === true || val === 'present') return 'present';
         if (val === 'absent') return 'absent';
         return 'doubt';
@@ -1141,17 +1143,37 @@ class FootballApp {
             return;
         }
 
-        if (document.getElementById('sorteio-count')) document.getElementById('sorteio-count').textContent = confirmed.length;
+        if (document.getElementById('sorteio-count')) {
+            const selectedCount = confirmed.filter(p => this.drawSelections.has(String(p.id))).length;
+            document.getElementById('sorteio-count').innerHTML = `<span style="color: var(--neon-green)">${selectedCount}</span>/${confirmed.length}`;
+        }
 
         pool.innerHTML = confirmed.map(p => {
+            const pid = String(p.id);
             const isGoleiro = (p.position || '').toLowerCase().trim() === 'goleiro';
+            const isSelected = this.drawSelections.has(pid);
             return `
-                <div class="glass-card" style="padding: 8px; font-size: 12px; display: flex; align-items: center; gap: 8px;">
-                    <i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-user'}" style="color: ${isGoleiro ? 'var(--neon-blue)' : 'var(--neon-green)'}"></i>
-                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.nickname || p.name}</span>
+                <div class="glass-card draw-player-card ${isSelected ? 'selected' : ''}" 
+                     onclick="app.toggleDrawSelection('${pid}')"
+                     style="padding: 10px; font-size: 13px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; border: 1px solid ${isSelected ? 'var(--neon-green)' : 'rgba(255,255,255,0.05)'}; background: ${isSelected ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.02)'};">
+                    <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                        <i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-user'}" style="color: ${isGoleiro ? 'var(--neon-blue)' : (isSelected ? 'var(--neon-green)' : 'var(--text-muted)')}"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ${isSelected ? 'font-weight: 700; color: #fff;' : ''}">${p.nickname || p.name}</span>
+                    </div>
+                    ${isSelected ? '<i class="ph ph-check-circle" style="color: var(--neon-green); font-size: 18px;"></i>' : '<i class="ph ph-circle" style="color: rgba(255,255,255,0.1); font-size: 18px;"></i>'}
                 </div>
             `;
         }).join('');
+    }
+
+    toggleDrawSelection(playerId) {
+        const pid = String(playerId);
+        if (this.drawSelections.has(pid)) {
+            this.drawSelections.delete(pid);
+        } else {
+            this.drawSelections.add(pid);
+        }
+        this.updateSorteioPool();
     }
 
     drawTeams() {
@@ -1161,13 +1183,20 @@ class FootballApp {
         
         let confirmed = [];
         this.getSortedPlayers(date).forEach(p => {
-            if (this.getAttendanceStatus(date, p.id) === 'present') {
+            // Agora só entram no sorteio os que estão PRESENTES e SELECIONADOS (V)
+            const pid = String(p.id);
+            if (this.getAttendanceStatus(date, pid) === 'present' && this.drawSelections.has(pid)) {
                 confirmed.push(p);
             }
         });
 
+        if (confirmed.length === 0) {
+            alert('Selecione os jogadores (clique nos nomes) que estão na quadra para realizar o sorteio.');
+            return;
+        }
+
         if (confirmed.length < numTeams) {
-            alert(`Você precisa de pelo menos ${numTeams} jogadores para sortear ${numTeams} times.`);
+            alert(`Você selecionou apenas ${confirmed.length} jogadores. Precisa de pelo menos ${numTeams} para sortear ${numTeams} times.`);
             return;
         }
 
