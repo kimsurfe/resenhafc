@@ -25,6 +25,37 @@
             color: #1e293b;
             line-height: 1.6;
             padding: 40px;
+            padding-top: 80px; /* Espaço para o botão fixo */
+        }
+
+        /* Botão Voltar Fixo */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: #0f172a;
+            color: #10b981;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #10b981;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media print {
+            .back-btn { display: none; }
+            body { padding-top: 0; }
         }
 
         .container {
@@ -126,6 +157,9 @@
     </style>
 </head>
 <body>
+    <a href="javascript:history.back()" class="back-btn">
+        <span style="font-size: 18px;">←</span> Voltar
+    </a>
     <div class="container">
         <div class="header">
             <img src="../resenha_logotipo.jpg" alt="Resenha F.C." class="logo">
