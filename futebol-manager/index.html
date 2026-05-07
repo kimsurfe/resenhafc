@@ -1229,6 +1229,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
 
+                    <div class="widget glass-card" style="margin-bottom: 24px;">
+                        <h2 style="display: flex; align-items: center; gap: 8px;">
+                            <i class="ph ph-crown" style="color: var(--neon-orange)"></i> Ranking de presença
+                        </h2>
+                        <div id="dash-ranking-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
                     <div class="dashboard-widgets" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
                         <div class="widget glass-card">
                             <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-confirmed-list', this)">
