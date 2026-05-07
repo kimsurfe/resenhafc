@@ -953,6 +953,9 @@ class FootballApp {
         const type = document.getElementById('player-type').value;
         const isGuest = type === 'avulso';
         
+        const oldPlayer = this.editingPlayerId ? this.data.players.find(p => p.id == this.editingPlayerId) : null;
+        const newStatus = document.getElementById('player-status').value;
+
         const playerData = {
             id: this.editingPlayerId || Date.now(),
             fullName: document.getElementById('player-fullname').value,
@@ -960,7 +963,7 @@ class FootballApp {
             phone: document.getElementById('player-phone').value,
             position: document.getElementById('player-position').value,
             type: type,
-            status: document.getElementById('player-status').value,
+            status: newStatus,
             isTemporary: isGuest,
             validDate: isGuest ? document.getElementById('guest-match-date').value : null
         };
@@ -968,10 +971,20 @@ class FootballApp {
         if (this.editingPlayerId) {
             const index = this.data.players.findIndex(p => p.id == this.editingPlayerId);
             this.data.players[index] = playerData;
+            
+            // Sincroniza financeiro se o status mudou via modal
+            if (oldPlayer && oldPlayer.status !== newStatus) {
+                if (newStatus === 'paid') this.registerPayment(playerData.id);
+                else if (newStatus === 'unpaid') this.undoPayment(playerData.id);
+            }
         } else {
             this.data.players.push(playerData);
             if (isGuest && playerData.validDate) {
                 this.setAttendance(playerData.validDate, playerData.id, 'present');
+            }
+            // Se já cadastrar como pago, registra no financeiro
+            if (newStatus === 'paid') {
+                this.registerPayment(playerData.id);
             }
         }
 
