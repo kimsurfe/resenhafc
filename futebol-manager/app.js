@@ -305,7 +305,7 @@ class FootballApp {
         recentList.innerHTML = '';
         
         const recentIn = [...this.data.transactions]
-            .sort((a,b) => new Date(b.date) - new Date(a.date))
+            .sort((a,b) => b.id - a.id)
             .filter(t => t.type === 'in')
             .slice(0, 4);
             
@@ -717,7 +717,7 @@ class FootballApp {
         
         let balance = 0;
         
-        const sortedTransactions = [...this.data.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+        const sortedTransactions = [...this.data.transactions].sort((a,b) => b.id - a.id);
 
         sortedTransactions.forEach(t => {
             if(t.type === 'in') balance += t.amount;
