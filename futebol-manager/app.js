@@ -33,6 +33,7 @@ class FootballApp {
     async init() {
         this.bindEvents();
         this.updateDate();
+        this.populateMatchDates();
         await this.loadDataFromCloud();
         this.checkAuth();
         this.renderAll();
@@ -157,25 +158,50 @@ class FootballApp {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const dateStr = new Date().toLocaleDateString('pt-BR', options);
         document.getElementById('current-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+    }
 
-        // Calcula a próxima quarta-feira
+    populateMatchDates() {
+        const select = document.getElementById('match-date-select');
+        if (!select) return;
+
+        select.innerHTML = '';
         const today = new Date();
-        const dayOfWeek = today.getDay(); // 0 = Dom, 3 = Qua
-        const daysUntilWed = (3 + 7 - dayOfWeek) % 7;
-        let nextWed = new Date(today);
-        
-        // Se for quarta-feira e já passou das 21h, pula pra próxima semana
-        if (daysUntilWed === 0 && today.getHours() >= 21) {
-            nextWed.setDate(today.getDate() + 7);
-        } else {
-            nextWed.setDate(today.getDate() + daysUntilWed);
-        }
+        const dates = [];
 
-        const day = String(nextWed.getDate()).padStart(2, '0');
-        const month = String(nextWed.getMonth() + 1).padStart(2, '0');
-        const nextGameEl = document.getElementById('dash-next-game');
-        if(nextGameEl) {
-            nextGameEl.textContent = `Quarta, ${day}/${month} - 21:00`;
+        // Encontrar a primeira data (hoje se for quarta até as 21h, ou a próxima quarta)
+        let current = new Date(today);
+        const dayOfWeek = current.getDay();
+        let daysUntilWed = (3 + 7 - dayOfWeek) % 7;
+
+        if (daysUntilWed === 0 && today.getHours() >= 21) {
+            daysUntilWed = 7;
+        }
+        current.setDate(today.getDate() + daysUntilWed);
+
+        // Gerar 4 datas consecutivas (quartas-feiras)
+        for (let i = 0; i < 4; i++) {
+            const dateObj = new Date(current);
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            const value = `${y}-${m}-${d}`;
+
+            const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+            const capitalizedLabel = label.charAt(0).toUpperCase() + label.slice(1);
+
+            const opt = document.createElement('option');
+            opt.value = value;
+            opt.textContent = `${capitalizedLabel} - 21:00`;
+            select.appendChild(opt);
+
+            // Guardar para o dashboard
+            if (i === 0) {
+                const dashNext = document.getElementById('dash-next-game');
+                if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
+            }
+
+            // Pula para a próxima semana
+            current.setDate(current.getDate() + 7);
         }
     }
 
