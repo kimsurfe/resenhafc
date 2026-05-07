@@ -1397,17 +1397,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <button class="btn btn-success" onclick="app.copyTeamsToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Times</button>
                         </div>
                     </div>
-
-                    </div>
-                    
                     <!-- Selecionar Todos / Limpar -->
-                    <div style="margin-bottom: 16px; display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Participantes: <span id="sorteio-count">0 de 0</span></span>
+                    <div style="margin-bottom: 24px; display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: -8px;">
+                        <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Participantes: <span id="sorteio-count" style="color: var(--text-main); font-weight: 700;">0 de 0</span></span>
                         <div style="margin-left: auto; display: flex; gap: 8px;">
-                            <button class="btn" style="padding: 6px 12px; font-size: 12px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green);" onclick="app.selectAllForDraw(true)">
+                            <button class="btn" style="padding: 6px 14px; font-size: 12px; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s;" 
+                                    onmouseover="this.style.borderColor='var(--neon-green)'; this.style.color='var(--neon-green)'" 
+                                    onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='var(--text-main)'"
+                                    onclick="app.selectAllForDraw(true)">
                                 <i class="ph ph-check-square"></i> Selecionar Todos
                             </button>
-                            <button class="btn" style="padding: 6px 12px; font-size: 12px; background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1);" onclick="app.selectAllForDraw(false)">
+                            <button class="btn" style="padding: 6px 14px; font-size: 12px; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s;" 
+                                    onmouseover="this.style.borderColor='var(--neon-red)'; this.style.color='var(--neon-red)'" 
+                                    onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='var(--text-main)'"
+                                    onclick="app.selectAllForDraw(false)">
                                 <i class="ph ph-square"></i> Desmarcar Todos
                             </button>
                         </div>
