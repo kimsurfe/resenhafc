@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia do Usuário - Resenha F.C.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --card: #0f172a;
+            --neon-green: #10b981;
+            --neon-blue: #3b82f6;
+            --neon-orange: #f59e0b;
+            --neon-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #fff; /* Fundo branco para o PDF ficar limpo ao imprimir */
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--neon-green);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -1px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .section-title i { font-style: normal; }
+
+        p { margin-bottom: 10px; font-size: 16px; color: #475569; }
+
+        .steps {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .steps li {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--neon-green);
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-orange { background: #ffedd5; color: #9a3412; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+
+        .tip {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .tip strong { color: var(--neon-blue); }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media print {
+            body { padding: 0; }
+            .container { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="../resenha_logotipo.jpg" alt="Resenha F.C." class="logo">
+            <h1>Manual do Jogador</h1>
+            <p style="color: var(--neon-green); font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Resenha F.C.</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📅 1. Como marcar presença?</div>
+            <p>Clique no seu nome e escolha um dos três status abaixo:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="manual_1.png" style="width: 80%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"><b>Foto 1:</b> Tela de Presença e botões de status.</p>
+            </div>
+            <ul class="steps">
+                <li style="border-left: 4px solid #10b981; background: #f0fdf4;">✅ <strong style="color: #10b981;">Verde</strong>: Confirmado (Vou!)</li>
+                <li style="border-left: 4px solid #f59e0b; background: #fffbeb;">❓ <strong style="color: #f59e0b;">Laranja</strong>: Dúvida (Ainda não sei)</li>
+                <li style="border-left: 4px solid #ef4444; background: #fef2f2;">❌ <strong style="color: #ef4444;">Vermelho</strong>: Ausente (Não vou)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <div class="section-title">➕ 2. Adicionar jogador avulso</div>
+            <p>Para trazer convidados, use o botão verde de "Add Avulso".</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="manual_2.png" style="width: 80%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"><b>Foto 2:</b> Clique no botão verde para cadastrar o convidado.</p>
+            </div>
+            <ul class="steps">
+                <li><strong style="color: var(--neon-red);">Atenção:</strong> É obrigatório preencher o <b>Nome</b> e a <b>Posição</b> do avulso para que o sorteio funcione corretamente.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📲 3. Copiar listas (WhatsApp)</div>
+            <p>Use os botões de atalho para enviar as informações no grupo:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="manual_3.png" style="width: 80%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"><b>Foto 3:</b> Botões de Copiar Lista e Lista de Dúvidas.</p>
+            </div>
+            <ul class="steps">
+                <li><b>Dúvidas</b>: Copia apenas quem ainda não marcou presença.</li>
+                <li><b>Copiar Lista</b>: Copia a lista completa (Confirmados e Ausentes).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🎲 4. Sortear times</div>
+            <p>A hora mais esperada! Sorteio equilibrado por posição:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="manual_4.png" style="width: 80%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"><b>Foto 4:</b> Tela de Sorteio com Check-in de chegada.</p>
+            </div>
+            <ul class="steps">
+                <li>Clique no nome de quem **chegou na quadra** (ficará com o V verde).</li>
+                <li>Clique em <b>"Sortear Agora"</b>.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📱 Dica: Adicionar à Tela de Início</div>
+            <p>Abra o Resenha como um aplicativo real para acesso rápido:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="manual_5.png" style="width: 80%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #e2e8f0;">
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"><b>Foto 5:</b> O Resenha instalado na sua tela de início.</p>
+            </div>
+            <p style="text-align: center; font-size: 14px; font-weight: 600;">O ícone oficial aparecerá junto com seus outros apps!</p>
+        </div>
+
+        <div class="footer">
+            Resenha F.C. - Organização e Gestão Profissional &copy; 2026
+        </div>
+    </div>
+
+    <script>
+        // Opcional: auto-disparar impressão se o usuário desejar
+        // window.print();
+    </script>
+</body>
+</html>
