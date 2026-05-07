@@ -9,6 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <!-- Favicons & Mobile App Icons -->
+    <link rel="icon" type="image/jpg" href="resenha_logotipo.jpg">
+    <link rel="apple-touch-icon" href="resenha_logotipo.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RESENHA F.C">
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -200,7 +206,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 32px 40px;
+    padding: 24px 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .topbar h1 {
@@ -216,8 +223,25 @@ body {
 }
 
 .date-display {
-    color: var(--text-muted);
-    font-weight: 500;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    color: var(--neon-green);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.date-display::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--neon-green);
 }
 
 .btn {
@@ -726,55 +750,9 @@ body {
     margin-top: 32px;
 }
 
-/* Camada de Segurança Administrativa */
-.admin-only {
+/* Privacy Mode */
+.hide-finances .financial-section {
     display: none !important;
-}
-
-body.is-admin .admin-only {
-    display: flex !important;
-}
-
-body.is-admin .financial-section {
-    display: block !important;
-}
-
-/* Ocultar valores (Modo Privacidade Total) */
-body.hide-finances .financial-section {
-    display: none !important;
-}
-
-body.hide-finances .sensitive-amount,
-body.hide-finances .act-amount {
-    display: none !important;
-}
-
-#login-modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.98);
-    backdrop-filter: blur(10px);
-    z-index: 9999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
-#login-modal.active {
-    display: flex;
-}
-
-.login-card {
-    width: 90%;
-    max-width: 380px;
-    padding: 32px;
-    text-align: center;
-}
-
-.login-card img {
-    width: 80px; height: 80px; border-radius: 50%;
-    border: 3px solid var(--neon-green);
-    margin-bottom: 20px;
 }
 
 /* --- MOBILE RESPONSIVENESS --- */
@@ -795,13 +773,19 @@ body.hide-finances .act-amount {
     }
 
     .topbar {
-        padding: 20px;
+        padding: 16px 20px;
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: 16px;
     }
 
     .topbar h1 { font-size: 24px; }
+
+    .date-display {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
     
     .content-wrapper {
         padding: 0 16px 20px;
@@ -825,7 +809,112 @@ body.hide-finances .act-amount {
     }
 
     .stat-icon { width: 44px; height: 44px; font-size: 20px; }
-    .stat-value { font-size: 18px; }
+    .stat-value { font-size: 16px; }
+    #dash-next-game { font-size: 14px !important; }
+
+    /* Harmonização do Header Mobile */
+    .topbar {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        gap: 12px;
+    }
+    .topbar h1 {
+        font-size: 20px !important;
+        letter-spacing: -0.5px;
+    }
+    .logo-trigger img {
+        width: 38px !important;
+        height: 38px !important;
+    }
+    .logo-trigger span {
+        font-size: 19px !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Título da Área na Direita */
+    .topbar > div:first-child {
+        width: 100%;
+        justify-content: space-between;
+    }
+    #page-title {
+        margin-left: auto !important;
+        text-align: right;
+        font-size: 24px !important;
+    }
+
+    /* Financeiro: Saldo e Botões Uniformes */
+    .balance-amount {
+        font-size: 26px !important;
+    }
+    .finance-header {
+        flex-direction: row !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        margin-bottom: 20px;
+    }
+    .balance-card {
+        flex: 1.2;
+        width: auto !important;
+        margin: 0 !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .finance-actions {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .finance-actions .btn {
+        flex: 1;
+        width: 100%;
+        padding: 0 8px !important;
+        font-size: 12px !important;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Configurações de Valores Financeiros */
+    .config-row {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+    .config-row > div {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    /* Ajustes na Lista de Atividades (Recent Payments) */
+    .activity-item {
+        padding: 10px 0;
+    }
+    .act-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    .act-details p {
+        font-size: 13px;
+        max-width: none !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        line-height: 1.3 !important;
+        display: block !important;
+    }
+    .act-details span {
+        font-size: 10px;
+    }
+    .act-amount {
+        font-size: 14px;
+    }
 
     /* Tabelas vira Cards no Mobile */
     .data-table thead { display: none; }
@@ -903,34 +992,23 @@ body.hide-finances .act-amount {
         margin-bottom: 20px;
     }
 
-    .action-btn {
-        font-size: 20px !important;
-        padding: 8px !important;
-    }
-
     .attendance-stats { 
         display: grid !important;
         grid-template-columns: 1fr 1fr;
         gap: 8px !important;
         width: 100%; 
-        justify-content: center !important;
-        justify-items: center !important;
     }
     
     .attendance-stats .badge, .attendance-stats .btn {
         width: 100%;
-        max-width: 140px;
         justify-content: center;
-        margin: 0 auto !important;
+        margin: 0 !important;
         padding: 8px 4px !important;
         font-size: 12px !important;
-        display: flex !important;
-        align-items: center !important;
     }
 
     .attendance-stats .btn-primary {
         grid-column: span 2;
-        max-width: none;
     }
 
     /* Cards de Presença Compactos */
@@ -978,13 +1056,76 @@ body.hide-finances .act-amount {
 /* Fallback para esconder bottom-nav no desktop */
 .bottom-nav { display: none; }
 
+/* ==============================================
+   CAMADA DE SEGURANÇA ADMINISTRATIVA
+   ============================================== */
+
+/* Esconde tudo que é admin-only por padrão */
+.admin-only { display: none !important; }
+
+/* Quando logado: mostra cada tipo com o display correto */
+body.is-admin .admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin div.admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin .stat-card.admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin .dashboard-widgets.admin-only:not(.financial-section) { display: grid !important; }
+body.is-admin button.admin-only:not(.financial-section) { display: inline-flex !important; }
+body.is-admin .nav-item.admin-only:not(.financial-section) { display: flex !important; }
+body.is-admin .nav-item-mobile.admin-only:not(.financial-section) { display: flex !important; }
+
+/* Regras para o Financeiro (obedecem ao Olhinho) */
+body.is-admin .financial-section.admin-only { display: flex !important; }
+body.is-admin div.financial-section.admin-only { display: flex !important; }
+body.is-admin .dashboard-widgets.financial-section.admin-only { display: grid !important; }
+
+/* Ocultar financeiro ao clicar no olhinho - Especificidade Máxima */
+body.is-admin.hide-finances .financial-section.admin-only,
+body.hide-finances .financial-section { 
+    display: none !important; 
+}
+
+/* Utilitários de visibilidade */
+@media (min-width: 992px) {
+    .mobile-only-flex { display: none !important; }
+}
+@media (max-width: 991px) {
+    .desktop-only-flex { display: none !important; }
+    .mobile-only-flex { display: flex !important; }
+}
+
+
+/* Botões de Presença Uniformes */
+.att-stat-btn {
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+
+/* Modal de Login */
+#login-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(2, 6, 23, 0.97); backdrop-filter: blur(12px);
+    z-index: 99999; display: none; align-items: center; justify-content: center;
+}
+#login-modal.active { display: flex; }
+.login-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    padding: 36px 32px; border-radius: 20px; width: 90%; max-width: 360px;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
 </style>
 </head>
 <body>
     <div class="app-container">
         <aside class="sidebar glass">
-            <div class="logo">
-                <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
+            <div class="logo" onclick="document.getElementById('login-modal').classList.add('active')" style="cursor:pointer" title="Acesso Admin">
+                <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
                 <span>RESENHA F.C</span>
             </div>
             <nav class="nav-menu">
@@ -1000,8 +1141,11 @@ body.hide-finances .act-amount {
                 <button class="nav-item" data-target="sorteio">
                     <i class="ph ph-users-three"></i> Sorteio de Times
                 </button>
-                <button class="nav-item admin-only financial-section" data-target="financeiro">
+                <button class="nav-item admin-only" data-target="financeiro">
                     <i class="ph ph-currency-dollar"></i> Financeiro
+                </button>
+                <button class="nav-item admin-only" onclick="app.logout()" style="color: var(--neon-red); margin-top: auto;">
+                    <i class="ph ph-sign-out"></i> Sair da Conta
                 </button>
             </nav>
             <div class="sidebar-footer">
@@ -1017,25 +1161,29 @@ body.hide-finances .act-amount {
 
         <main class="main-content">
             <header class="topbar">
-                <div style="display: flex; flex-direction: column; gap: 4px; cursor: pointer;" onclick="document.getElementById('login-modal').classList.add('active')">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
-                        <span style="font-weight: 800; font-size: 14px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <!-- Logo no Topbar: Só aparece no Mobile porque o Desktop já tem na Sidebar -->
+                    <div onclick="document.getElementById('login-modal').classList.add('active')" class="logo-trigger mobile-only-flex" style="align-items: center; gap: 10px; cursor: pointer; flex-direction: row; white-space: nowrap;">
+                        <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
+                        <span style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
-                    <h1 id="page-title" style="margin: 0; font-size: 24px; font-weight: 700;">Dashboard</h1>
+                    <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Dashboard</h1>
                 </div>
                 <div class="actions">
-                    <button class="action-btn admin-only" onclick="localStorage.removeItem('resenha_admin'); location.reload();" style="font-size: 20px; color: var(--neon-red); margin-right: 8px;" title="Sair (Logout)"><i class="ph ph-sign-out"></i></button>
-                    <button class="action-btn" onclick="app.shareDashboard()" style="font-size: 20px; color: var(--neon-blue);" title="Gerar Foto do Dashboard"><i class="ph ph-camera"></i></button>
-                    <button class="action-btn admin-only" onclick="app.toggleFinances()" id="btn-toggle-finances" style="font-size: 20px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
                     <div class="date-display" id="current-date"></div>
+                    <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.1); margin: 0 8px;" class="desktop-only-flex"></div>
+                    <a href="manual/manual_resenha.html" target="_blank" class="action-btn" style="font-size: 22px; color: var(--neon-orange); text-decoration: none; display: flex; align-items: center; justify-content: center;" title="Abrir Manual do Usuário">
+                        <i class="ph ph-question"></i>
+                    </a>
+                    <button class="action-btn" onclick="app.shareDashboard()" style="font-size: 22px; color: var(--neon-blue);" title="Gerar Foto do Dashboard"><i class="ph ph-camera"></i></button>
+                    <button class="action-btn admin-only" id="btn-toggle-finances" onclick="app.toggleFinances()" style="font-size: 22px;" title="Ocultar/Mostrar Valores"><i class="ph ph-eye"></i></button>
                 </div>
             </header>
 
             <div class="content-wrapper">
                 <!-- Dashboard View -->
                 <section id="dashboard" class="view-section active">
-                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;">
+                    <div class="stats-grid">
                         <div class="stat-card glass-card">
                             <div class="stat-icon neon-green"><i class="ph ph-users"></i></div>
                             <div class="stat-info">
@@ -1050,7 +1198,7 @@ body.hide-finances .act-amount {
                                 <p class="stat-value" id="dash-pagantes">0</p>
                             </div>
                         </div>
-                        <div class="stat-card glass-card admin-only financial-section">
+                        <div class="stat-card glass-card financial-section admin-only">
                             <div class="stat-icon neon-purple"><i class="ph ph-trend-up"></i></div>
                             <div class="stat-info">
                                 <h3>Em Caixa</h3>
@@ -1061,14 +1209,14 @@ body.hide-finances .act-amount {
                             <div class="stat-icon neon-orange"><i class="ph ph-calendar-check"></i></div>
                             <div class="stat-info">
                                 <h3>Próximo Jogo</h3>
-                                <p class="stat-value" id="dash-next-game" style="font-size: 16px; font-weight: 600;">Carregando...</p>
+                                <p class="stat-value" id="dash-next-game" style="font-size: 20px;">Quarta, 21:00</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="dashboard-widgets admin-only financial-section" style="margin-bottom: 24px;">
-                        <div class="widget glass-card admin-only">
-                            <h2 style="margin-bottom: 16px;">Últimos Pagamentos</h2>
+                    <div class="dashboard-widgets financial-section admin-only" style="margin-bottom: 24px;">
+                        <div class="widget glass-card">
+                            <h2>Últimos Pagamentos</h2>
                             <ul class="activity-list" id="dash-recent-payments">
                                 <!-- Populated by JS -->
                             </ul>
@@ -1119,20 +1267,20 @@ body.hide-finances .act-amount {
                             <i class="ph ph-magnifying-glass"></i>
                             <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
                         </div>
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-danger admin-only" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
+                        <div style="display: flex; gap: 12px;" class="admin-only">
+                            <button class="btn btn-danger" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
                             <button class="btn btn-primary" onclick="app.openPlayerModal()"><i class="ph ph-user-plus"></i> Adicionar Jogador</button>
                         </div>
                     </div>
                     <div class="table-container glass-card">
                         <table class="data-table">
                             <thead>
-                                <tr>
-                                    <th style="text-align: left; width: 50px;">#</th>
-                                    <th style="text-align: left;">Jogador</th>
-                                    <th style="text-align: left;">Posição</th>
-                                    <th style="text-align: left;">Status (Mês)</th>
-                                    <th style="text-align: right;">Ações</th>
+                            <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th>Jogador</th>
+                                    <th>Posição</th>
+                                    <th>Status (Mês)</th>
+                                    <th class="admin-only" style="text-align: right;">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="mensalistas-tbody">
@@ -1148,20 +1296,25 @@ body.hide-finances .act-amount {
                         <div class="date-selector glass-input">
                             <i class="ph ph-calendar"></i>
                             <select id="match-date-select">
-                                <option value="2026-05-06">Quarta, 06 Maio 2026 - 21:00</option>
-                                <option value="2026-05-13">Quarta, 13 Maio 2026 - 21:00</option>
-                                <option value="2026-05-20">Quarta, 20 Maio 2026 - 21:00</option>
-                                <option value="2026-05-27">Quarta, 27 Maio 2026 - 21:00</option>
+                                <!-- Populated dynamically by app.js -->
                             </select>
                         </div>
-                        <div class="attendance-stats" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                            <span class="badge badge-success"><i class="ph ph-check-circle"></i> <span id="presenca-count" style="margin-right: 4px;">0</span> Confirmados</span>
-                            <span class="badge badge-danger"><i class="ph ph-x-circle"></i> <span id="absent-count" style="margin-right: 4px;">0</span> Ausentes</span>
-                            <button class="btn btn-warning" onclick="app.copyDoubtListToWhatsApp()" style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
-                                <i class="ph ph-question"></i> <span id="doubt-count" style="margin-right: 4px;">0</span> Lista de Dúvidas
+                        <div class="attendance-stats" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.toggleDashList('dash-confirmed-list', this)">
+                                <i class="ph ph-check-circle"></i> <span id="presenca-count">0</span> Confirmados
                             </button>
-                            <button class="btn" style="padding: 6px 12px; font-size: 13px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);" onclick="app.copyAttendanceToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Lista</button>
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="app.promptTemporaryPlayer()"><i class="ph ph-user-plus"></i> Add Avulso</button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.toggleDashList('dash-absent-list', this)">
+                                <i class="ph ph-x-circle"></i> <span id="absent-count">0</span> Ausentes
+                            </button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyDoubtListToWhatsApp()">
+                                <i class="ph ph-question"></i> <span id="doubt-count">0</span> Dúvidas
+                            </button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyAttendanceToWhatsApp()">
+                                <i class="ph ph-whatsapp-logo"></i> Copiar Lista
+                            </button>
+                            <button class="att-stat-btn admin-only" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.promptTemporaryPlayer()">
+                                <i class="ph ph-user-plus"></i> Add Avulso
+                            </button>
                         </div>
                     </div>
                     <div class="pitch-container glass-card">
@@ -1186,7 +1339,7 @@ body.hide-finances .act-amount {
                         </div>
                     </div>
 
-                    <div class="glass-card" style="display: flex; gap: 24px; align-items: center; padding: 16px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="glass-card config-row" style="display: flex; gap: 24px; align-items: center; padding: 16px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05);">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <i class="ph ph-gear" style="color: var(--neon-blue); font-size: 20px;"></i>
                             <span style="font-weight: 600; font-size: 14px; color: var(--text-light);">Configurações de Valores:</span>
@@ -1204,11 +1357,10 @@ body.hide-finances .act-amount {
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="text-align: left; width: 40px;">#</th>
-                                    <th style="text-align: left;">Data</th>
-                                    <th style="text-align: left;">Descrição</th>
-                                    <th style="text-align: left;">Tipo</th>
-                                    <th style="text-align: left;">Valor</th>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
                                     <th style="text-align: right;">Ações</th>
                                 </tr>
                             </thead>
@@ -1229,7 +1381,7 @@ body.hide-finances .act-amount {
                         <div style="display: flex; gap: 12px;">
                             <div class="glass-input" style="width: 140px; padding: 4px 12px;">
                                 <label style="font-size: 10px; color: var(--text-muted); display: block;">Qtd. de Times</label>
-                                <input type="number" id="num-teams" value="4" min="2" max="10" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-weight: bold;">
+                                <input type="number" id="num-teams" value="2" min="2" max="10" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-weight: bold;">
                             </div>
                             <button class="btn btn-primary" onclick="app.drawTeams()"><i class="ph ph-magic-wand"></i> Sortear Agora</button>
                             <button class="btn btn-success" onclick="app.copyTeamsToWhatsApp()"><i class="ph ph-whatsapp-logo"></i> Copiar Times</button>
@@ -1270,9 +1422,13 @@ body.hide-finances .act-amount {
             <i class="ph ph-users-three"></i>
             <span>Sorteio</span>
         </button>
-        <button class="nav-item-mobile admin-only financial-section" data-target="financeiro">
+        <button class="nav-item-mobile admin-only" data-target="financeiro">
             <i class="ph ph-currency-dollar"></i>
             <span>Finanças</span>
+        </button>
+        <button class="nav-item-mobile admin-only" onclick="app.logout()" style="color: var(--neon-red);">
+            <i class="ph ph-sign-out"></i>
+            <span>Sair</span>
         </button>
     </nav>
 
@@ -1362,52 +1518,31 @@ body.hide-finances .act-amount {
         </div>
     </div>
 
-    <!-- Login Modal Isolado -->
+    <!-- Modal de Login Admin (Adicionado ao backup sem alterar o resto) -->
     <div id="login-modal">
-        <div class="modal-content glass-card login-card">
-            <img src="resenha_logotipo.jpg" alt="Logo">
-            <h2 style="margin-bottom: 8px;">Acesso Admin</h2>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Exclusivo para organizadores</p>
-            
+        <div class="login-card">
+            <div style="margin-bottom: 24px;">
+                <i class="ph ph-lock" style="font-size: 40px; color: var(--neon-green);"></i>
+                <h2 style="margin-top: 12px; font-size: 22px; color: var(--text-main);">Acesso Admin</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">RESENHA F.C</p>
+            </div>
             <form id="admin-login-form">
-                <input type="text" id="admin-user" placeholder="Usuário" class="glass-input-field" style="margin-bottom: 12px;" required>
-                <input type="password" id="admin-pass" placeholder="Senha" class="glass-input-field" style="margin-bottom: 12px;" required>
-                <div id="admin-login-error" style="color: var(--neon-red); font-size: 13px; margin-bottom: 12px; display: none;">Dados incorretos!</div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
-                <button type="button" class="btn" onclick="document.getElementById('login-modal').classList.remove('active')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-muted);">Cancelar</button>
+                <div style="margin-bottom: 12px;">
+                    <input type="text" id="admin-user" class="glass-input-field" placeholder="Usuário" autocomplete="username" required>
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <input type="password" id="admin-pass" class="glass-input-field" placeholder="Senha" autocomplete="current-password" required>
+                </div>
+                <p id="admin-login-error" style="color: var(--neon-red); font-size: 13px; margin-bottom: 16px; display: none;">Usuário ou senha incorretos.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn" style="flex:1; background:rgba(255,255,255,0.05); color:var(--text-muted);" onclick="document.getElementById('login-modal').classList.remove('active')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Entrar</button>
+                </div>
             </form>
         </div>
     </div>
 
     <script src="app.js"></script>
-    <script>
-        // Script de Segurança Isolado (Não mexe no app.js)
-        (function() {
-            const check = () => {
-                if (localStorage.getItem('resenha_admin') === 'true') {
-                    document.body.classList.add('is-admin');
-                } else {
-                    document.body.classList.remove('is-admin');
-                }
-            };
-
-            document.getElementById('admin-login-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const u = document.getElementById('admin-user').value;
-                const p = document.getElementById('admin-pass').value;
-                
-                if (u === 'kim' && p === '220688') {
-                    localStorage.setItem('resenha_admin', 'true');
-                    check();
-                    document.getElementById('login-modal').classList.remove('active');
-                } else {
-                    document.getElementById('admin-login-error').style.display = 'block';
-                }
-            });
-
-            check();
-        })();
-    </script>
 </body>
 </html>
 
