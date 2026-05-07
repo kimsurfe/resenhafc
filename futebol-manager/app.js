@@ -1182,12 +1182,12 @@ class FootballApp {
             return `
                 <div class="glass-card draw-player-card ${isSelected ? 'selected' : ''}" 
                      onclick="app.toggleDrawSelection('${pid}')"
-                     style="padding: 10px; font-size: 13px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; border: 1px solid ${isSelected ? 'var(--neon-green)' : 'rgba(255,255,255,0.05)'}; background: ${isSelected ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255,255,255,0.02)'};">
+                     style="padding: 10px; font-size: 13px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; border: 2px solid ${isSelected ? 'var(--neon-green)' : 'rgba(255,255,255,0.15)'}; background: ${isSelected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.03)'}; transform: ${isSelected ? 'scale(1.02)' : 'scale(1)'};">
                     <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
                         <i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-user'}" style="color: ${isGoleiro ? 'var(--neon-blue)' : (isSelected ? 'var(--neon-green)' : 'var(--text-muted)')}"></i>
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ${isSelected ? 'font-weight: 700; color: #fff;' : ''}">${p.nickname || p.name}</span>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ${isSelected ? 'font-weight: 800; color: #fff;' : ''}">${p.nickname || p.name}</span>
                     </div>
-                    ${isSelected ? '<i class="ph ph-check" style="color: var(--neon-green); font-size: 18px; font-weight: bold;"></i>' : '<i class="ph ph-square" style="color: rgba(255,255,255,0.1); font-size: 18px;"></i>'}
+                    ${isSelected ? '<i class="ph-bold ph-check" style="color: var(--neon-green); font-size: 18px;"></i>' : '<i class="ph ph-square" style="color: var(--text-muted); opacity: 0.5; font-size: 18px;"></i>'}
                 </div>
             `;
         }).join('');
@@ -1207,6 +1207,16 @@ class FootballApp {
         const dateSelect = document.getElementById('match-date-select');
         const date = dateSelect ? dateSelect.value : new Date().toISOString().split('T')[0];
         
+        // Feedback visual no ícone do botão
+        const iconId = shouldSelectAll ? 'btn-icon-select-all' : 'btn-icon-deselect-all';
+        const iconEl = document.getElementById(iconId);
+        if (iconEl) {
+            iconEl.className = shouldSelectAll ? 'ph ph-check-square' : 'ph ph-x-square';
+            setTimeout(() => {
+                iconEl.className = 'ph ph-square';
+            }, 800);
+        }
+
         if (!shouldSelectAll) {
             this.drawSelections.clear();
         } else {
