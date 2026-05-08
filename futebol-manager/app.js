@@ -1037,7 +1037,7 @@ class FootballApp {
         // Só criamos a transação se o status estava pendente ou se for um fluxo forçado
         
         const amount = player.type === 'avulso' ? (this.data.config.avulsoValue || 0) : (this.data.config.mensalValue || 0);
-        const descStr = player.type === 'avulso' ? 'Avulso' : 'Mensalidade';
+        const descStr = player.type === 'avulso' ? 'Avulso' : 'Mensal';
 
         player.status = 'paid';
         const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
@@ -1053,7 +1053,7 @@ class FootballApp {
         this.data.transactions.push({
             id: now,
             date: new Date().toISOString().split('T')[0],
-            description: `Pagamento ${descStr} - ${displayName}`,
+            description: `Pgto. ${descStr} - ${displayName}`,
             type: 'in',
             amount: amount,
             playerId: id
