@@ -950,6 +950,16 @@ body {
         font-size: 13px;
     }
 
+    /* Forçar a descrição a ficar em uma nova linha no mobile */
+    .data-table td[data-label="Descrição"] {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    .data-table td[data-label="Descrição"]::before {
+        margin-bottom: 2px;
+    }
+
     /* Menu de Navegação Inferior */
     .bottom-nav {
         display: flex !important;
