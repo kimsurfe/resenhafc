@@ -964,7 +964,49 @@ body {
         justify-content: space-around;
         align-items: center;
         z-index: 1000;
-        padding: 0 10px;
+        padding: 0 5px;
+    }
+
+    /* Menu Mais Overlay */
+    .more-menu-overlay {
+        position: fixed;
+        bottom: 80px;
+        right: 16px;
+        width: 200px;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        display: none;
+        flex-direction: column;
+        padding: 8px;
+        z-index: 2000;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    
+    .more-menu-overlay.active { display: flex; animation: slideUp 0.3s ease; }
+    
+    .more-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        color: var(--text-main);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        background: none;
+        border: none;
+        border-radius: 10px;
+        text-align: left;
+        cursor: pointer;
+    }
+    
+    .more-menu-item:hover { background: rgba(255,255,255,0.05); }
+    
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
 
     .nav-item-mobile {
@@ -1504,19 +1546,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             <i class="ph ph-users-three"></i>
             <span>Sorteio</span>
         </button>
-        <button class="nav-item-mobile admin-only" data-target="financeiro">
-            <i class="ph ph-currency-dollar"></i>
-            <span>Finanças</span>
-        </button>
-        <button class="nav-item-mobile admin-only" data-target="ajustes">
-            <i class="ph ph-gear"></i>
-            <span>Ajustes</span>
-        </button>
-        <button class="nav-item-mobile admin-only" onclick="app.logout()" style="color: var(--neon-red);">
-            <i class="ph ph-sign-out"></i>
-            <span>Sair</span>
+        <button class="nav-item-mobile admin-only" onclick="app.toggleMoreMenu()">
+            <i class="ph ph-dots-three-outline-fill"></i>
+            <span>Mais</span>
         </button>
     </nav>
+
+    <!-- Menu Mais (Mobile Only Overlay) -->
+    <div id="more-menu-overlay" class="more-menu-overlay">
+        <button class="more-menu-item" onclick="app.goToView('financeiro')">
+            <i class="ph ph-currency-dollar"></i> Finanças
+        </button>
+        <button class="more-menu-item" onclick="app.goToView('ajustes')">
+            <i class="ph ph-gear"></i> Ajustes
+        </button>
+        <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 4px 8px;"></div>
+        <button class="more-menu-item" onclick="app.logout()" style="color: var(--neon-red);">
+            <i class="ph ph-sign-out"></i> Sair da Conta
+        </button>
+    </div>
 
     <!-- Modals -->
     <div id="player-modal" class="modal-overlay">

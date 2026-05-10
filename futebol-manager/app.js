@@ -1570,6 +1570,30 @@ class FootballApp {
         this.loadAppSettings();
         alert('Configurações salvas com sucesso! ✅');
     }
+
+    /* Menu Mais (Mobile) */
+    toggleMoreMenu() {
+        const overlay = document.getElementById('more-menu-overlay');
+        if (overlay) overlay.classList.toggle('active');
+    }
+
+    goToView(target) {
+        // Fechar o menu mais se estiver aberto
+        const overlay = document.getElementById('more-menu-overlay');
+        if (overlay) overlay.classList.remove('active');
+
+        // Disparar o clique no botão de navegação correspondente (ou fazer manual)
+        const navItem = document.querySelector(`.nav-item[data-target="${target}"], .nav-item-mobile[data-target="${target}"]`);
+        if (navItem) {
+            navItem.click();
+        } else {
+            // Fallback manual se não houver botão visível
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            const section = document.getElementById(target);
+            if (section) section.classList.add('active');
+            document.getElementById('page-title').textContent = target.charAt(0).toUpperCase() + target.slice(1);
+        }
+    }
 }
 
 const app = new FootballApp();
