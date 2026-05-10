@@ -97,21 +97,10 @@ body {
     z-index: 10;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 24px;
-    margin-bottom: 40px;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--neon-green);
-    text-shadow: 0 0 15px var(--neon-green-glow);
-}
-
-.logo i {
-    font-size: 32px;
-}
+                <div class="logo">
+                    <img id="app-logo-sidebar" src="resenha_logotipo.jpg" alt="Logo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
+                    <span id="app-name-sidebar">RESENHA F.C</span>
+                </div>
 
 .nav-menu {
     display: flex;
@@ -1144,19 +1133,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <button class="nav-item admin-only" data-target="financeiro">
                     <i class="ph ph-currency-dollar"></i> Financeiro
                 </button>
+                <button class="nav-item admin-only" data-target="ajustes">
+                    <i class="ph ph-gear"></i> Ajustes
+                </button>
                 <button class="nav-item admin-only" onclick="app.logout()" style="color: var(--neon-red); margin-top: auto;">
                     <i class="ph ph-sign-out"></i> Sair da Conta
                 </button>
             </nav>
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <div class="avatar">Admin</div>
-                    <div class="details">
-                        <span class="name">Administrador</span>
-                        <span class="role">Organizador</span>
-                    </div>
-                </div>
-            </div>
         </aside>
 
         <main class="main-content">
@@ -1164,8 +1147,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <!-- Logo no Topbar: Só aparece no Mobile porque o Desktop já tem na Sidebar -->
                     <div onclick="document.getElementById('login-modal').classList.add('active')" class="logo-trigger mobile-only-flex" style="align-items: center; gap: 10px; cursor: pointer; flex-direction: row; white-space: nowrap;">
-                        <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
-                        <span style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
+                        <img id="app-logo-mobile" src="resenha_logotipo.jpg" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
+                        <span id="app-name-mobile" style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
                     <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Dashboard</h1>
                 </div>
@@ -1222,7 +1205,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             </ul>
                         </div>
                         <div class="widget glass-card">
-                            <h3 style="color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 24px;">Análise do Semestre (Entradas vs Gastos)</h3>
+                            <h3 style="color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 24px;">Análise Mensal (Entradas vs Gastos)</h3>
                             <div class="chart-placeholder" id="financial-summary-chart" style="height: 250px;">
                                 <!-- JS -->
                             </div>
@@ -1279,9 +1262,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <i class="ph ph-magnifying-glass"></i>
                             <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
                         </div>
-                        <div style="display: flex; gap: 12px;" class="admin-only">
-                            <button class="btn btn-danger" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
-                            <button class="btn btn-primary" onclick="app.openPlayerModal()"><i class="ph ph-user-plus"></i> Adicionar Jogador</button>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" class="admin-only">
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.shareDefaulters()">
+                                <i class="ph ph-whatsapp-logo"></i> Copiar Mensalidade
+                            </button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.resetMonth()">
+                                <i class="ph ph-arrows-clockwise"></i> Virar o Mês
+                            </button>
+                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.openPlayerModal()">
+                                <i class="ph ph-user-plus"></i> Novo Jogador
+                            </button>
                         </div>
                     </div>
                     <div class="table-container glass-card">
@@ -1364,6 +1354,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     <div class="table-container glass-card mt-4">
+                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 12px;">
+                            <i class="ph ph-magnifying-glass" style="color: var(--text-muted);"></i>
+                            <input type="text" id="search-finance" placeholder="Buscar no histórico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
+                        </div>
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -1398,8 +1392,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     <!-- Selecionar Todos / Limpar -->
-                    <div style="margin-bottom: 24px; display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: -8px;">
-                        <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Participantes: <span id="sorteio-count" style="color: var(--text-main); font-weight: 700;">0 de 0</span></span>
+                    <div style="margin-bottom: 24px; display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: -8px;">
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Participantes</span>
+                            <span id="sorteio-count" style="color: var(--text-main); font-weight: 800; font-size: 18px; margin-top: 2px;">0 de 0</span>
+                        </div>
                         <div style="margin-left: auto; display: flex; gap: 8px;">
                             <button class="btn" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s;" 
                                     onmouseover="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.color='var(--neon-green)'; this.style.borderColor='var(--neon-green)'" 
@@ -1424,6 +1421,38 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <div class="widget glass-card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
                             <i class="ph ph-users-three" style="font-size: 48px; color: var(--text-muted); opacity: 0.3; margin-bottom: 16px; display: block;"></i>
                             <p style="color: var(--text-muted);">Confirme os presentes na aba "Lista de Presença" e clique em "Sortear Agora".</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ajustes View -->
+                <section id="ajustes" class="view-section">
+                    <div class="section-header">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <h2 style="margin: 0;"><i class="ph ph-gear"></i> Configurações do App</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Personalize a identidade do seu clube</p>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card" style="max-width: 600px;">
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label>Nome do Clube</label>
+                            <input type="text" id="config-app-name" class="glass-input-field" placeholder="Ex: RESENHA F.C" oninput="app.updateAppIdentityPreview()">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label>URL do Logotipo (Imagem)</label>
+                            <div style="display: flex; gap: 12px; align-items: flex-start;">
+                                <input type="text" id="config-app-logo" class="glass-input-field" placeholder="https://link-da-imagem.jpg" oninput="app.updateAppIdentityPreview()">
+                                <img id="logo-preview" src="resenha_logotipo.jpg" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">Dica: Hospede sua imagem no Imgur ou similar e cole o link direto aqui.</p>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; margin-top: 32px;">
+                            <button class="btn btn-primary" onclick="app.saveAppSettings()" style="flex: 1;">
+                                <i class="ph ph-floppy-disk"></i> Salvar Alterações
+                            </button>
                         </div>
                     </div>
                 </section>

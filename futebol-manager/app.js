@@ -18,6 +18,10 @@ const DEFAULT_DATA = {
     config: {
         mensalValue: 50.00,
         avulsoValue: 20.00
+    },
+    appSettings: {
+        name: "RESENHA F.C",
+        logo: "resenha_logotipo.jpg"
     }
 };
 
@@ -35,6 +39,7 @@ class FootballApp {
         this.updateDate();
         this.initMatchDate();
         await this.loadDataFromCloud();
+        this.loadAppSettings();
         this.checkAuth();
         this.renderAll();
     }
@@ -335,14 +340,13 @@ class FootballApp {
         let totalAvulsos = 0;
         let totalGastos = 0;
 
-        // Considerar todo o semestre ou todas transações (já que o app está iniciando)
-        // O usuário pediu "resumo financeiro do semestre".
-        const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
 
         this.data.transactions.forEach(t => {
-            const tDate = new Date(t.date);
-            if (tDate >= sixMonthsAgo) {
+            const tDate = new Date(t.date + 'T12:00:00');
+            if (tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear) {
                 if (t.type === 'in') {
                     if (t.description.toLowerCase().includes('avulso')) {
                         totalAvulsos += t.amount;
@@ -1436,6 +1440,116 @@ class FootballApp {
         
         const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
         return label.charAt(0).toUpperCase() + label.slice(1) + " - 21:00";
+    }
+
+    /* Finance Search */
+    filterTransactions() {
+        const query = document.getElementById('search-finance').value.toLowerCase();
+        const tbody = document.getElementById('financeiro-tbody');
+        if (!tbody) return;
+        
+        const rows = tbody.getElementsByTagName('tr');
+        for (let row of rows) {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        }
+    }
+
+    /* Share Defaulters (Monthly Payment List) */
+    shareDefaulters() {
+        const now = new Date();
+        const monthName = now.toLocaleDateString('pt-BR', { month: 'long' });
+        const year = now.getFullYear();
+        
+        const sortedPlayers = this.getSortedPlayers().filter(p => p.type === 'mensalista');
+        const paid = sortedPlayers.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro');
+        const pending = sortedPlayers.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro');
+        
+        let text = `💰 *RESENHA F.C - Mensalidade (${monthName.toUpperCase()} / ${year})* 💰\n\n`;
+        
+        text += `✅ *PAGOS (${paid.length})*\n`;
+        paid.forEach((p, idx) => {
+            text += `${idx + 1}. ${p.nickname || p.name}\n`;
+        });
+
+        text += `\n⏳ *PENDENTES (${pending.length})*\n`;
+        pending.forEach((p, idx) => {
+            const mention = p.phone ? ` @${p.phone.replace(/\D/g, '')}` : '';
+            text += `${idx + 1}. ${p.nickname || p.name}${mention}\n`;
+        });
+
+        text += `\n*PIX PARA PAGAMENTO:*\n`;
+        text += `*13997741390*\n`;
+        text += `LEANDRO MORAES DA SILVA\n\n`;
+        text += `_Favor regularizar para mantermos o caixa em dia! ⚽💰_`;
+
+        const copyFallback = (t) => {
+            const textArea = document.createElement("textarea");
+            textArea.value = t;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert('Lista de mensalidades copiada! Cole no grupo do WhatsApp.');
+            } catch (err) {
+                alert('Erro ao copiar.');
+            }
+            document.body.removeChild(textArea);
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Lista de mensalidades copiada! Cole no grupo do WhatsApp.');
+            }).catch(() => copyFallback(text));
+        } else {
+            copyFallback(text);
+        }
+    }
+
+    /* App Settings */
+    updateAppIdentityPreview() {
+        const nameInput = document.getElementById('config-app-name');
+        const logoInput = document.getElementById('config-app-logo');
+        const previewImg = document.getElementById('logo-preview');
+        
+        if (previewImg && logoInput.value) {
+            previewImg.src = logoInput.value;
+        }
+    }
+
+    loadAppSettings() {
+        const settings = this.data.appSettings || DEFAULT_DATA.appSettings;
+        
+        // Update Sidebar
+        const sidebarLogo = document.getElementById('app-logo-sidebar');
+        const sidebarName = document.getElementById('app-name-sidebar');
+        if (sidebarLogo) sidebarLogo.src = settings.logo;
+        if (sidebarName) sidebarName.textContent = settings.name;
+        
+        // Update Mobile
+        const mobileLogo = document.getElementById('app-logo-mobile');
+        const mobileName = document.getElementById('app-name-mobile');
+        if (mobileLogo) mobileLogo.src = settings.logo;
+        if (mobileName) mobileName.textContent = settings.name;
+
+        // Update Inputs
+        const nameInput = document.getElementById('config-app-name');
+        const logoInput = document.getElementById('config-app-logo');
+        const previewImg = document.getElementById('logo-preview');
+        
+        if (nameInput) nameInput.value = settings.name;
+        if (logoInput) logoInput.value = settings.logo;
+        if (previewImg) previewImg.src = settings.logo;
+    }
+
+    async saveAppSettings() {
+        const name = document.getElementById('config-app-name').value || "RESENHA F.C";
+        const logo = document.getElementById('config-app-logo').value || "resenha_logotipo.jpg";
+        
+        this.data.appSettings = { name, logo };
+        await this.saveDataToCloud();
+        this.loadAppSettings();
+        alert('Configurações salvas com sucesso! ✅');
     }
 }
 
