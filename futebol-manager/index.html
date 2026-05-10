@@ -1332,13 +1332,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
 
-                    <div style="margin-bottom: 24px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center;">
-                        <div class="search-bar glass-input" style="width: 100%; max-width: 400px;">
-                            <i class="ph ph-magnifying-glass"></i>
-                            <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
-                        </div>
-
-                        <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Filtros (Primeira Linha) -->
+                        <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-self: flex-start;">
                             <button class="btn player-filter-btn active" id="filter-all" onclick="app.setPlayerPaymentFilter('all')" style="padding: 6px 14px; font-size: 12px; background: var(--neon-blue); color: #000; border: 1px solid var(--neon-blue);">
                                 Todos
                             </button>
@@ -1348,6 +1344,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <button class="btn player-filter-btn" id="filter-pending" onclick="app.setPlayerPaymentFilter('pending')" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1);">
                                 Pendentes
                             </button>
+                        </div>
+
+                        <!-- Busca (Segunda Linha) -->
+                        <div class="search-bar glass-input" style="width: 100%; max-width: 100%;">
+                            <i class="ph ph-magnifying-glass"></i>
+                            <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()" style="width: 100%;">
                         </div>
                     </div>
                     <div class="table-container glass-card">
@@ -1430,9 +1432,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     <div class="table-container glass-card mt-4">
-                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 12px;">
-                            <i class="ph ph-magnifying-glass" style="color: var(--text-muted);"></i>
-                            <input type="text" id="search-finance" placeholder="Buscar no histórico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
+                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <div class="search-bar glass-input" style="width: 100%; max-width: 100%; height: 45px; padding: 0 20px;">
+                                <i class="ph ph-magnifying-glass"></i>
+                                <input type="text" id="search-finance" placeholder="Buscar no histórico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
+                            </div>
                         </div>
                         <table class="data-table">
                             <thead>

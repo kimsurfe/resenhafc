@@ -1695,8 +1695,33 @@ class FootballApp {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             const section = document.getElementById(target);
             if (section) section.classList.add('active');
-            document.getElementById('page-title').textContent = target.charAt(0).toUpperCase() + target.slice(1);
         }
+    }
+
+    logout() {
+        localStorage.removeItem('resenha_admin');
+        this.checkAuth();
+        
+        // Fechar menus abertos
+        const overlay = document.getElementById('more-menu-overlay');
+        if (overlay) overlay.classList.remove('active');
+
+        // Voltar para o Dashboard
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        const dash = document.getElementById('dashboard');
+        if (dash) dash.classList.add('active');
+        
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) pageTitle.textContent = 'Dashboard';
+        
+        // Resetar itens ativos na nav
+        document.querySelectorAll('.nav-item, .nav-item-mobile').forEach(b => {
+            if (b.dataset.target === 'dashboard') b.classList.add('active');
+            else b.classList.remove('active');
+        });
+
+        this.renderAll();
+        alert('Você saiu da conta com sucesso. 👋');
     }
 }
 
