@@ -1517,29 +1517,48 @@ class FootballApp {
         }
     }
 
+    handleLogoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Limite de 1MB para evitar sobrecarga no Firestore
+        if (file.size > 1024 * 1024) {
+            alert("A imagem é muito grande! Por favor, escolha uma imagem de até 1MB.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64Image = e.target.result;
+            document.getElementById('config-app-logo').value = base64Image;
+            document.getElementById('logo-preview').src = base64Image;
+        };
+        reader.readAsDataURL(file);
+    }
+
     loadAppSettings() {
         const settings = this.data.appSettings || DEFAULT_DATA.appSettings;
         
         // Update Sidebar
         const sidebarLogo = document.getElementById('app-logo-sidebar');
         const sidebarName = document.getElementById('app-name-sidebar');
-        if (sidebarLogo) sidebarLogo.src = settings.logo;
-        if (sidebarName) sidebarName.textContent = settings.name;
+        if (sidebarLogo) sidebarLogo.src = settings.logo || 'resenha_logotipo.jpg';
+        if (sidebarName) sidebarName.textContent = settings.name || 'RESENHA F.C';
         
         // Update Mobile
         const mobileLogo = document.getElementById('app-logo-mobile');
         const mobileName = document.getElementById('app-name-mobile');
-        if (mobileLogo) mobileLogo.src = settings.logo;
-        if (mobileName) mobileName.textContent = settings.name;
+        if (mobileLogo) mobileLogo.src = settings.logo || 'resenha_logotipo.jpg';
+        if (mobileName) mobileName.textContent = settings.name || 'RESENHA F.C';
 
-        // Update Inputs
+        // Update Inputs if in Settings View
         const nameInput = document.getElementById('config-app-name');
         const logoInput = document.getElementById('config-app-logo');
         const previewImg = document.getElementById('logo-preview');
         
-        if (nameInput) nameInput.value = settings.name;
-        if (logoInput) logoInput.value = settings.logo;
-        if (previewImg) previewImg.src = settings.logo;
+        if (nameInput) nameInput.value = settings.name || 'RESENHA F.C';
+        if (logoInput) logoInput.value = settings.logo || 'resenha_logotipo.jpg';
+        if (previewImg) previewImg.src = settings.logo || 'resenha_logotipo.jpg';
     }
 
     async saveAppSettings() {
@@ -1547,7 +1566,7 @@ class FootballApp {
         const logo = document.getElementById('config-app-logo').value || "resenha_logotipo.jpg";
         
         this.data.appSettings = { name, logo };
-        await this.saveDataToCloud();
+        await this.saveData();
         this.loadAppSettings();
         alert('Configurações salvas com sucesso! ✅');
     }
