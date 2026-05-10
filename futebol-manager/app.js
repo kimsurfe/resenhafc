@@ -22,6 +22,10 @@ const DEFAULT_DATA = {
     appSettings: {
         name: "RESENHA F.C",
         logo: "resenha_logotipo.jpg"
+    },
+    adminSettings: {
+        user: "kim",
+        pass: "220688"
     }
 };
 
@@ -30,6 +34,7 @@ class FootballApp {
         this.data = DEFAULT_DATA;
         this.financesHidden = false;
         this.drawSelections = new Set();
+        this.playerPaymentFilter = 'all'; // New state for filtering
         this.docId = 'mainData'; // Documento único no Firestore
         this.init();
     }
@@ -139,7 +144,10 @@ class FootballApp {
             const u = document.getElementById('admin-user').value;
             const p = document.getElementById('admin-pass').value;
             const err = document.getElementById('admin-login-error');
-            if (u === 'kim' && p === '220688') {
+            
+            const admin = this.data.adminSettings || DEFAULT_DATA.adminSettings;
+            
+            if (u === admin.user && p === admin.pass) {
                 localStorage.setItem('resenha_admin', 'true');
                 this.checkAuth();
                 document.getElementById('login-modal').classList.remove('active');
@@ -424,8 +432,15 @@ class FootballApp {
         tbody.innerHTML = '';
         
         const sorted = this.getSortedPlayers();
-        const mensalistas = sorted.filter(p => p.type === 'mensalista');
+        let mensalistas = sorted.filter(p => p.type === 'mensalista');
         
+        // Apply Payment Filter
+        if (this.playerPaymentFilter === 'paid') {
+            mensalistas = mensalistas.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro');
+        } else if (this.playerPaymentFilter === 'pending') {
+            mensalistas = mensalistas.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro');
+        }
+
         let countMensalista = 1;
 
         const renderRow = (p, rowNumber) => {
@@ -1455,6 +1470,29 @@ class FootballApp {
         }
     }
 
+    /* Payment Filters for Mensalistas View */
+    setPlayerPaymentFilter(filter) {
+        this.playerPaymentFilter = filter;
+        
+        // Update button states
+        document.querySelectorAll('.player-filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.background = 'rgba(255, 255, 255, 0.03)';
+            btn.style.color = 'var(--text-muted)';
+            btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        });
+
+        const activeBtn = document.getElementById(`filter-${filter}`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.style.background = 'var(--neon-blue)';
+            activeBtn.style.color = '#000';
+            activeBtn.style.borderColor = 'var(--neon-blue)';
+        }
+
+        this.renderPlayers();
+    }
+
     /* Share Defaulters (Monthly Payment List) */
     shareDefaulters() {
         const now = new Date();
@@ -1521,17 +1559,44 @@ class FootballApp {
         const file = event.target.files[0];
         if (!file) return;
 
-        // Limite de 1MB para evitar sobrecarga no Firestore
-        if (file.size > 1024 * 1024) {
-            alert("A imagem é muito grande! Por favor, escolha uma imagem de até 1MB.");
-            return;
-        }
-
         const reader = new FileReader();
         reader.onload = (e) => {
-            const base64Image = e.target.result;
-            document.getElementById('config-app-logo').value = base64Image;
-            document.getElementById('logo-preview').src = base64Image;
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_SIZE = 400; // Tamanho ideal para logotipo de alta qualidade e baixo peso
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_SIZE) {
+                        height *= MAX_SIZE / width;
+                        width = MAX_SIZE;
+                    }
+                } else {
+                    if (height > MAX_SIZE) {
+                        width *= MAX_SIZE / height;
+                        height = MAX_SIZE;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                
+                // Melhorar qualidade da redimensionamento
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Converte para JPEG com 80% de qualidade (Equilíbrio perfeito entre peso e nitidez)
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                
+                document.getElementById('config-app-logo').value = compressedBase64;
+                document.getElementById('logo-preview').src = compressedBase64;
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -1559,6 +1624,13 @@ class FootballApp {
         if (nameInput) nameInput.value = settings.name || 'RESENHA F.C';
         if (logoInput) logoInput.value = settings.logo || 'resenha_logotipo.jpg';
         if (previewImg) previewImg.src = settings.logo || 'resenha_logotipo.jpg';
+
+        // Update Admin Settings Inputs
+        const adminSettings = this.data.adminSettings || DEFAULT_DATA.adminSettings;
+        const configUser = document.getElementById('config-admin-user');
+        const configPass = document.getElementById('config-admin-pass');
+        if (configUser) configUser.value = adminSettings.user;
+        if (configPass) configPass.value = adminSettings.pass;
     }
 
     async saveAppSettings() {
@@ -1568,7 +1640,39 @@ class FootballApp {
         this.data.appSettings = { name, logo };
         await this.saveData();
         this.loadAppSettings();
-        alert('Configurações salvas com sucesso! ✅');
+        alert('Identidade do clube salva! ✅');
+    }
+
+    async saveAdminSettings() {
+        const user = document.getElementById('config-admin-user').value.trim();
+        const pass = document.getElementById('config-admin-pass').value.trim();
+
+        if (!user || !pass) {
+            alert("Usuário e senha não podem estar vazios!");
+            return;
+        }
+
+        if (confirm("Deseja realmente alterar os dados de acesso? Você precisará usar os novos dados no próximo login.")) {
+            this.data.adminSettings = { user, pass };
+            await this.saveData();
+            alert("Dados de acesso atualizados com sucesso! 🛡️");
+        }
+    }
+
+    toggleAdminPasswordVisibility() {
+        const passInput = document.getElementById('config-admin-pass');
+        const icon = document.getElementById('admin-pass-toggle-icon');
+        if (passInput && icon) {
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.remove('ph-eye');
+                icon.classList.add('ph-eye-slash');
+            } else {
+                passInput.type = 'password';
+                icon.classList.remove('ph-eye-slash');
+                icon.classList.add('ph-eye');
+            }
+        }
     }
 
     /* Menu Mais (Mobile) */

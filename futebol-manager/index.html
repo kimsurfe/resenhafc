@@ -1179,7 +1179,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <i class="ph ph-squares-four"></i> Dashboard
                 </button>
                 <button class="nav-item" data-target="mensalistas">
-                    <i class="ph ph-users"></i> Jogadores
+                    <i class="ph ph-users"></i> Mensalistas
                 </button>
                 <button class="nav-item" data-target="presenca">
                     <i class="ph ph-clipboard-text"></i> Lista de Presença
@@ -1315,9 +1315,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <!-- Mensalistas View -->
                 <section id="mensalistas" class="view-section">
                     <div class="section-header">
-                        <div class="search-bar glass-input">
-                            <i class="ph ph-magnifying-glass"></i>
-                            <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <h2 style="margin: 0;"><i class="ph ph-users"></i> Mensalistas</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Gestão de pagamentos e cadastro</p>
                         </div>
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" class="admin-only">
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.shareDefaulters()">
@@ -1328,6 +1328,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             </button>
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.openPlayerModal()">
                                 <i class="ph ph-user-plus"></i> Novo Jogador
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center;">
+                        <div class="search-bar glass-input" style="width: 100%; max-width: 400px;">
+                            <i class="ph ph-magnifying-glass"></i>
+                            <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
+                        </div>
+
+                        <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                            <button class="btn player-filter-btn active" id="filter-all" onclick="app.setPlayerPaymentFilter('all')" style="padding: 6px 14px; font-size: 12px; background: var(--neon-blue); color: #000; border: 1px solid var(--neon-blue);">
+                                Todos
+                            </button>
+                            <button class="btn player-filter-btn" id="filter-paid" onclick="app.setPlayerPaymentFilter('paid')" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                Pagos
+                            </button>
+                            <button class="btn player-filter-btn" id="filter-pending" onclick="app.setPlayerPaymentFilter('pending')" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                Pendentes
                             </button>
                         </div>
                     </div>
@@ -1519,7 +1538,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         
                         <div style="display: flex; gap: 12px; margin-top: 32px;">
                             <button class="btn btn-primary" onclick="app.saveAppSettings()" style="flex: 1;">
-                                <i class="ph ph-floppy-disk"></i> Salvar Alterações
+                                <i class="ph ph-floppy-disk"></i> Salvar Identidade
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Configurações de Acesso -->
+                    <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
+                        <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-lock"></i> Acesso Administrativo</h3>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label>Usuário Administrador</label>
+                            <input type="text" id="config-admin-user" class="glass-input-field" placeholder="Ex: admin">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label>Nova Senha</label>
+                            <div style="position: relative;">
+                                <input type="password" id="config-admin-pass" class="glass-input-field" placeholder="Digite a nova senha" style="padding-right: 45px;">
+                                <button type="button" onclick="app.toggleAdminPasswordVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="ph ph-eye" id="admin-pass-toggle-icon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn" onclick="app.saveAdminSettings()" style="flex: 1; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);">
+                                <i class="ph ph-shield-check"></i> Atualizar Acesso
                             </button>
                         </div>
                     </div>
@@ -1536,7 +1578,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </button>
         <button class="nav-item-mobile" data-target="mensalistas">
             <i class="ph ph-users"></i>
-            <span>Jogadores</span>
+            <span>Mensalistas</span>
         </button>
         <button class="nav-item-mobile" data-target="presenca">
             <i class="ph ph-clipboard-text"></i>
