@@ -656,15 +656,12 @@ class FootballApp {
         // 4. Lista de Presentes (se ativa)
         const includePresent = config.includePresent !== false;
         if (includePresent) {
-            const totalPresentLines = Math.max(totalM, present.length);
             let presentListStr = `✅ *Presentes (${present.length})*`;
-            for (let i = 0; i < totalPresentLines; i++) {
-                if (i < present.length) {
-                    presentListStr += `\n${i + 1}. ${present[i]}`;
-                } else {
-                    presentListStr += `\n${i + 1}.`;
-                }
-            }
+            present.forEach((name, idx) => {
+                presentListStr += `\n${idx + 1}. ${name}`;
+            });
+            // Adiciona exatamente uma linha em branco para o próximo se inscrever
+            presentListStr += `\n${present.length + 1}.`;
             parts.push(presentListStr);
         }
 
@@ -681,15 +678,12 @@ class FootballApp {
         // 6. Lista de Ausentes (se ativa)
         const includeAbsent = config.includeAbsent !== false;
         if (includeAbsent) {
-            const totalAbsentLines = Math.max(Math.ceil(totalM / 2), absent.length);
             let absentListStr = `❌ *Ausentes (${absent.length})*`;
-            for (let i = 0; i < totalAbsentLines; i++) {
-                if (i < absent.length) {
-                    absentListStr += `\n${i + 1}. ${absent[i]}`;
-                } else {
-                    absentListStr += `\n${i + 1}.`;
-                }
-            }
+            absent.forEach((name, idx) => {
+                absentListStr += `\n${idx + 1}. ${name}`;
+            });
+            // Adiciona exatamente uma linha em branco para o próximo se inscrever
+            absentListStr += `\n${absent.length + 1}.`;
             parts.push(absentListStr);
         }
 
