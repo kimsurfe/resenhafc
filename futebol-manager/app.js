@@ -17,7 +17,13 @@ const DEFAULT_DATA = {
     attendance: {},
     config: {
         mensalValue: 50.00,
-        avulsoValue: 20.00
+        avulsoValue: 20.00,
+        attendanceCustomMessage: `Avulsos deverão pagar antes da partida para o pix:\n\n13997741390\nLEANDRO MORAES DA SILVA\n\nPara confirmar presença, acessar o link abaixo:\nwww.gestaoresenhafc.vercel.app`,
+        includeDate: true,
+        includeWarning: true,
+        includePresent: true,
+        includeWaiting: true,
+        includeAbsent: true
     },
     appSettings: {
         name: "RESENHA F.C",
@@ -33,6 +39,7 @@ class FootballApp {
     constructor() {
         this.data = DEFAULT_DATA;
         this.financesHidden = false;
+        this.showFullRanking = false;
         this.drawSelections = new Set();
         this.playerPaymentFilter = 'all'; // New state for filtering
         this.docId = 'mainData'; // Documento único no Firestore
@@ -612,48 +619,81 @@ class FootballApp {
             else if (status === 'absent') absent.push(line);
         });
 
-        let text = `⚽ *RESENHA F.C - Lista de Presença*\n\n📅 Data: ${dateText}\n\n`;
-        
-        const [year, month, dayStr] = dateValue.split('-');
-        const dayNum = parseInt(dayStr, 10);
-        const dateObj = new Date(year, parseInt(month) - 1, dayNum);
-        
-        // Verifica se é a primeira quarta-feira do mês (dia 3 e nos primeiros 7 dias do mês)
-        if (dateObj.getDay() === 3 && dayNum <= 7) {
-            text += `⚠️🚨 *Semana de pagamento do mensal* 🚨⚠️\n\n`;
+        // Garantir que as configurações existam
+        if (!this.data.config) this.data.config = {};
+        const config = this.data.config;
+
+        let parts = [];
+
+        // 1. Título Fixo da Lista
+        parts.push(`⚽ *RESENHA F.C - Lista de Presença*`);
+
+        // 2. Data da Partida (se ativa)
+        const includeDate = config.includeDate !== false;
+        if (includeDate) {
+            parts.push(`📅 Data: ${dateText}`);
         }
 
-        text += `*Avulsos deverão pagar antes da partida para o pix:*\n\n`;
-        text += `*13997741390*\n`;
-        text += `LEANDRO MORAES DA SILVA\n\n\n`;
+        // 3. Texto Adicional / PIX (editado pelo usuário)
+        const customMessage = config.attendanceCustomMessage || '';
+        if (customMessage.trim()) {
+            // Determinar se é semana de pagamento e se o aviso está ativo
+            const includeWarning = config.includeWarning !== false;
+            const [year, month, dayStr] = dateValue.split('-');
+            const dayNum = parseInt(dayStr, 10);
+            const dateObj = new Date(year, parseInt(month) - 1, dayNum);
+            
+            let warningText = '';
+            if (includeWarning && dateObj.getDay() === 3 && dayNum <= 7) {
+                warningText = `⚠️🚨 *Semana de pagamento do mensal* 🚨⚠️\n\n`;
+            }
+            parts.push(warningText + customMessage);
+        }
 
         const mensalistas = this.data.players.filter(p => p.type === 'mensalista');
         const totalM = mensalistas.length;
-        const totalPresentLines = Math.max(totalM, present.length);
-        const totalAbsentLines = Math.max(Math.ceil(totalM / 2), absent.length);
 
-        text += `✅ *Presentes (${present.length})*\n`;
-        for (let i = 0; i < totalPresentLines; i++) {
-            if (i < present.length) {
-                text += `${i + 1}. ${present[i]}\n`;
-            } else {
-                text += `${i + 1}.\n`;
+        // 4. Lista de Presentes (se ativa)
+        const includePresent = config.includePresent !== false;
+        if (includePresent) {
+            const totalPresentLines = Math.max(totalM, present.length);
+            let presentListStr = `✅ *Presentes (${present.length})*`;
+            for (let i = 0; i < totalPresentLines; i++) {
+                if (i < present.length) {
+                    presentListStr += `\n${i + 1}. ${present[i]}`;
+                } else {
+                    presentListStr += `\n${i + 1}.`;
+                }
             }
+            parts.push(presentListStr);
         }
 
-        text += `\n📋 *Lista de espera (avulsos)*\n`;
-        for (let i = 1; i <= 5; i++) {
-            text += `${i}.\n`;
-        }
-
-        text += `\n❌ *Ausentes (${absent.length})*\n`;
-        for (let i = 0; i < totalAbsentLines; i++) {
-            if (i < absent.length) {
-                text += `${i + 1}. ${absent[i]}\n`;
-            } else {
-                text += `${i + 1}.\n`;
+        // 5. Lista de Espera (se ativa)
+        const includeWaiting = config.includeWaiting !== false;
+        if (includeWaiting) {
+            let waitingListStr = `📋 *Lista de espera (avulsos)*`;
+            for (let i = 1; i <= 5; i++) {
+                waitingListStr += `\n${i}.`;
             }
+            parts.push(waitingListStr);
         }
+
+        // 6. Lista de Ausentes (se ativa)
+        const includeAbsent = config.includeAbsent !== false;
+        if (includeAbsent) {
+            const totalAbsentLines = Math.max(Math.ceil(totalM / 2), absent.length);
+            let absentListStr = `❌ *Ausentes (${absent.length})*`;
+            for (let i = 0; i < totalAbsentLines; i++) {
+                if (i < absent.length) {
+                    absentListStr += `\n${i + 1}. ${absent[i]}`;
+                } else {
+                    absentListStr += `\n${i + 1}.`;
+                }
+            }
+            parts.push(absentListStr);
+        }
+
+        let text = parts.join('\n\n');
 
         const copyFallback = (t) => {
             const textArea = document.createElement("textarea");
@@ -806,6 +846,11 @@ class FootballApp {
             }
         });
 
+        // Expandir o ranking completo temporariamente para a foto
+        const previousShowFullRanking = this.showFullRanking;
+        this.showFullRanking = true;
+        this.renderRanking();
+
         try {
             const blobPromise = new Promise(async (resolve, reject) => {
                 try {
@@ -866,6 +911,10 @@ class FootballApp {
             if(shareBtn && shareBtn.innerHTML !== '<i class="ph ph-check-circle" style="color: var(--neon-green)"></i>') {
                 shareBtn.innerHTML = oldBtnHtml;
             }
+        } finally {
+            // Restaura o ranking para o estado anterior
+            this.showFullRanking = previousShowFullRanking;
+            this.renderRanking();
         }
     }
 
@@ -1420,8 +1469,28 @@ class FootballApp {
                 return a.name.localeCompare(b.name);
             });
 
+        // Exibir contêiner de expansão apenas se houver mais de 10 itens
+        const toggleContainer = document.getElementById('dash-ranking-toggle-container');
+        if (toggleContainer) {
+            if (ranking.length > 10) {
+                toggleContainer.style.display = 'block';
+                const btn = document.getElementById('btn-toggle-ranking');
+                if (btn) {
+                    if (this.showFullRanking) {
+                        btn.innerHTML = '<i class="ph ph-eye-slash"></i> Ver Menos';
+                    } else {
+                        btn.innerHTML = '<i class="ph ph-eye"></i> Ver Mais (VER +)';
+                    }
+                }
+            } else {
+                toggleContainer.style.display = 'none';
+            }
+        }
+
+        const itemsToShow = this.showFullRanking ? ranking : ranking.slice(0, 10);
+
         // 3. Renderizar
-        rankingContainer.innerHTML = ranking.length ? ranking.map((item, index) => {
+        rankingContainer.innerHTML = itemsToShow.length ? itemsToShow.map((item, index) => {
             let rankLabel = `${index + 1}º`;
             let color = 'var(--text-muted)';
             
@@ -1444,6 +1513,11 @@ class FootballApp {
             </div>
             `;
         }).join('') : '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 20px;">Nenhuma presença confirmada no histórico.</p>';
+    }
+
+    toggleRankingExpand() {
+        this.showFullRanking = !this.showFullRanking;
+        this.renderRanking();
     }
 
     getSelectedMatchDateText() {
@@ -1631,6 +1705,30 @@ class FootballApp {
         const configPass = document.getElementById('config-admin-pass');
         if (configUser) configUser.value = adminSettings.user;
         if (configPass) configPass.value = adminSettings.pass;
+
+        // Update Attendance Msg & Checkboxes Input
+        if (!this.data.config) this.data.config = {};
+        
+        // Custom message default fallback
+        if (this.data.config.attendanceCustomMessage === undefined) {
+            this.data.config.attendanceCustomMessage = DEFAULT_DATA.config.attendanceCustomMessage;
+        }
+        
+        const templateMsgInput = document.getElementById('config-attendance-msg');
+        if (templateMsgInput) templateMsgInput.value = this.data.config.attendanceCustomMessage;
+
+        // Checkboxes defaults and updates
+        const includeDateCb = document.getElementById('config-include-date');
+        const includeWarningCb = document.getElementById('config-include-warning');
+        const includePresentCb = document.getElementById('config-include-present');
+        const includeWaitingCb = document.getElementById('config-include-waiting');
+        const includeAbsentCb = document.getElementById('config-include-absent');
+
+        if (includeDateCb) includeDateCb.checked = this.data.config.includeDate !== false;
+        if (includeWarningCb) includeWarningCb.checked = this.data.config.includeWarning !== false;
+        if (includePresentCb) includePresentCb.checked = this.data.config.includePresent !== false;
+        if (includeWaitingCb) includeWaitingCb.checked = this.data.config.includeWaiting !== false;
+        if (includeAbsentCb) includeAbsentCb.checked = this.data.config.includeAbsent !== false;
     }
 
     async saveAppSettings() {
@@ -1641,6 +1739,27 @@ class FootballApp {
         await this.saveData();
         this.loadAppSettings();
         alert('Identidade do clube salva! ✅');
+    }
+
+    async saveAttendanceTemplate() {
+        const msg = document.getElementById('config-attendance-msg').value;
+        const includeDate = document.getElementById('config-include-date').checked;
+        const includeWarning = document.getElementById('config-include-warning').checked;
+        const includePresent = document.getElementById('config-include-present').checked;
+        const includeWaiting = document.getElementById('config-include-waiting').checked;
+        const includeAbsent = document.getElementById('config-include-absent').checked;
+
+        if (!this.data.config) this.data.config = {};
+        
+        this.data.config.attendanceCustomMessage = msg;
+        this.data.config.includeDate = includeDate;
+        this.data.config.includeWarning = includeWarning;
+        this.data.config.includePresent = includePresent;
+        this.data.config.includeWaiting = includeWaiting;
+        this.data.config.includeAbsent = includeAbsent;
+
+        await this.saveData();
+        alert('Configuração da lista salva com sucesso! 📋✅');
     }
 
     async saveAdminSettings() {
