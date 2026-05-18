@@ -23,7 +23,10 @@ const DEFAULT_DATA = {
         includeWarning: true,
         includePresent: true,
         includeWaiting: true,
-        includeAbsent: true
+        includeAbsent: true,
+        matchDay: 3,
+        matchTime: "21:00",
+        rotationDay: 4
     },
     appSettings: {
         name: "RESENHA F.C",
@@ -184,15 +187,27 @@ class FootballApp {
         const dateInput = document.getElementById('match-date-select');
         if (!dateInput) return;
 
-        const today = new Date();
-        let current = new Date(today);
-        const dayOfWeek = current.getDay();
-        let daysUntilWed = (3 + 7 - dayOfWeek) % 7;
+        const config = (this.data && this.data.config) || DEFAULT_DATA.config;
+        const matchDay = config.matchDay !== undefined ? parseInt(config.matchDay, 10) : 3; // default: Wednesday (3)
+        const rotationDay = config.rotationDay !== undefined ? parseInt(config.rotationDay, 10) : 4; // default: Thursday (4)
+        const matchTime = config.matchTime || "21:00";
 
-        if (daysUntilWed === 0 && today.getHours() >= 21) {
-            daysUntilWed = 7;
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+
+        // Calcular quantos dias somar para obter a data do jogo atual/próximo
+        let daysUntilMatch = (matchDay - dayOfWeek + 7) % 7;
+
+        // Se o dia do jogo for o mesmo dia da rotação, rotacionamos após o horário do jogo
+        if (matchDay === rotationDay && dayOfWeek === matchDay) {
+            const [matchHour, matchMin] = matchTime.split(':').map(Number);
+            if (today.getHours() >= (matchHour || 21)) {
+                daysUntilMatch = 7;
+            }
         }
-        current.setDate(today.getDate() + daysUntilWed);
+
+        let current = new Date(today);
+        current.setDate(today.getDate() + daysUntilMatch);
 
         const y = current.getFullYear();
         const m = String(current.getMonth() + 1).padStart(2, '0');
@@ -203,7 +218,11 @@ class FootballApp {
 
         // Atualizar texto do próximo jogo no dashboard
         const dashNext = document.getElementById('dash-next-game');
-        if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
+        if (dashNext) {
+            const weekdaysShort = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+            const dayLabel = weekdaysShort[matchDay];
+            dashNext.textContent = `${dayLabel}, ${d}/${m} - ${matchTime}`;
+        }
     }
 
     formatDateBR(dateString) {
@@ -1522,7 +1541,9 @@ class FootballApp {
         const dateObj = new Date(year, parseInt(month) - 1, day);
         
         const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-        return label.charAt(0).toUpperCase() + label.slice(1) + " - 21:00";
+        const config = (this.data && this.data.config) || DEFAULT_DATA.config;
+        const matchTime = config.matchTime || "21:00";
+        return label.charAt(0).toUpperCase() + label.slice(1) + ` - ${matchTime}`;
     }
 
     /* Finance Search */
@@ -1723,6 +1744,15 @@ class FootballApp {
         if (includePresentCb) includePresentCb.checked = this.data.config.includePresent !== false;
         if (includeWaitingCb) includeWaitingCb.checked = this.data.config.includeWaiting !== false;
         if (includeAbsentCb) includeAbsentCb.checked = this.data.config.includeAbsent !== false;
+
+        // Match settings values
+        const matchDayEl = document.getElementById('config-match-day');
+        const matchTimeEl = document.getElementById('config-match-time');
+        const rotationDayEl = document.getElementById('config-rotation-day');
+
+        if (matchDayEl) matchDayEl.value = this.data.config.matchDay !== undefined ? this.data.config.matchDay : 3;
+        if (matchTimeEl) matchTimeEl.value = this.data.config.matchTime || "21:00";
+        if (rotationDayEl) rotationDayEl.value = this.data.config.rotationDay !== undefined ? this.data.config.rotationDay : 4;
     }
 
     async saveAppSettings() {
@@ -1742,6 +1772,9 @@ class FootballApp {
         const includePresent = document.getElementById('config-include-present').checked;
         const includeWaiting = document.getElementById('config-include-waiting').checked;
         const includeAbsent = document.getElementById('config-include-absent').checked;
+        const matchDay = parseInt(document.getElementById('config-match-day').value, 10);
+        const matchTime = document.getElementById('config-match-time').value.trim() || "21:00";
+        const rotationDay = parseInt(document.getElementById('config-rotation-day').value, 10);
 
         if (!this.data.config) this.data.config = {};
         
@@ -1751,9 +1784,15 @@ class FootballApp {
         this.data.config.includePresent = includePresent;
         this.data.config.includeWaiting = includeWaiting;
         this.data.config.includeAbsent = includeAbsent;
+        this.data.config.matchDay = matchDay;
+        this.data.config.matchTime = matchTime;
+        this.data.config.rotationDay = rotationDay;
 
         await this.saveData();
-        alert('Configuração da lista salva com sucesso! 📋✅');
+        this.initMatchDate();
+        this.renderAttendance();
+        this.renderDashboard();
+        alert('Configuração da lista e cronograma salvas com sucesso! 📋📅✅');
     }
 
     async saveAdminSettings() {
