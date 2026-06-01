@@ -15,8 +15,32 @@ const messaging = firebase.messaging();
 messaging.onMessage((payload) => {
     console.log('Mensagem recebida em primeiro plano:', payload);
     if (payload.notification) {
-        // Se o usuário estiver com o app aberto, mostra um alerta na tela
-        alert(`🔔 NOVA MENSAGEM DO RESENHA FC\n\n${payload.notification.title}\n${payload.notification.body}`);
+        // Mostra um banner bonito no topo da tela para evitar bloqueios do iOS (alert() é bloqueado no PWA)
+        const toast = document.createElement('div');
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = 'var(--neon-blue)';
+        toast.style.color = 'white';
+        toast.style.padding = '16px 24px';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 10px 30px rgba(59,130,246,0.5)';
+        toast.style.zIndex = '999999';
+        toast.style.width = '90%';
+        toast.style.maxWidth = '400px';
+        toast.style.textAlign = 'center';
+        toast.style.animation = 'slideDown 0.5s ease-out forwards';
+        toast.innerHTML = \`
+            <div style="font-size: 24px; margin-bottom: 8px;">🔔</div>
+            <strong style="font-size: 16px; display: block; margin-bottom: 4px;">\${payload.notification.title}</strong>
+            <span style="font-size: 14px; opacity: 0.9;">\${payload.notification.body}</span>
+            <button onclick="this.parentElement.remove()" style="margin-top: 12px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 6px; width: 100%; cursor: pointer;">Fechar</button>
+        \`;
+        document.body.appendChild(toast);
+        
+        // Auto-fechar após 10 segundos
+        setTimeout(() => { if(toast.parentElement) toast.remove(); }, 10000);
     }
 });
 
