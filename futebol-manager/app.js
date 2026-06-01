@@ -2201,7 +2201,9 @@ class FootballApp {
         const select = document.getElementById('push-player-select');
         select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
         
-        const sortedPlayers = [...this.data.players].sort((a, b) => {
+        const sortedPlayers = [...this.data.players]
+            .filter(p => p.type === 'mensalista')
+            .sort((a, b) => {
             const nameA = a.nickname || a.fullName || '';
             const nameB = b.nickname || b.fullName || '';
             return nameA.localeCompare(nameB);
@@ -2239,7 +2241,7 @@ class FootballApp {
             }
         } catch (err) {
             console.error('Erro ao obter token:', err);
-            alert('Erro ao ativar notificações. Fale com o admin (Falta VAPID Key).');
+            alert('Erro ao ativar notificações. O Google bloqueou a geração do código.\n\nDetalhe técnico: ' + err.message);
         }
     }
 
