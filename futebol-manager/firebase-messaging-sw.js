@@ -2,7 +2,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBDrruu7PFK1xWJ8x77KaZSO-A1HxlRo1s",
+    apiKey: "AIzaSyBDrruu7PfK1xWJ8x77KaZSO-A1HxlRo1s",
     authDomain: "resenha-fc-3543b.firebaseapp.com",
     projectId: "resenha-fc-3543b",
     storageBucket: "resenha-fc-3543b.firebasestorage.app",
