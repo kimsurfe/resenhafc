@@ -503,7 +503,10 @@ class FootballApp {
             tr.innerHTML = `
                 <td data-label="#" style="color: var(--text-muted); font-weight: 700; font-size: 15px; width: 44px;">${rowNumber}</td>
                 <td data-label="Jogador">
-                    <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">${p.nickname || p.name}</div>
+                    <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">
+                        ${p.nickname || p.name}
+                        ${p.pushToken ? '<i class="ph ph-bell-ringing" style="color: var(--neon-purple); margin-left: 4px; font-size: 14px;" title="Recebe Notificações"></i>' : ''}
+                    </div>
                     <div style="font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px;">${p.fullName || ''}</div>
                 </td>
                 <td data-label="Posição">${p.position}</td>
@@ -1864,27 +1867,70 @@ class FootballApp {
 
         if (!this.data.customPushes) this.data.customPushes = [];
 
-        const id = 'push_' + Date.now();
         const scheduledFor = `${date}T${time}:00`;
 
-        this.data.customPushes.push({
-            id,
-            title,
-            body,
-            scheduledFor,
-            target,
-            createdAt: new Date().toISOString()
-        });
+        if (this.editingPushId) {
+            const index = this.data.customPushes.findIndex(p => p.id === this.editingPushId);
+            if (index !== -1) {
+                this.data.customPushes[index].title = title;
+                this.data.customPushes[index].body = body;
+                this.data.customPushes[index].scheduledFor = scheduledFor;
+                this.data.customPushes[index].target = target;
+            }
+        } else {
+            const id = 'push_' + Date.now();
+            this.data.customPushes.push({
+                id,
+                title,
+                body,
+                scheduledFor,
+                target,
+                createdAt: new Date().toISOString()
+            });
+        }
 
         await this.saveData();
         
+        this.cancelEditCustomPush();
+        this.renderCustomPushes();
+        alert('Disparo agendado com sucesso!');
+    }
+
+    editCustomPush(id) {
+        const push = (this.data.customPushes || []).find(p => p.id === id);
+        if (!push) return;
+
+        document.getElementById('custom-push-title').value = push.title || '';
+        document.getElementById('custom-push-body').value = push.body || '';
+        document.getElementById('custom-push-target').value = push.target || 'all';
+
+        if (push.scheduledFor) {
+            const [date, time] = push.scheduledFor.split('T');
+            document.getElementById('custom-push-date').value = date || '';
+            document.getElementById('custom-push-time').value = time.substring(0, 5) || '';
+        }
+
+        this.editingPushId = id;
+        document.getElementById('custom-push-btn-text').textContent = 'Salvar Edição';
+        document.getElementById('custom-push-cancel-btn').style.display = 'block';
+
+        // Scroll animado suave para o título do campo
+        document.getElementById('custom-push-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    cancelEditCustomPush() {
+        this.editingPushId = null;
         document.getElementById('custom-push-title').value = '';
         document.getElementById('custom-push-body').value = '';
         document.getElementById('custom-push-date').value = '';
         document.getElementById('custom-push-time').value = '';
+        document.getElementById('custom-push-target').value = 'all';
 
-        this.renderCustomPushes();
-        alert('Disparo agendado com sucesso!');
+        const btnText = document.getElementById('custom-push-btn-text');
+        if (btnText) btnText.textContent = 'Agendar Hora Exata';
+        
+        const cancelBtn = document.getElementById('custom-push-cancel-btn');
+        if (cancelBtn) cancelBtn.style.display = 'none';
     }
 
     renderCustomPushes() {
@@ -1924,9 +1970,14 @@ class FootballApp {
                         ${dateStr} às ${timeStr} • Alvo: ${targetStr}
                     </div>
                 </div>
-                <button onclick="app.deleteCustomPush('${p.id}')" style="background: transparent; border: none; color: var(--neon-red); cursor: pointer; padding: 8px;">
-                    <i class="ph ph-trash" style="font-size: 18px;"></i>
-                </button>
+                <div style="display: flex; gap: 4px;">
+                    <button onclick="app.editCustomPush('${p.id}')" style="background: transparent; border: none; color: var(--neon-blue); cursor: pointer; padding: 8px;">
+                        <i class="ph ph-pencil-simple" style="font-size: 18px;"></i>
+                    </button>
+                    <button onclick="app.deleteCustomPush('${p.id}')" style="background: transparent; border: none; color: var(--neon-red); cursor: pointer; padding: 8px;">
+                        <i class="ph ph-trash" style="font-size: 18px;"></i>
+                    </button>
+                </div>
             `;
             list.appendChild(li);
         });
