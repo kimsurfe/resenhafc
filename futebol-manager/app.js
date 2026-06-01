@@ -2196,7 +2196,7 @@ class FootballApp {
             const token = await messaging.getToken({ vapidKey: 'BH4F-JK-x-WRnsk4W9L1bg70I7zTevMXgkKKdVHCo7XKR_mtXebB3Oyui5-LU6Aei22C4Ji_-lJgAPQAMQ_Vt6E' });
             
             if (token) {
-                const playerIndex = this.data.players.findIndex(p => p.id === playerId);
+                const playerIndex = this.data.players.findIndex(p => String(p.id) === String(playerId));
                 if (playerIndex !== -1) {
                     this.data.players[playerIndex].pushToken = token;
                     await this.saveData();
