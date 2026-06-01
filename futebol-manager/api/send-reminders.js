@@ -108,22 +108,29 @@ export default async function handler(req, res) {
             return res.status(200).json({ message: 'No tokens to notify.' });
         }
 
-        // Send multicast message
-        const message = {
-            notification: { title, body },
-            tokens: tokensToNotify,
-            webpush: {
-                fcmOptions: {
-                    link: 'https://gestaoresenhafc.vercel.app/'
+        // Send messages individually
+        const promises = tokensToNotify.map(token => {
+            const message = {
+                notification: { title, body },
+                token: token,
+                webpush: {
+                    fcmOptions: {
+                        link: 'https://gestaoresenhafc.vercel.app/'
+                    }
                 }
-            }
-        };
+            };
+            return messaging.send(message)
+                .then(() => ({ success: true }))
+                .catch(err => ({ success: false, error: err }));
+        });
 
-        const response = await messaging.sendMulticast(message);
+        const responses = await Promise.all(promises);
+        const successCount = responses.filter(r => r.success).length;
+        const failureCount = responses.length - successCount;
         
         return res.status(200).json({ 
             success: true, 
-            message: `Sent ${response.successCount} messages. Failed: ${response.failureCount}` 
+            message: `Sent ${successCount} messages. Failed: ${failureCount}` 
         });
 
     } catch (error) {

@@ -86,31 +86,38 @@ export default async function handler(req, res) {
             }
 
             if (tokens.length > 0) {
-                const message = {
-                    notification: { title: push.title, body: push.body },
-                    tokens: tokens,
-                    webpush: { fcmOptions: { link: 'https://gestaoresenhafc.vercel.app/' } }
-                };
+                const promises = tokens.map(token => {
+                    const message = {
+                        notification: { title: push.title, body: push.body },
+                        token: token,
+                        webpush: { fcmOptions: { link: 'https://gestaoresenhafc.vercel.app/' } }
+                    };
+                    return messaging.send(message)
+                        .then(() => ({ success: true }))
+                        .catch(err => ({ success: false, error: err }));
+                });
+
                 try {
-                    const response = await messaging.sendMulticast(message);
-                    totalSent += response.successCount;
+                    const responses = await Promise.all(promises);
+                    const successCount = responses.filter(r => r.success).length;
+                    const failureCount = responses.length - successCount;
+                    totalSent += successCount;
                     
-                    if (response.failureCount > 0) {
+                    if (failureCount > 0) {
                         const failedReasons = [];
-                        response.responses.forEach(resp => {
+                        responses.forEach(resp => {
                             if (!resp.success && resp.error) {
                                 failedReasons.push(resp.error.message);
                             }
                         });
                         
-                        // Delete processed schedule before returning early
                         await docRef.update({
                             customPushes: remainingPushes
                         });
                         
                         return res.status(200).json({ 
                             success: true, 
-                            message: `Tokens found, but Firebase refused to send. Errors: ${failedReasons.join(', ')}`,
+                            message: `Disparo feito! Entregues: ${successCount}. Falhas: ${failedReasons.join(', ')}`,
                             remaining: remainingPushes.length
                         });
                     }
