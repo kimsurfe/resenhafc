@@ -179,7 +179,11 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
 }
+
+@keyframes ptr-spin { 100% { transform: rotate(360deg); } }
+.ptr-spin { animation: ptr-spin 1s linear infinite !important; }
 
 .topbar {
     display: flex;

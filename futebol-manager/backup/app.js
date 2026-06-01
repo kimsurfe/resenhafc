@@ -17,30 +17,7 @@ const DEFAULT_DATA = {
     attendance: {},
     config: {
         mensalValue: 50.00,
-        avulsoValue: 20.00,
-        attendanceCustomMessage: `Avulsos deverão pagar antes da partida para o pix:\n\n13997741390\nLEANDRO MORAES DA SILVA\n\nPara confirmar presença, acessar o link abaixo:\nwww.gestaoresenhafc.vercel.app`,
-        includeDate: true,
-        includeWarning: true,
-        includePresent: true,
-        includeWaiting: true,
-        includeAbsent: true,
-        matchDay: 3,
-        matchTime: "21:00",
-        rotationDay: 4
-    },
-    appSettings: {
-        name: "RESENHA F.C",
-        logo: "resenha_logotipo.jpg"
-    },
-    adminSettings: {
-        user: "kim",
-        pass: "220688"
-    },
-    notifications: {
-        notifyOnOpen: true,
-        notifyDay3: false,
-        notifyDay2: false,
-        notifyDay1: false
+        avulsoValue: 20.00
     }
 };
 
@@ -48,9 +25,7 @@ class FootballApp {
     constructor() {
         this.data = DEFAULT_DATA;
         this.financesHidden = false;
-        this.showFullRanking = false;
         this.drawSelections = new Set();
-        this.playerPaymentFilter = 'all'; // New state for filtering
         this.docId = 'mainData'; // Documento único no Firestore
         this.init();
     }
@@ -60,9 +35,7 @@ class FootballApp {
         this.updateDate();
         this.initMatchDate();
         await this.loadDataFromCloud();
-        this.loadAppSettings();
         this.checkAuth();
-        this.initPullToRefresh();
         this.renderAll();
     }
 
@@ -161,10 +134,7 @@ class FootballApp {
             const u = document.getElementById('admin-user').value;
             const p = document.getElementById('admin-pass').value;
             const err = document.getElementById('admin-login-error');
-            
-            const admin = this.data.adminSettings || DEFAULT_DATA.adminSettings;
-            
-            if (u === admin.user && p === admin.pass) {
+            if (u === 'kim' && p === '220688') {
                 localStorage.setItem('resenha_admin', 'true');
                 this.checkAuth();
                 document.getElementById('login-modal').classList.remove('active');
@@ -194,27 +164,15 @@ class FootballApp {
         const dateInput = document.getElementById('match-date-select');
         if (!dateInput) return;
 
-        const config = (this.data && this.data.config) || DEFAULT_DATA.config;
-        const matchDay = config.matchDay !== undefined ? parseInt(config.matchDay, 10) : 3; // default: Wednesday (3)
-        const rotationDay = config.rotationDay !== undefined ? parseInt(config.rotationDay, 10) : 4; // default: Thursday (4)
-        const matchTime = config.matchTime || "21:00";
-
         const today = new Date();
-        const dayOfWeek = today.getDay();
-
-        // Calcular quantos dias somar para obter a data do jogo atual/próximo
-        let daysUntilMatch = (matchDay - dayOfWeek + 7) % 7;
-
-        // Se o dia do jogo for o mesmo dia da rotação, rotacionamos após o horário do jogo
-        if (matchDay === rotationDay && dayOfWeek === matchDay) {
-            const [matchHour, matchMin] = matchTime.split(':').map(Number);
-            if (today.getHours() >= (matchHour || 21)) {
-                daysUntilMatch = 7;
-            }
-        }
-
         let current = new Date(today);
-        current.setDate(today.getDate() + daysUntilMatch);
+        const dayOfWeek = current.getDay();
+        let daysUntilWed = (3 + 7 - dayOfWeek) % 7;
+
+        if (daysUntilWed === 0 && today.getHours() >= 21) {
+            daysUntilWed = 7;
+        }
+        current.setDate(today.getDate() + daysUntilWed);
 
         const y = current.getFullYear();
         const m = String(current.getMonth() + 1).padStart(2, '0');
@@ -225,11 +183,7 @@ class FootballApp {
 
         // Atualizar texto do próximo jogo no dashboard
         const dashNext = document.getElementById('dash-next-game');
-        if (dashNext) {
-            const weekdaysShort = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-            const dayLabel = weekdaysShort[matchDay];
-            dashNext.textContent = `${dayLabel}, ${d}/${m} - ${matchTime}`;
-        }
+        if (dashNext) dashNext.textContent = `Quarta, ${d}/${m} - 21:00`;
     }
 
     formatDateBR(dateString) {
@@ -381,13 +335,14 @@ class FootballApp {
         let totalAvulsos = 0;
         let totalGastos = 0;
 
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
+        // Considerar todo o semestre ou todas transações (já que o app está iniciando)
+        // O usuário pediu "resumo financeiro do semestre".
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
         this.data.transactions.forEach(t => {
-            const tDate = new Date(t.date + 'T12:00:00');
-            if (tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear) {
+            const tDate = new Date(t.date);
+            if (tDate >= sixMonthsAgo) {
                 if (t.type === 'in') {
                     if (t.description.toLowerCase().includes('avulso')) {
                         totalAvulsos += t.amount;
@@ -465,15 +420,8 @@ class FootballApp {
         tbody.innerHTML = '';
         
         const sorted = this.getSortedPlayers();
-        let mensalistas = sorted.filter(p => p.type === 'mensalista');
+        const mensalistas = sorted.filter(p => p.type === 'mensalista');
         
-        // Apply Payment Filter
-        if (this.playerPaymentFilter === 'paid') {
-            mensalistas = mensalistas.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro');
-        } else if (this.playerPaymentFilter === 'pending') {
-            mensalistas = mensalistas.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro');
-        }
-
         let countMensalista = 1;
 
         const renderRow = (p, rowNumber) => {
@@ -645,75 +593,48 @@ class FootballApp {
             else if (status === 'absent') absent.push(line);
         });
 
-        // Garantir que as configurações existam
-        if (!this.data.config) this.data.config = {};
-        const config = this.data.config;
-
-        let parts = [];
-
-        // 1. Título Fixo da Lista
-        parts.push(`⚽ *RESENHA F.C - Lista de Presença*`);
-
-        // 2. Data da Partida (se ativa)
-        const includeDate = config.includeDate !== false;
-        if (includeDate) {
-            parts.push(`📅 Data: ${dateText}`);
+        let text = `⚽ *RESENHA F.C - Lista de Presença*\n\n📅 Data: ${dateText}\n\n`;
+        
+        const [year, month, dayStr] = dateValue.split('-');
+        const dayNum = parseInt(dayStr, 10);
+        const dateObj = new Date(year, parseInt(month) - 1, dayNum);
+        
+        // Verifica se é a primeira quarta-feira do mês (dia 3 e nos primeiros 7 dias do mês)
+        if (dateObj.getDay() === 3 && dayNum <= 7) {
+            text += `⚠️🚨 *Semana de pagamento do mensal* 🚨⚠️\n\n`;
         }
 
-        // 3. Texto Adicional / PIX (editado pelo usuário)
-        const customMessage = config.attendanceCustomMessage || '';
-        if (customMessage.trim()) {
-            // Determinar se é semana de pagamento e se o aviso está ativo
-            const includeWarning = config.includeWarning !== false;
-            const [year, month, dayStr] = dateValue.split('-');
-            const dayNum = parseInt(dayStr, 10);
-            const dateObj = new Date(year, parseInt(month) - 1, dayNum);
-            
-            let warningText = '';
-            if (includeWarning && dateObj.getDay() === 3 && dayNum <= 7) {
-                warningText = `⚠️🚨 *Semana de pagamento do mensal* 🚨⚠️\n\n`;
-            }
-            parts.push(warningText + customMessage);
-        }
+        text += `*Avulsos deverão pagar antes da partida para o pix:*\n\n`;
+        text += `*13997741390*\n`;
+        text += `LEANDRO MORAES DA SILVA\n\n\n`;
 
         const mensalistas = this.data.players.filter(p => p.type === 'mensalista');
         const totalM = mensalistas.length;
+        const totalPresentLines = Math.max(totalM, present.length);
+        const totalAbsentLines = Math.max(Math.ceil(totalM / 2), absent.length);
 
-        // 4. Lista de Presentes (se ativa)
-        const includePresent = config.includePresent !== false;
-        if (includePresent) {
-            let presentListStr = `✅ *Presentes (${present.length})*`;
-            present.forEach((name, idx) => {
-                presentListStr += `\n${idx + 1}. ${name}`;
-            });
-            // Adiciona exatamente uma linha em branco para o próximo se inscrever
-            presentListStr += `\n${present.length + 1}.`;
-            parts.push(presentListStr);
-        }
-
-        // 5. Lista de Espera (se ativa)
-        const includeWaiting = config.includeWaiting !== false;
-        if (includeWaiting) {
-            let waitingListStr = `📋 *Lista de espera (avulsos)*`;
-            for (let i = 1; i <= 5; i++) {
-                waitingListStr += `\n${i}.`;
+        text += `✅ *Presentes (${present.length})*\n`;
+        for (let i = 0; i < totalPresentLines; i++) {
+            if (i < present.length) {
+                text += `${i + 1}. ${present[i]}\n`;
+            } else {
+                text += `${i + 1}.\n`;
             }
-            parts.push(waitingListStr);
         }
 
-        // 6. Lista de Ausentes (se ativa)
-        const includeAbsent = config.includeAbsent !== false;
-        if (includeAbsent) {
-            let absentListStr = `❌ *Ausentes (${absent.length})*`;
-            absent.forEach((name, idx) => {
-                absentListStr += `\n${idx + 1}. ${name}`;
-            });
-            // Adiciona exatamente uma linha em branco para o próximo se inscrever
-            absentListStr += `\n${absent.length + 1}.`;
-            parts.push(absentListStr);
+        text += `\n📋 *Lista de espera (avulsos)*\n`;
+        for (let i = 1; i <= 5; i++) {
+            text += `${i}.\n`;
         }
 
-        let text = parts.join('\n\n');
+        text += `\n❌ *Ausentes (${absent.length})*\n`;
+        for (let i = 0; i < totalAbsentLines; i++) {
+            if (i < absent.length) {
+                text += `${i + 1}. ${absent[i]}\n`;
+            } else {
+                text += `${i + 1}.\n`;
+            }
+        }
 
         const copyFallback = (t) => {
             const textArea = document.createElement("textarea");
@@ -866,11 +787,6 @@ class FootballApp {
             }
         });
 
-        // Expandir o ranking completo temporariamente para a foto
-        const previousShowFullRanking = this.showFullRanking;
-        this.showFullRanking = true;
-        this.renderRanking();
-
         try {
             const blobPromise = new Promise(async (resolve, reject) => {
                 try {
@@ -931,10 +847,6 @@ class FootballApp {
             if(shareBtn && shareBtn.innerHTML !== '<i class="ph ph-check-circle" style="color: var(--neon-green)"></i>') {
                 shareBtn.innerHTML = oldBtnHtml;
             }
-        } finally {
-            // Restaura o ranking para o estado anterior
-            this.showFullRanking = previousShowFullRanking;
-            this.renderRanking();
         }
     }
 
@@ -1489,28 +1401,8 @@ class FootballApp {
                 return a.name.localeCompare(b.name);
             });
 
-        // Exibir contêiner de expansão apenas se houver mais de 10 itens
-        const toggleContainer = document.getElementById('dash-ranking-toggle-container');
-        if (toggleContainer) {
-            if (ranking.length > 10) {
-                toggleContainer.style.display = 'block';
-                const btn = document.getElementById('btn-toggle-ranking');
-                if (btn) {
-                    if (this.showFullRanking) {
-                        btn.innerHTML = '<i class="ph ph-eye-slash"></i> Ver Menos';
-                    } else {
-                        btn.innerHTML = '<i class="ph ph-eye"></i> Ver Mais';
-                    }
-                }
-            } else {
-                toggleContainer.style.display = 'none';
-            }
-        }
-
-        const itemsToShow = this.showFullRanking ? ranking : ranking.slice(0, 10);
-
         // 3. Renderizar
-        rankingContainer.innerHTML = itemsToShow.length ? itemsToShow.map((item, index) => {
+        rankingContainer.innerHTML = ranking.length ? ranking.map((item, index) => {
             let rankLabel = `${index + 1}º`;
             let color = 'var(--text-muted)';
             
@@ -1535,11 +1427,6 @@ class FootballApp {
         }).join('') : '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 20px;">Nenhuma presença confirmada no histórico.</p>';
     }
 
-    toggleRankingExpand() {
-        this.showFullRanking = !this.showFullRanking;
-        this.renderRanking();
-    }
-
     getSelectedMatchDateText() {
         const dateInput = document.getElementById('match-date-select');
         if (!dateInput || !dateInput.value) return '';
@@ -1548,481 +1435,7 @@ class FootballApp {
         const dateObj = new Date(year, parseInt(month) - 1, day);
         
         const label = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-        const config = (this.data && this.data.config) || DEFAULT_DATA.config;
-        const matchTime = config.matchTime || "21:00";
-        return label.charAt(0).toUpperCase() + label.slice(1) + ` - ${matchTime}`;
-    }
-
-    /* Finance Search */
-    filterTransactions() {
-        const query = document.getElementById('search-finance').value.toLowerCase();
-        const tbody = document.getElementById('financeiro-tbody');
-        if (!tbody) return;
-        
-        const rows = tbody.getElementsByTagName('tr');
-        for (let row of rows) {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(query) ? '' : 'none';
-        }
-    }
-
-    /* Payment Filters for Mensalistas View */
-    setPlayerPaymentFilter(filter) {
-        this.playerPaymentFilter = filter;
-        
-        // Update button states
-        document.querySelectorAll('.player-filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-            btn.style.background = 'rgba(255, 255, 255, 0.03)';
-            btn.style.color = 'var(--text-muted)';
-            btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-        });
-
-        const activeBtn = document.getElementById(`filter-${filter}`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
-            activeBtn.style.background = 'var(--neon-blue)';
-            activeBtn.style.color = '#000';
-            activeBtn.style.borderColor = 'var(--neon-blue)';
-        }
-
-        this.renderPlayers();
-    }
-
-    /* Share Defaulters (Monthly Payment List) */
-    shareDefaulters() {
-        const now = new Date();
-        const monthName = now.toLocaleDateString('pt-BR', { month: 'long' });
-        const year = now.getFullYear();
-        
-        const sortedPlayers = this.getSortedPlayers().filter(p => p.type === 'mensalista');
-        const paid = sortedPlayers.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro');
-        const pending = sortedPlayers.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro');
-        
-        let text = `💰 *RESENHA F.C - Mensalidade (${monthName.toUpperCase()} / ${year})* 💰\n\n`;
-        
-        text += `✅ *PAGOS (${paid.length})*\n`;
-        paid.forEach((p, idx) => {
-            text += `${idx + 1}. ${p.nickname || p.name}\n`;
-        });
-
-        text += `\n⏳ *PENDENTES (${pending.length})*\n`;
-        pending.forEach((p, idx) => {
-            const mention = p.phone ? ` @${p.phone.replace(/\D/g, '')}` : '';
-            text += `${idx + 1}. ${p.nickname || p.name}${mention}\n`;
-        });
-
-        text += `\n*PIX PARA PAGAMENTO:*\n`;
-        text += `*13997741390*\n`;
-        text += `LEANDRO MORAES DA SILVA\n\n`;
-        text += `_Favor regularizar para mantermos o caixa em dia! ⚽💰_`;
-
-        const copyFallback = (t) => {
-            const textArea = document.createElement("textarea");
-            textArea.value = t;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                alert('Lista de mensalidades copiada! Cole no grupo do WhatsApp.');
-            } catch (err) {
-                alert('Erro ao copiar.');
-            }
-            document.body.removeChild(textArea);
-        };
-
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Lista de mensalidades copiada! Cole no grupo do WhatsApp.');
-            }).catch(() => copyFallback(text));
-        } else {
-            copyFallback(text);
-        }
-    }
-
-    /* App Settings */
-    updateAppIdentityPreview() {
-        const nameInput = document.getElementById('config-app-name');
-        const logoInput = document.getElementById('config-app-logo');
-        const previewImg = document.getElementById('logo-preview');
-        
-        if (previewImg && logoInput.value) {
-            previewImg.src = logoInput.value;
-        }
-    }
-
-    handleLogoUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_SIZE = 400; // Tamanho ideal para logotipo de alta qualidade e baixo peso
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_SIZE) {
-                        height *= MAX_SIZE / width;
-                        width = MAX_SIZE;
-                    }
-                } else {
-                    if (height > MAX_SIZE) {
-                        width *= MAX_SIZE / height;
-                        height = MAX_SIZE;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                
-                // Melhorar qualidade da redimensionamento
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // Converte para JPEG com 80% de qualidade (Equilíbrio perfeito entre peso e nitidez)
-                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-                
-                document.getElementById('config-app-logo').value = compressedBase64;
-                document.getElementById('logo-preview').src = compressedBase64;
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    loadAppSettings() {
-        const settings = this.data.appSettings || DEFAULT_DATA.appSettings;
-        
-        // Update Sidebar
-        const sidebarLogo = document.getElementById('app-logo-sidebar');
-        const sidebarName = document.getElementById('app-name-sidebar');
-        if (sidebarLogo) sidebarLogo.src = settings.logo || 'resenha_logotipo.jpg';
-        if (sidebarName) sidebarName.textContent = settings.name || 'RESENHA F.C';
-        
-        // Update Mobile
-        const mobileLogo = document.getElementById('app-logo-mobile');
-        const mobileName = document.getElementById('app-name-mobile');
-        if (mobileLogo) mobileLogo.src = settings.logo || 'resenha_logotipo.jpg';
-        if (mobileName) mobileName.textContent = settings.name || 'RESENHA F.C';
-
-        // Update Inputs if in Settings View
-        const nameInput = document.getElementById('config-app-name');
-        const logoInput = document.getElementById('config-app-logo');
-        const previewImg = document.getElementById('logo-preview');
-        
-        if (nameInput) nameInput.value = settings.name || 'RESENHA F.C';
-        if (logoInput) logoInput.value = settings.logo || 'resenha_logotipo.jpg';
-        if (previewImg) previewImg.src = settings.logo || 'resenha_logotipo.jpg';
-
-        // Update Admin Settings Inputs
-        const adminSettings = this.data.adminSettings || DEFAULT_DATA.adminSettings;
-        const configUser = document.getElementById('config-admin-user');
-        const configPass = document.getElementById('config-admin-pass');
-        if (configUser) configUser.value = adminSettings.user;
-        if (configPass) configPass.value = adminSettings.pass;
-
-        // Update Attendance Msg & Checkboxes Input
-        if (!this.data.config) this.data.config = {};
-        
-        // Custom message default fallback
-        if (this.data.config.attendanceCustomMessage === undefined) {
-            this.data.config.attendanceCustomMessage = DEFAULT_DATA.config.attendanceCustomMessage;
-        }
-        
-        const templateMsgInput = document.getElementById('config-attendance-msg');
-        if (templateMsgInput) templateMsgInput.value = this.data.config.attendanceCustomMessage;
-
-        // Checkboxes defaults and updates
-        const includeDateCb = document.getElementById('config-include-date');
-        const includeWarningCb = document.getElementById('config-include-warning');
-        const includePresentCb = document.getElementById('config-include-present');
-        const includeWaitingCb = document.getElementById('config-include-waiting');
-        const includeAbsentCb = document.getElementById('config-include-absent');
-
-        if (includeDateCb) includeDateCb.checked = this.data.config.includeDate !== false;
-        if (includeWarningCb) includeWarningCb.checked = this.data.config.includeWarning !== false;
-        if (includePresentCb) includePresentCb.checked = this.data.config.includePresent !== false;
-        if (includeWaitingCb) includeWaitingCb.checked = this.data.config.includeWaiting !== false;
-        if (includeAbsentCb) includeAbsentCb.checked = this.data.config.includeAbsent !== false;
-
-        // Match settings values
-        const matchDayEl = document.getElementById('config-match-day');
-        const matchTimeEl = document.getElementById('config-match-time');
-        const rotationDayEl = document.getElementById('config-rotation-day');
-
-        if (matchDayEl) matchDayEl.value = this.data.config.matchDay !== undefined ? this.data.config.matchDay : 3;
-        if (matchTimeEl) matchTimeEl.value = this.data.config.matchTime || "21:00";
-        if (rotationDayEl) rotationDayEl.value = this.data.config.rotationDay !== undefined ? this.data.config.rotationDay : 4;
-
-        // Update Notification Settings
-        if (!this.data.notifications) this.data.notifications = DEFAULT_DATA.notifications;
-        const notifyOpenCb = document.getElementById('config-notify-open');
-        
-        if (notifyOpenCb) notifyOpenCb.checked = this.data.notifications.notifyOnOpen;
-        
-        const cb3 = document.getElementById('config-notify-day-3');
-        const cb2 = document.getElementById('config-notify-day-2');
-        const cb1 = document.getElementById('config-notify-day-1');
-        
-        if (cb3) cb3.checked = this.data.notifications.notifyDay3;
-        if (cb2) cb2.checked = this.data.notifications.notifyDay2;
-        if (cb1) cb1.checked = this.data.notifications.notifyDay1;
-    }
-
-    async saveAppSettings() {
-        const name = document.getElementById('config-app-name').value || "RESENHA F.C";
-        const logo = document.getElementById('config-app-logo').value || "resenha_logotipo.jpg";
-        
-        this.data.appSettings = { name, logo };
-        await this.saveData();
-        this.loadAppSettings();
-        alert('Identidade do clube salva! ✅');
-    }
-
-    async saveAttendanceTemplate() {
-        const msg = document.getElementById('config-attendance-msg').value;
-        const includeDate = document.getElementById('config-include-date').checked;
-        const includeWarning = document.getElementById('config-include-warning').checked;
-        const includePresent = document.getElementById('config-include-present').checked;
-        const includeWaiting = document.getElementById('config-include-waiting').checked;
-        const includeAbsent = document.getElementById('config-include-absent').checked;
-        const matchDay = parseInt(document.getElementById('config-match-day').value, 10);
-        const matchTime = document.getElementById('config-match-time').value.trim() || "21:00";
-        const rotationDay = parseInt(document.getElementById('config-rotation-day').value, 10);
-
-        if (!this.data.config) this.data.config = {};
-        
-        this.data.config.attendanceCustomMessage = msg;
-        this.data.config.includeDate = includeDate;
-        this.data.config.includeWarning = includeWarning;
-        this.data.config.includePresent = includePresent;
-        this.data.config.includeWaiting = includeWaiting;
-        this.data.config.includeAbsent = includeAbsent;
-        this.data.config.matchDay = matchDay;
-        this.data.config.matchTime = matchTime;
-        this.data.config.rotationDay = rotationDay;
-
-        await this.saveData();
-        this.initMatchDate();
-        this.renderAttendance();
-        this.renderDashboard();
-        alert('Configuração da lista e cronograma salvas com sucesso! 📋📅✅');
-    }
-
-    async saveAdminSettings() {
-        const user = document.getElementById('config-admin-user').value.trim();
-        const pass = document.getElementById('config-admin-pass').value.trim();
-
-        if (!user || !pass) {
-            alert("Usuário e senha não podem estar vazios!");
-            return;
-        }
-
-        if (confirm("Deseja realmente alterar os dados de acesso? Você precisará usar os novos dados no próximo login.")) {
-            this.data.adminSettings = { user, pass };
-            await this.saveData();
-            alert("Dados de acesso atualizados com sucesso! 🛡️");
-        }
-    }
-
-    async saveNotificationSettings() {
-        const notifyOnOpen = document.getElementById('config-notify-open').checked;
-        const notifyDay3 = document.getElementById('config-notify-day-3').checked;
-        const notifyDay2 = document.getElementById('config-notify-day-2').checked;
-        const notifyDay1 = document.getElementById('config-notify-day-1').checked;
-        
-        if (!this.data.notifications) this.data.notifications = {};
-        
-        this.data.notifications.notifyOnOpen = notifyOnOpen;
-        this.data.notifications.notifyDay3 = notifyDay3;
-        this.data.notifications.notifyDay2 = notifyDay2;
-        this.data.notifications.notifyDay1 = notifyDay1;
-
-        await this.saveData();
-        alert('Configurações de Notificação salvas com sucesso! 🔔✅');
-    }
-
-    toggleAdminPasswordVisibility() {
-        const passInput = document.getElementById('config-admin-pass');
-        const icon = document.getElementById('admin-pass-toggle-icon');
-        if (passInput && icon) {
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                icon.classList.remove('ph-eye');
-                icon.classList.add('ph-eye-slash');
-            } else {
-                passInput.type = 'password';
-                icon.classList.remove('ph-eye-slash');
-                icon.classList.add('ph-eye');
-            }
-        }
-    }
-
-    /* Menu Mais (Mobile) */
-    toggleMoreMenu() {
-        const overlay = document.getElementById('more-menu-overlay');
-        if (overlay) overlay.classList.toggle('active');
-    }
-
-    goToView(target) {
-        // Fechar o menu mais se estiver aberto
-        const overlay = document.getElementById('more-menu-overlay');
-        if (overlay) overlay.classList.remove('active');
-
-        // Disparar o clique no botão de navegação correspondente (ou fazer manual)
-        const navItem = document.querySelector(`.nav-item[data-target="${target}"], .nav-item-mobile[data-target="${target}"]`);
-        if (navItem) {
-            navItem.click();
-        } else {
-            // Fallback manual se não houver botão visível
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            const section = document.getElementById(target);
-            if (section) section.classList.add('active');
-        }
-    }
-
-    initPullToRefresh() {
-        const mainContent = document.getElementById('main-content');
-        if (!mainContent) return;
-
-        const ptr = document.createElement('div');
-        ptr.id = 'ptr-indicator';
-        ptr.style.cssText = 'position: absolute; top: -60px; left: 0; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; color: var(--text-muted); font-weight: 600; z-index: 100; opacity: 0; transition: opacity 0.2s;';
-        ptr.innerHTML = '<i class="ph ph-arrow-down" id="ptr-icon" style="font-size: 20px; transition: transform 0.3s;"></i> <span id="ptr-text" style="font-size: 14px;">Puxe para atualizar</span>';
-        
-        mainContent.style.position = 'relative';
-        mainContent.prepend(ptr);
-
-        let startY = 0;
-        let isPulling = false;
-        const threshold = 70;
-        const topbar = document.querySelector('.topbar');
-        const contentWrapper = document.querySelector('.content-wrapper');
-
-        mainContent.addEventListener('touchstart', (e) => {
-            if (mainContent.scrollTop === 0) {
-                startY = e.touches[0].clientY;
-                isPulling = true;
-                if(topbar) topbar.style.transition = 'none';
-                if(contentWrapper) contentWrapper.style.transition = 'none';
-                ptr.style.transition = 'none';
-                ptr.style.opacity = '1';
-            }
-        }, { passive: true });
-
-        mainContent.addEventListener('touchmove', (e) => {
-            if (!isPulling) return;
-            const currentY = e.touches[0].clientY;
-            let pullDistance = currentY - startY;
-
-            if (pullDistance > 0 && mainContent.scrollTop === 0) {
-                const visualPull = Math.min(pullDistance * 0.4, 120);
-                
-                if(topbar) topbar.style.transform = `translateY(${visualPull}px)`;
-                if(contentWrapper) contentWrapper.style.transform = `translateY(${visualPull}px)`;
-                ptr.style.transform = `translateY(${visualPull}px)`;
-                
-                const ptrIcon = document.getElementById('ptr-icon');
-                const ptrText = document.getElementById('ptr-text');
-                
-                if (visualPull >= threshold) {
-                    if(ptrIcon) ptrIcon.style.transform = 'rotate(180deg)';
-                    if(ptrText) ptrText.textContent = 'Solte para atualizar';
-                } else {
-                    if(ptrIcon) ptrIcon.style.transform = 'rotate(0deg)';
-                    if(ptrText) ptrText.textContent = 'Puxe para atualizar';
-                }
-            } else {
-                isPulling = false;
-            }
-        }, { passive: true });
-
-        mainContent.addEventListener('touchend', async () => {
-            if (!isPulling) return;
-            isPulling = false;
-            
-            if(topbar) topbar.style.transition = 'transform 0.3s ease-out';
-            if(contentWrapper) contentWrapper.style.transition = 'transform 0.3s ease-out';
-            ptr.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-
-            const transformMatch = topbar ? topbar.style.transform.match(/translateY\((.*?)px\)/) : null;
-            const visualPull = transformMatch ? parseFloat(transformMatch[1]) : 0;
-
-            if (visualPull >= threshold) {
-                const ptrText = document.getElementById('ptr-text');
-                const ptrIcon = document.getElementById('ptr-icon');
-                
-                if(ptrText) ptrText.textContent = 'Atualizando...';
-                if(ptrIcon) {
-                    ptrIcon.className = 'ph ph-spinner-gap ptr-spin';
-                    ptrIcon.style.transform = 'rotate(0deg)';
-                }
-                
-                if(topbar) topbar.style.transform = `translateY(60px)`;
-                if(contentWrapper) contentWrapper.style.transform = `translateY(60px)`;
-                ptr.style.transform = `translateY(60px)`;
-                
-                try {
-                    await this.loadDataFromCloud();
-                    this.renderAll();
-                } catch(err) {
-                    console.error(err);
-                }
-
-                setTimeout(() => {
-                    const icon = document.getElementById('ptr-icon');
-                    const text = document.getElementById('ptr-text');
-                    if(icon) {
-                        icon.className = 'ph ph-arrow-down';
-                        icon.style.transform = 'rotate(0deg)';
-                    }
-                    if(text) text.textContent = 'Puxe para atualizar';
-                    ptr.style.opacity = '0';
-                    if(topbar) topbar.style.transform = `translateY(0)`;
-                    if(contentWrapper) contentWrapper.style.transform = `translateY(0)`;
-                    ptr.style.transform = `translateY(0)`;
-                }, 500);
-
-            } else {
-                ptr.style.opacity = '0';
-                if(topbar) topbar.style.transform = `translateY(0)`;
-                if(contentWrapper) contentWrapper.style.transform = `translateY(0)`;
-                ptr.style.transform = `translateY(0)`;
-            }
-        });
-    }
-
-    logout() {
-        localStorage.removeItem('resenha_admin');
-        this.checkAuth();
-        
-        // Fechar menus abertos
-        const overlay = document.getElementById('more-menu-overlay');
-        if (overlay) overlay.classList.remove('active');
-
-        // Voltar para o Dashboard
-        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-        const dash = document.getElementById('dashboard');
-        if (dash) dash.classList.add('active');
-        
-        const pageTitle = document.getElementById('page-title');
-        if (pageTitle) pageTitle.textContent = 'Dashboard';
-        
-        // Resetar itens ativos na nav
-        document.querySelectorAll('.nav-item, .nav-item-mobile').forEach(b => {
-            if (b.dataset.target === 'dashboard') b.classList.add('active');
-            else b.classList.remove('active');
-        });
-
-        this.renderAll();
-        alert('Você saiu da conta com sucesso. 👋');
+        return label.charAt(0).toUpperCase() + label.slice(1) + " - 21:00";
     }
 }
 

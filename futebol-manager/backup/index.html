@@ -109,12 +109,8 @@ body {
     text-shadow: 0 0 15px var(--neon-green-glow);
 }
 
-.logo img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--neon-green);
+.logo i {
+    font-size: 32px;
 }
 
 .nav-menu {
@@ -759,11 +755,6 @@ body {
     display: none !important;
 }
 
-/* Ocultar elementos mobile por padrão no Desktop */
-.bottom-nav, .more-menu-overlay {
-    display: none;
-}
-
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 992px) {
     .sidebar {
@@ -955,16 +946,6 @@ body {
         font-size: 13px;
     }
 
-    /* Forçar a descrição a ficar em uma nova linha no mobile */
-    .data-table td[data-label="Descrição"] {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-    .data-table td[data-label="Descrição"]::before {
-        margin-bottom: 2px;
-    }
-
     /* Menu de Navegação Inferior */
     .bottom-nav {
         display: flex !important;
@@ -979,49 +960,7 @@ body {
         justify-content: space-around;
         align-items: center;
         z-index: 1000;
-        padding: 0 5px;
-    }
-
-    /* Menu Mais Overlay */
-    .more-menu-overlay {
-        position: fixed;
-        bottom: 80px;
-        right: 16px;
-        width: 200px;
-        background: rgba(15, 23, 42, 0.95);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
-        display: none;
-        flex-direction: column;
-        padding: 8px;
-        z-index: 2000;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
-    
-    .more-menu-overlay.active { display: flex; animation: slideUp 0.3s ease; }
-    
-    .more-menu-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        color: var(--text-main);
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        background: none;
-        border: none;
-        border-radius: 10px;
-        text-align: left;
-        cursor: pointer;
-    }
-    
-    .more-menu-item:hover { background: rgba(255,255,255,0.05); }
-    
-    @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        padding: 0 10px;
     }
 
     .nav-item-mobile {
@@ -1186,15 +1125,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="app-container">
         <aside class="sidebar glass">
             <div class="logo" onclick="document.getElementById('login-modal').classList.add('active')" style="cursor:pointer" title="Acesso Admin">
-                <img id="app-logo-sidebar" src="resenha_logotipo.jpg" alt="Logo">
-                <span id="app-name-sidebar">RESENHA F.C</span>
+                <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-green);">
+                <span>RESENHA F.C</span>
             </div>
             <nav class="nav-menu">
                 <button class="nav-item active" data-target="dashboard">
                     <i class="ph ph-squares-four"></i> Dashboard
                 </button>
                 <button class="nav-item" data-target="mensalistas">
-                    <i class="ph ph-users"></i> Mensalistas
+                    <i class="ph ph-users"></i> Jogadores
                 </button>
                 <button class="nav-item" data-target="presenca">
                     <i class="ph ph-clipboard-text"></i> Lista de Presença
@@ -1205,22 +1144,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <button class="nav-item admin-only" data-target="financeiro">
                     <i class="ph ph-currency-dollar"></i> Financeiro
                 </button>
-                <button class="nav-item admin-only" data-target="ajustes">
-                    <i class="ph ph-gear"></i> Ajustes
-                </button>
                 <button class="nav-item admin-only" onclick="app.logout()" style="color: var(--neon-red); margin-top: auto;">
                     <i class="ph ph-sign-out"></i> Sair da Conta
                 </button>
             </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">Admin</div>
+                    <div class="details">
+                        <span class="name">Administrador</span>
+                        <span class="role">Organizador</span>
+                    </div>
+                </div>
+            </div>
         </aside>
 
-        <main class="main-content" id="main-content">
+        <main class="main-content">
             <header class="topbar">
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <!-- Logo no Topbar: Só aparece no Mobile porque o Desktop já tem na Sidebar -->
                     <div onclick="document.getElementById('login-modal').classList.add('active')" class="logo-trigger mobile-only-flex" style="align-items: center; gap: 10px; cursor: pointer; flex-direction: row; white-space: nowrap;">
-                        <img id="app-logo-mobile" src="resenha_logotipo.jpg" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
-                        <span id="app-name-mobile" style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
+                        <img src="resenha_logotipo.jpg" alt="Logo Resenha F.C" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
+                        <span style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
                     <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Dashboard</h1>
                 </div>
@@ -1277,7 +1222,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             </ul>
                         </div>
                         <div class="widget glass-card">
-                            <h3 style="color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 24px;">Análise Mensal (Entradas vs Gastos)</h3>
+                            <h3 style="color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 24px;">Análise do Semestre (Entradas vs Gastos)</h3>
                             <div class="chart-placeholder" id="financial-summary-chart" style="height: 250px;">
                                 <!-- JS -->
                             </div>
@@ -1293,11 +1238,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </h2>
                         <div id="dash-ranking-list" class="dash-collapsible" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
                             <!-- Populated by JS -->
-                        </div>
-                        <div id="dash-ranking-toggle-container" style="text-align: center; margin-top: 16px; display: none;">
-                            <button class="btn" id="btn-toggle-ranking" onclick="app.toggleRankingExpand()" style="background: rgba(255,255,255,0.05); color: var(--text-main); font-size: 13px; padding: 8px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); width: auto; min-width: 150px; justify-content: center;">
-                                <i class="ph ph-eye"></i> Ver Mais
-                            </button>
                         </div>
                     </div>
 
@@ -1335,41 +1275,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <!-- Mensalistas View -->
                 <section id="mensalistas" class="view-section">
                     <div class="section-header">
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <h2 style="margin: 0;"><i class="ph ph-users"></i> Mensalistas</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Gestão de pagamentos e cadastro</p>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" class="admin-only">
-                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.shareDefaulters()">
-                                <i class="ph ph-whatsapp-logo"></i> Copiar Mensalidade
-                            </button>
-                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.resetMonth()">
-                                <i class="ph ph-arrows-clockwise"></i> Virar o Mês
-                            </button>
-                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.openPlayerModal()">
-                                <i class="ph ph-user-plus"></i> Novo Jogador
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px;">
-                        <!-- Filtros (Primeira Linha) -->
-                        <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-self: flex-start;">
-                            <button class="btn player-filter-btn active" id="filter-all" onclick="app.setPlayerPaymentFilter('all')" style="padding: 6px 14px; font-size: 12px; background: var(--neon-blue); color: #000; border: 1px solid var(--neon-blue);">
-                                Todos
-                            </button>
-                            <button class="btn player-filter-btn" id="filter-paid" onclick="app.setPlayerPaymentFilter('paid')" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1);">
-                                Pagos
-                            </button>
-                            <button class="btn player-filter-btn" id="filter-pending" onclick="app.setPlayerPaymentFilter('pending')" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1);">
-                                Pendentes
-                            </button>
-                        </div>
-
-                        <!-- Busca (Segunda Linha) -->
-                        <div class="search-bar glass-input" style="width: 100%; max-width: 100%;">
+                        <div class="search-bar glass-input">
                             <i class="ph ph-magnifying-glass"></i>
-                            <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()" style="width: 100%;">
+                            <input type="text" id="search-player" placeholder="Buscar jogador..." oninput="app.filterPlayers()">
+                        </div>
+                        <div style="display: flex; gap: 12px;" class="admin-only">
+                            <button class="btn btn-danger" onclick="app.resetMonth()"><i class="ph ph-arrows-clockwise"></i> Virar o Mês</button>
+                            <button class="btn btn-primary" onclick="app.openPlayerModal()"><i class="ph ph-user-plus"></i> Adicionar Jogador</button>
                         </div>
                     </div>
                     <div class="table-container glass-card">
@@ -1452,12 +1364,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     <div class="table-container glass-card mt-4">
-                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <div class="search-bar glass-input" style="width: 100%; max-width: 100%; height: 45px; padding: 0 20px;">
-                                <i class="ph ph-magnifying-glass"></i>
-                                <input type="text" id="search-finance" placeholder="Buscar no histórico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
-                            </div>
-                        </div>
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -1492,11 +1398,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     <!-- Selecionar Todos / Limpar -->
-                    <div style="margin-bottom: 24px; display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: -8px;">
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Participantes</span>
-                            <span id="sorteio-count" style="color: var(--text-main); font-weight: 800; font-size: 18px; margin-top: 2px;">0 de 0</span>
-                        </div>
+                    <div style="margin-bottom: 24px; display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: -8px;">
+                        <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Participantes: <span id="sorteio-count" style="color: var(--text-main); font-weight: 700;">0 de 0</span></span>
                         <div style="margin-left: auto; display: flex; gap: 8px;">
                             <button class="btn" style="padding: 6px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s;" 
                                     onmouseover="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.color='var(--neon-green)'; this.style.borderColor='var(--neon-green)'" 
@@ -1524,204 +1427,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                 </section>
-
-                <!-- Ajustes View -->
-                <section id="ajustes" class="view-section">
-                    <div class="section-header">
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <h2 style="margin: 0;"><i class="ph ph-gear"></i> Configurações do App</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Personalize a identidade do seu clube</p>
-                        </div>
-                    </div>
-                    
-                    <div class="glass-card" style="max-width: 600px;">
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label>Nome do Clube</label>
-                            <input type="text" id="config-app-name" class="glass-input-field" placeholder="Ex: RESENHA F.C" oninput="app.updateAppIdentityPreview()">
-                        </div>
-                        
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label>Logotipo do Clube</label>
-                            <div style="display: flex; gap: 16px; align-items: center;">
-                                <div style="position: relative; width: 80px; height: 80px;">
-                                    <img id="logo-preview" src="resenha_logotipo.jpg" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--neon-green);">
-                                    <label for="logo-upload" style="position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; background: var(--neon-green); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #0f172a;">
-                                        <i class="ph ph-camera" style="font-size: 16px;"></i>
-                                    </label>
-                                </div>
-                                <div style="flex: 1;">
-                                    <input type="file" id="logo-upload" accept="image/*" style="display: none;" onchange="app.handleLogoUpload(event)">
-                                    <button class="btn" onclick="document.getElementById('logo-upload').click()" style="padding: 8px 16px; font-size: 12px; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1);">
-                                        Selecionar Foto
-                                    </button>
-                                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">Ou cole o link de uma imagem abaixo:</p>
-                                    <input type="text" id="config-app-logo" class="glass-input-field" placeholder="https://link-da-imagem.jpg" oninput="app.updateAppIdentityPreview()" style="margin-top: 4px;">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 12px; margin-top: 32px;">
-                            <button class="btn btn-primary" onclick="app.saveAppSettings()" style="flex: 1;">
-                                <i class="ph ph-floppy-disk"></i> Salvar Identidade
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Modelo da Lista de Presença -->
-                    <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
-                        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: var(--neon-green);"><i class="ph ph-clipboard-text"></i> Configuração do Texto da Lista</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">
-                            Edite o texto personalizado (Pix, links ou avisos) que fica no topo da lista, e ative/desative as outras seções dinâmicas que serão copiadas para o WhatsApp.
-                        </p>
-                        
-                        <!-- Configurações de Data/Hora e Rotação -->
-                        <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 24px;">
-                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;"><i class="ph ph-calendar"></i> Dia, Hora e Rotação do Jogo:</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                                <div class="form-group" style="margin: 0;">
-                                    <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Dia do Jogo</label>
-                                    <select id="config-match-day" class="glass-input-field" style="width: 100%; height: 42px; padding: 8px 12px; font-size: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;">
-                                        <option value="0">Domingo</option>
-                                        <option value="1">Segunda-feira</option>
-                                        <option value="2">Terça-feira</option>
-                                        <option value="3">Quarta-feira</option>
-                                        <option value="4">Quinta-feira</option>
-                                        <option value="5">Sexta-feira</option>
-                                        <option value="6">Sábado</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin: 0;">
-                                    <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Horário do Jogo</label>
-                                    <input type="text" id="config-match-time" class="glass-input-field" style="width: 100%; height: 42px; padding: 8px 12px; font-size: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;" placeholder="Ex: 21:00">
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin: 0;">
-                                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Dia que a lista "vira" (Rotação para a próxima semana)</label>
-                                <select id="config-rotation-day" class="glass-input-field" style="width: 100%; height: 42px; padding: 8px 12px; font-size: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;">
-                                    <option value="0">Domingo</option>
-                                    <option value="1">Segunda-feira</option>
-                                    <option value="2">Terça-feira</option>
-                                    <option value="3">Quarta-feira</option>
-                                    <option value="4">Quinta-feira</option>
-                                    <option value="5">Sexta-feira</option>
-                                    <option value="6">Sábado</option>
-                                </select>
-                                <span style="font-size: 10px; color: var(--text-muted); display: block; margin-top: 6px; line-height: 1.4;">
-                                    * A lista exibirá o jogo atual até que chegue o Dia da Rotação escolhido. Se o Dia da Rotação for o mesmo dia do jogo, a lista vira logo após o horário da partida.
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <!-- Mensagem Adicional / PIX -->
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label style="font-weight: bold; color: var(--text-main);">Mensagem Personalizada (Topo da Lista)</label>
-                            <textarea id="config-attendance-msg" class="glass-input-field" rows="6" style="width: 100%; font-family: inherit; font-size: 14px; line-height: 1.5; resize: vertical; min-height: 130px;" placeholder="Digite o texto personalizado (Ex: PIX, links, regras)..."></textarea>
-                        </div>
-
-                        <!-- Opções de Seções -->
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;">Seções para Incluir na Mensagem:</label>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-include-date" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Data da Partida (Ex: "📅 Data: Quarta-feira...")
-                                </label>
-                                
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-include-warning" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Aviso de Mensalidade (semana de pagamento)
-                                </label>
-                                
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-include-present" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Lista de Presentes (✅ Presentes)
-                                </label>
-                                
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-include-waiting" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Lista de Espera de Avulsos (📋 Lista de espera)
-                                </label>
-                                
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-include-absent" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Lista de Ausentes (❌ Ausentes)
-                                </label>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn" onclick="app.saveAttendanceTemplate()" style="flex: 1; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green);">
-                                <i class="ph ph-floppy-disk"></i> Salvar Configuração
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Configurações de Notificações -->
-                    <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
-                        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: var(--neon-orange);"><i class="ph ph-bell-ringing"></i> Notificações (PWA)</h3>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">
-                            Configure os alertas que os jogadores receberão (integração de Web Push em breve).
-                        </p>
-                        
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                <input type="checkbox" id="config-notify-open" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
-                                Enviar notificação quando a lista da rodada abrir
-                            </label>
-                        </div>
-                        
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;">Avisos de jogo / Mensalidade:</label>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-notify-day-3" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
-                                    Avisar 3 dias antes (Para todos da lista)
-                                </label>
-                                
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-notify-day-2" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
-                                    Avisar 2 dias antes (Apenas pendentes)
-                                </label>
-
-                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
-                                    <input type="checkbox" id="config-notify-day-1" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
-                                    Avisar 1 dia antes (Apenas pendentes)
-                                </label>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn" onclick="app.saveNotificationSettings()" style="flex: 1; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange);">
-                                <i class="ph ph-floppy-disk"></i> Salvar Notificações
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Configurações de Acesso -->
-                    <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
-                        <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-lock"></i> Acesso Administrativo</h3>
-                        <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Usuário Administrador</label>
-                            <input type="text" id="config-admin-user" class="glass-input-field" placeholder="Ex: admin">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label>Nova Senha</label>
-                            <div style="position: relative;">
-                                <input type="password" id="config-admin-pass" class="glass-input-field" placeholder="Digite a nova senha" style="padding-right: 45px;">
-                                <button type="button" onclick="app.toggleAdminPasswordVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="ph ph-eye" id="admin-pass-toggle-icon"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn" onclick="app.saveAdminSettings()" style="flex: 1; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue);">
-                                <i class="ph ph-shield-check"></i> Atualizar Acesso
-                            </button>
-                        </div>
-                    </div>
-                </section>
             </div>
         </main>
     </div>
@@ -1734,7 +1439,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </button>
         <button class="nav-item-mobile" data-target="mensalistas">
             <i class="ph ph-users"></i>
-            <span>Mensalistas</span>
+            <span>Jogadores</span>
         </button>
         <button class="nav-item-mobile" data-target="presenca">
             <i class="ph ph-clipboard-text"></i>
@@ -1744,25 +1449,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             <i class="ph ph-users-three"></i>
             <span>Sorteio</span>
         </button>
-        <button class="nav-item-mobile admin-only" onclick="app.toggleMoreMenu()">
-            <i class="ph ph-list"></i>
-            <span>Mais</span>
+        <button class="nav-item-mobile admin-only" data-target="financeiro">
+            <i class="ph ph-currency-dollar"></i>
+            <span>Finanças</span>
+        </button>
+        <button class="nav-item-mobile admin-only" onclick="app.logout()" style="color: var(--neon-red);">
+            <i class="ph ph-sign-out"></i>
+            <span>Sair</span>
         </button>
     </nav>
-
-    <!-- Menu Mais (Mobile Only Overlay) -->
-    <div id="more-menu-overlay" class="more-menu-overlay">
-        <button class="more-menu-item" onclick="app.goToView('financeiro')">
-            <i class="ph ph-currency-dollar"></i> Finanças
-        </button>
-        <button class="more-menu-item" onclick="app.goToView('ajustes')">
-            <i class="ph ph-gear"></i> Ajustes
-        </button>
-        <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 4px 8px;"></div>
-        <button class="more-menu-item" onclick="app.logout()" style="color: var(--neon-red);">
-            <i class="ph ph-sign-out"></i> Sair da Conta
-        </button>
-    </div>
 
     <!-- Modals -->
     <div id="player-modal" class="modal-overlay">
