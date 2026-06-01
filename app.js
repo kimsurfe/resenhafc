@@ -2201,12 +2201,16 @@ class FootballApp {
         const select = document.getElementById('push-player-select');
         select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
         
-        const sortedPlayers = [...this.data.players].sort((a, b) => a.name.localeCompare(b.name));
+        const sortedPlayers = [...this.data.players].sort((a, b) => {
+            const nameA = a.nickname || a.fullName || '';
+            const nameB = b.nickname || b.fullName || '';
+            return nameA.localeCompare(nameB);
+        });
         
         sortedPlayers.forEach(p => {
             const opt = document.createElement('option');
             opt.value = p.id;
-            opt.textContent = p.name;
+            opt.textContent = p.nickname || p.fullName || 'Sem nome';
             select.appendChild(opt);
         });
 
