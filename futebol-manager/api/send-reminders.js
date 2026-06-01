@@ -36,20 +36,37 @@ export default async function handler(req, res) {
 
         const data = docSnap.data();
         const players = data.players || [];
-        const matchDateStr = data.matchDate; // ex: "2023-10-25T19:00"
+        const config = data.config || {};
+        const matchDay = config.matchDay !== undefined ? parseInt(config.matchDay, 10) : 3;
+        const rotationDay = config.rotationDay !== undefined ? parseInt(config.rotationDay, 10) : 4;
+        const matchTime = config.matchTime || "21:00";
         const notifications = data.notifications || {};
-        const attendance = data.attendance || {};
+        
+        const today = new Date();
+        const dayOfWeek = today.getDay();
 
-        if (!matchDateStr) {
-            return res.status(200).json({ message: 'No match scheduled' });
+        let daysUntilMatch = (matchDay - dayOfWeek + 7) % 7;
+        
+        if (matchDay === rotationDay && dayOfWeek === matchDay) {
+            const [matchHour, matchMin] = matchTime.split(':').map(Number);
+            if (today.getHours() >= (matchHour || 21)) {
+                daysUntilMatch = 7;
+            }
         }
 
-        const matchDate = new Date(matchDateStr);
-        const today = new Date();
+        let matchDate = new Date(today);
+        matchDate.setDate(today.getDate() + daysUntilMatch);
         
-        // Calculate diff in days (ignore time, just dates)
+        const y = matchDate.getFullYear();
+        const m = String(matchDate.getMonth() + 1).padStart(2, '0');
+        const d = String(matchDate.getDate()).padStart(2, '0');
+        const matchDateStr = `${y}-${m}-${d}`;
+        
+        const attendance = (data.attendance && data.attendance[matchDateStr]) ? data.attendance[matchDateStr] : {};
+
         matchDate.setHours(0,0,0,0);
         today.setHours(0,0,0,0);
+        
         const diffTime = matchDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
