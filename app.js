@@ -2161,6 +2161,7 @@ class FootballApp {
                         <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Tudo certo! Você receberá os avisos aqui.</p>
                     </div>
                 </div>
+                <button class="btn" onclick="app.openPushModal()" style="background: transparent; color: var(--neon-green); border: 1px solid var(--neon-green); padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 12px;">Vincular a um Jogador</button>
             `;
         } else if (Notification.permission === 'default') {
             banner.style.display = 'flex';
