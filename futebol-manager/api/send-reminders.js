@@ -74,19 +74,21 @@ export default async function handler(req, res) {
         let title = '';
         let body = '';
 
+        const t = notifications.templates || {};
+
         if (diffDays === 3 && notifications.notifyDay3) {
-            title = 'A Lista da Rodada abriu! ⚽';
-            body = 'Garanta sua vaga para o próximo jogo! Acesse o app agora e confirme sua presença.';
+            title = t.day3?.title || 'A Lista da Rodada abriu! ⚽';
+            body = t.day3?.body || 'Garanta sua vaga para o próximo jogo! Acesse o app agora e confirme sua presença.';
             tokensToNotify = data.globalTokens || [];
         } 
         else if (diffDays === 2 && notifications.notifyDay2) {
-            title = 'Faltam 2 dias para o jogo! ⏳';
-            body = 'Lembrete geral: Se você ainda não confirmou sua presença, responda na lista para ajudar na divisão dos times!';
+            title = t.day2?.title || 'Faltam 2 dias para o jogo! ⏳';
+            body = t.day2?.body || 'Lembrete geral: Se você ainda não confirmou sua presença, responda na lista para ajudar na divisão dos times!';
             tokensToNotify = data.globalTokens || [];
         }
         else if (diffDays === 1 && notifications.notifyDay1) {
-            title = 'O jogo é amanhã! Vai ou não? 🤔';
-            body = 'Lembrete geral: O jogo é amanhã! Se você ainda não respondeu a lista, acesse o app agora e deixe sua resposta.';
+            title = t.day1?.title || 'O jogo é amanhã! Vai ou não? 🤔';
+            body = t.day1?.body || 'Lembrete geral: O jogo é amanhã! Se você ainda não respondeu a lista, acesse o app agora e deixe sua resposta.';
             tokensToNotify = data.globalTokens || [];
         } else {
             return res.status(200).json({ message: `No notifications scheduled for ${diffDays} days before match.` });

@@ -1808,6 +1808,16 @@ class FootballApp {
         if (cb3) cb3.checked = this.data.notifications.notifyDay3;
         if (cb2) cb2.checked = this.data.notifications.notifyDay2;
         if (cb1) cb1.checked = this.data.notifications.notifyDay1;
+
+        if (this.data.notifications.templates) {
+            const t = this.data.notifications.templates;
+            if (document.getElementById('config-notify-title-3')) document.getElementById('config-notify-title-3').value = t.day3?.title || '';
+            if (document.getElementById('config-notify-body-3')) document.getElementById('config-notify-body-3').value = t.day3?.body || '';
+            if (document.getElementById('config-notify-title-2')) document.getElementById('config-notify-title-2').value = t.day2?.title || '';
+            if (document.getElementById('config-notify-body-2')) document.getElementById('config-notify-body-2').value = t.day2?.body || '';
+            if (document.getElementById('config-notify-title-1')) document.getElementById('config-notify-title-1').value = t.day1?.title || '';
+            if (document.getElementById('config-notify-body-1')) document.getElementById('config-notify-body-1').value = t.day1?.body || '';
+        }
     }
 
     async saveAppSettings() {
@@ -1872,13 +1882,29 @@ class FootballApp {
         const notifyDay2 = document.getElementById('config-notify-day-2').checked;
         const notifyDay1 = document.getElementById('config-notify-day-1').checked;
         
+        const templates = {
+            day3: {
+                title: document.getElementById('config-notify-title-3').value.trim(),
+                body: document.getElementById('config-notify-body-3').value.trim()
+            },
+            day2: {
+                title: document.getElementById('config-notify-title-2').value.trim(),
+                body: document.getElementById('config-notify-body-2').value.trim()
+            },
+            day1: {
+                title: document.getElementById('config-notify-title-1').value.trim(),
+                body: document.getElementById('config-notify-body-1').value.trim()
+            }
+        };
+
         if (!this.data.notifications) this.data.notifications = {};
         
         this.data.notifications = {
             notifyOnOpen,
             notifyDay3,
             notifyDay2,
-            notifyDay1
+            notifyDay1,
+            templates
         };
 
         await this.saveData();
