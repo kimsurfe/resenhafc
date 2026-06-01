@@ -2170,6 +2170,23 @@ class FootballApp {
                     </div>
                 </div>
             `;
+            
+            // Silent token registration if already granted
+            try {
+                const messaging = firebase.messaging();
+                messaging.getToken({ vapidKey: 'BH4F-JK-x-WRnsk4W9L1bg70I7zTevMXgkKKdVHCo7XKR_mtXebB3Oyui5-LU6Aei22C4Ji_-lJgAPQAMQ_Vt6E' })
+                    .then(async (token) => {
+                        if (token) {
+                            if (!this.data.globalTokens) this.data.globalTokens = [];
+                            if (!this.data.globalTokens.includes(token)) {
+                                this.data.globalTokens.push(token);
+                                await this.saveData();
+                                console.log("Token global registrado com sucesso no background.");
+                            }
+                        }
+                    })
+                    .catch(err => console.error("Silenced background token error", err));
+            } catch(e){}
         } else if (Notification.permission === 'default') {
             banner.style.display = 'flex';
             banner.style.borderColor = 'var(--neon-blue)';
