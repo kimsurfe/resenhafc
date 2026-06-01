@@ -14,18 +14,8 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
-    console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: '/resenha_logotipo.jpg',
-        badge: '/resenha_logotipo.jpg',
-        data: payload.data
-    };
-
-    self.registration.showNotification(notificationTitle, notificationOptions);
-});
+// O Firebase lida automaticamente com mensagens que possuem a chave 'notification'
+// Não precisamos do onBackgroundMessage para notificações padrão.
 
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
