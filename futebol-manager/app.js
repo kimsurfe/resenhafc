@@ -31,12 +31,12 @@ messaging.onMessage((payload) => {
         toast.style.maxWidth = '400px';
         toast.style.textAlign = 'center';
         toast.style.animation = 'slideDown 0.5s ease-out forwards';
-        toast.innerHTML = \`
+        toast.innerHTML = `
             <div style="font-size: 24px; margin-bottom: 8px;">🔔</div>
-            <strong style="font-size: 16px; display: block; margin-bottom: 4px;">\${payload.notification.title}</strong>
-            <span style="font-size: 14px; opacity: 0.9;">\${payload.notification.body}</span>
+            <strong style="font-size: 16px; display: block; margin-bottom: 4px;">${payload.notification.title}</strong>
+            <span style="font-size: 14px; opacity: 0.9;">${payload.notification.body}</span>
             <button onclick="this.parentElement.remove()" style="margin-top: 12px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 6px; width: 100%; cursor: pointer;">Fechar</button>
-        \`;
+        `;
         document.body.appendChild(toast);
         
         // Auto-fechar após 10 segundos
