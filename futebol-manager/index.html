@@ -18,6 +18,7 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
     <style>
 :root {
     --bg-dark: #0f172a;
@@ -1238,6 +1239,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             <div class="content-wrapper">
                 <!-- Dashboard View -->
                 <section id="dashboard" class="view-section active">
+                    <!-- Notification Banner -->
+                    <div id="notification-banner" class="glass-card" style="display: none; margin-bottom: 24px; border-color: var(--neon-blue); align-items: center; justify-content: space-between; padding: 16px 24px; flex-wrap: wrap; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <i class="ph ph-bell-ringing" style="font-size: 28px; color: var(--neon-blue);"></i>
+                            <div>
+                                <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Ativar Notificações</h3>
+                                <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Receba avisos dos próximos jogos e mensalidades direto no celular.</p>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="app.requestNotificationPermission()" style="background: var(--neon-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(59,130,246,0.4);">Ativar</button>
+                    </div>
+
                     <div class="stats-grid">
                         <div class="stat-card glass-card">
                             <div class="stat-icon neon-green"><i class="ph ph-users"></i></div>
@@ -1762,6 +1775,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <button class="more-menu-item" onclick="app.logout()" style="color: var(--neon-red);">
             <i class="ph ph-sign-out"></i> Sair da Conta
         </button>
+    </div>
+
+    <!-- Push Notification Modal -->
+    <div class="modal-overlay" id="push-modal">
+        <div class="modal-content glass-card">
+            <h2 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-bell-ringing"></i> Ativar Notificações</h2>
+            <div class="form-group">
+                <label>Quem é você?</label>
+                <select id="push-player-select" class="glass-input-field">
+                    <!-- Populated by JS -->
+                </select>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Isso nos ajuda a mandar avisos apenas quando você estiver pendente na lista.</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-danger" onclick="document.getElementById('push-modal').classList.remove('active')">Cancelar</button>
+                <button class="btn btn-primary" onclick="app.savePushToken()">Salvar</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modals -->

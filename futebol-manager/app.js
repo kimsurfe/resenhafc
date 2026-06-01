@@ -63,6 +63,7 @@ class FootballApp {
         this.loadAppSettings();
         this.checkAuth();
         this.initPullToRefresh();
+        this.checkNotificationPermission();
         this.renderAll();
     }
 
@@ -1997,6 +1998,75 @@ class FootballApp {
                 ptr.style.transform = `translateY(0)`;
             }
         });
+    }
+
+    checkNotificationPermission() {
+        const banner = document.getElementById('notification-banner');
+        if (!banner) return;
+        
+        if (!('Notification' in window) || Notification.permission !== 'default') {
+            banner.style.display = 'none';
+        } else {
+            banner.style.display = 'flex';
+        }
+    }
+
+    async requestNotificationPermission() {
+        if (!('Notification' in window)) {
+            alert('Este navegador não suporta notificações.');
+            return;
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            document.getElementById('notification-banner').style.display = 'none';
+            this.openPushModal();
+        } else {
+            alert('Permissão de notificação negada.');
+            document.getElementById('notification-banner').style.display = 'none';
+        }
+    }
+
+    openPushModal() {
+        const select = document.getElementById('push-player-select');
+        select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
+        
+        const sortedPlayers = [...this.data.players].sort((a, b) => a.name.localeCompare(b.name));
+        
+        sortedPlayers.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.name;
+            select.appendChild(opt);
+        });
+
+        document.getElementById('push-modal').classList.add('active');
+    }
+
+    async savePushToken() {
+        const playerId = document.getElementById('push-player-select').value;
+        if (!playerId) {
+            alert('Por favor, selecione seu nome.');
+            return;
+        }
+
+        try {
+            const messaging = firebase.messaging();
+            const token = await messaging.getToken({ vapidKey: 'BH4F-JK-x-WRnsk4W9L1bg70I7zTevMXgkKKdVHCo7XKR_mtXebB3Oyui5-LU6Aei22C4Ji_-lJgAPQAMQ_Vt6E' });
+            
+            if (token) {
+                const playerIndex = this.data.players.findIndex(p => p.id === playerId);
+                if (playerIndex !== -1) {
+                    this.data.players[playerIndex].pushToken = token;
+                    await this.saveData();
+                    document.getElementById('push-modal').classList.remove('active');
+                    alert('Notificações ativadas com sucesso! 🔔');
+                }
+            }
+        } catch (err) {
+            console.error('Erro ao obter token:', err);
+            alert('Erro ao ativar notificações. Fale com o admin (Falta VAPID Key).');
+        }
     }
 
     logout() {
