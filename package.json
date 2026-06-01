@@ -1,0 +1,8 @@
+{
+  "name": "resenha-fc",
+  "version": "1.0.0",
+  "description": "Resenha FC Manager",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
