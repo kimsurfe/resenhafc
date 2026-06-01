@@ -2145,10 +2145,38 @@ class FootballApp {
         const banner = document.getElementById('notification-banner');
         if (!banner) return;
         
-        if (!('Notification' in window) || Notification.permission !== 'default') {
+        if (!('Notification' in window)) {
             banner.style.display = 'none';
-        } else {
+            return;
+        }
+
+        if (Notification.permission === 'granted') {
             banner.style.display = 'flex';
+            banner.style.borderColor = 'var(--neon-green)';
+            banner.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <i class="ph ph-check-circle" style="font-size: 28px; color: var(--neon-green);"></i>
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--neon-green);">Notificações Ativas neste Aparelho</h3>
+                        <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Tudo certo! Você receberá os avisos aqui.</p>
+                    </div>
+                </div>
+            `;
+        } else if (Notification.permission === 'default') {
+            banner.style.display = 'flex';
+            banner.style.borderColor = 'var(--neon-blue)';
+            banner.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <i class="ph ph-bell-ringing" style="font-size: 28px; color: var(--neon-blue);"></i>
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Ativar Notificações</h3>
+                        <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Receba avisos dos próximos jogos e mensalidades direto no celular.</p>
+                    </div>
+                </div>
+                <button class="btn" onclick="app.requestNotificationPermission()" style="background: var(--neon-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(59,130,246,0.4);">Ativar</button>
+            `;
+        } else {
+            banner.style.display = 'none';
         }
     }
 
@@ -2160,11 +2188,11 @@ class FootballApp {
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            document.getElementById('notification-banner').style.display = 'none';
+            this.checkNotificationPermission();
             this.openPushModal();
         } else {
             alert('Permissão de notificação negada.');
-            document.getElementById('notification-banner').style.display = 'none';
+            this.checkNotificationPermission();
         }
     }
 
