@@ -1712,6 +1712,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
 
+                    <!-- Disparo Personalizado -->
+                    <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
+                        <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--neon-purple);"><i class="ph ph-paper-plane-tilt"></i> Disparo Personalizado</h3>
+                        
+                        <div class="form-group">
+                            <label>Título da Notificação</label>
+                            <input type="text" id="custom-push-title" class="glass-input-field" placeholder="Ex: Vai ter churrasco!">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mensagem</label>
+                            <textarea id="custom-push-body" class="glass-input-field" style="height: 80px; resize: none;" placeholder="Ex: Galera, logo depois do jogo teremos churrasco. Não faltem!"></textarea>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                            <div class="form-group" style="margin: 0;">
+                                <label>Data de Envio</label>
+                                <input type="date" id="custom-push-date" class="glass-input-field">
+                            </div>
+                            <div class="form-group" style="margin: 0;">
+                                <label>Hora Exata</label>
+                                <input type="time" id="custom-push-time" class="glass-input-field">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label>Destinatários</label>
+                            <select id="custom-push-target" class="glass-input-field">
+                                <option value="all">Todos os jogadores cadastrados</option>
+                                <option value="pending">Apenas quem NÃO confirmou presença</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                            <button class="btn" onclick="app.scheduleCustomPush()" style="flex: 1; background: rgba(139, 92, 246, 0.1); color: var(--neon-purple); border: 1px solid var(--neon-purple);">
+                                <i class="ph ph-calendar-plus"></i> Agendar Hora Exata
+                            </button>
+                        </div>
+
+                        <h4 style="margin: 0 0 12px 0; font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--card-border); padding-top: 16px;">Agendamentos Pendentes</h4>
+                        <ul id="custom-push-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+
                     <!-- Configurações de Acesso -->
                     <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
                         <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-lock"></i> Acesso Administrativo</h3>

@@ -15,6 +15,7 @@ const DEFAULT_DATA = {
     players: [],
     transactions: [],
     attendance: {},
+    customPushes: [],
     config: {
         mensalValue: 50.00,
         avulsoValue: 20.00,
@@ -115,10 +116,12 @@ class FootballApp {
     }
 
     renderAll() {
+        if (!this.data) return;
         this.renderDashboard();
         this.renderPlayers();
         this.renderAttendance();
         this.renderFinance();
+        this.renderCustomPushes();
     }
 
     bindEvents() {
@@ -617,11 +620,6 @@ class FootballApp {
 
         const dashAbsentCount = document.getElementById('dash-absent-count');
         if (dashAbsentCount) dashAbsentCount.textContent = absentCount;
-    }
-
-    getAttendanceStatus(date, playerId) {
-        if (!this.data.attendance[date]) return 'doubt';
-        return this.data.attendance[date][playerId] || 'doubt';
     }
 
     setAttendance(date, playerId, status) {
@@ -1841,13 +1839,105 @@ class FootballApp {
         
         if (!this.data.notifications) this.data.notifications = {};
         
-        this.data.notifications.notifyOnOpen = notifyOnOpen;
-        this.data.notifications.notifyDay3 = notifyDay3;
-        this.data.notifications.notifyDay2 = notifyDay2;
-        this.data.notifications.notifyDay1 = notifyDay1;
+        this.data.notifications = {
+            notifyOnOpen,
+            notifyDay3,
+            notifyDay2,
+            notifyDay1
+        };
 
         await this.saveData();
-        alert('Configurações de Notificação salvas com sucesso! 🔔✅');
+        alert('Ajustes de notificações salvos com sucesso!');
+    }
+
+    async scheduleCustomPush() {
+        const title = document.getElementById('custom-push-title').value.trim();
+        const body = document.getElementById('custom-push-body').value.trim();
+        const date = document.getElementById('custom-push-date').value;
+        const time = document.getElementById('custom-push-time').value;
+        const target = document.getElementById('custom-push-target').value;
+
+        if (!title || !body || !date || !time) {
+            alert('Preencha todos os campos do agendamento.');
+            return;
+        }
+
+        if (!this.data.customPushes) this.data.customPushes = [];
+
+        const id = 'push_' + Date.now();
+        const scheduledFor = `${date}T${time}:00`;
+
+        this.data.customPushes.push({
+            id,
+            title,
+            body,
+            scheduledFor,
+            target,
+            createdAt: new Date().toISOString()
+        });
+
+        await this.saveData();
+        
+        document.getElementById('custom-push-title').value = '';
+        document.getElementById('custom-push-body').value = '';
+        document.getElementById('custom-push-date').value = '';
+        document.getElementById('custom-push-time').value = '';
+
+        this.renderCustomPushes();
+        alert('Disparo agendado com sucesso!');
+    }
+
+    renderCustomPushes() {
+        const list = document.getElementById('custom-push-list');
+        if (!list) return;
+
+        list.innerHTML = '';
+        const pushes = this.data.customPushes || [];
+
+        if (pushes.length === 0) {
+            list.innerHTML = '<li style="color: var(--text-muted); font-size: 13px;">Nenhum agendamento pendente.</li>';
+            return;
+        }
+
+        pushes.sort((a, b) => new Date(a.scheduledFor) - new Date(b.scheduledFor));
+
+        pushes.forEach(p => {
+            const dateObj = new Date(p.scheduledFor);
+            const dateStr = dateObj.toLocaleDateString('pt-BR');
+            const timeStr = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            const targetStr = p.target === 'all' ? 'Todos' : 'Pendentes';
+
+            const li = document.createElement('li');
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
+            li.style.background = 'rgba(255,255,255,0.02)';
+            li.style.padding = '12px';
+            li.style.borderRadius = '8px';
+            li.style.border = '1px solid rgba(255,255,255,0.05)';
+
+            li.innerHTML = `
+                <div>
+                    <strong style="color: var(--text-main); font-size: 14px;">${p.title}</strong>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                        ${dateStr} às ${timeStr} • Alvo: ${targetStr}
+                    </div>
+                </div>
+                <button onclick="app.deleteCustomPush('${p.id}')" style="background: transparent; border: none; color: var(--neon-red); cursor: pointer; padding: 8px;">
+                    <i class="ph ph-trash" style="font-size: 18px;"></i>
+                </button>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    async deleteCustomPush(id) {
+        if (!confirm('Deseja excluir este agendamento?')) return;
+        
+        this.data.customPushes = this.data.customPushes.filter(p => p.id !== id);
+        await this.saveData();
+        this.renderCustomPushes();
     }
 
     toggleAdminPasswordVisibility() {
