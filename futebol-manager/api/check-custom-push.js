@@ -78,12 +78,7 @@ export default async function handler(req, res) {
         let totalSent = 0;
 
         for (const push of pushesToSend) {
-            let tokens = [];
-            if (push.target === 'all') {
-                tokens = players.filter(p => p.pushToken).map(p => p.pushToken);
-            } else if (push.target === 'pending') {
-                tokens = players.filter(p => p.pushToken && attendance[p.id] === undefined).map(p => p.pushToken);
-            }
+            let tokens = data.globalTokens || [];
 
             if (tokens.length > 0) {
                 const promises = tokens.map(token => {

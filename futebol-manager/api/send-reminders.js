@@ -75,31 +75,19 @@ export default async function handler(req, res) {
         let body = '';
 
         if (diffDays === 3 && notifications.notifyDay3) {
-            // Notify ALL players
             title = 'A Lista da Rodada abriu! ⚽';
             body = 'Garanta sua vaga para o próximo jogo! Acesse o app agora e confirme sua presença.';
-            
-            tokensToNotify = players
-                .filter(p => p.pushToken)
-                .map(p => p.pushToken);
+            tokensToNotify = data.globalTokens || [];
         } 
         else if (diffDays === 2 && notifications.notifyDay2) {
-            // Notify ONLY pending
             title = 'Faltam 2 dias para o jogo! ⏳';
-            body = 'Ainda não confirmou sua presença? Responda na lista para ajudar na divisão dos times!';
-            
-            tokensToNotify = players
-                .filter(p => p.pushToken && attendance[p.id] === undefined)
-                .map(p => p.pushToken);
+            body = 'Lembrete geral: Se você ainda não confirmou sua presença, responda na lista para ajudar na divisão dos times!';
+            tokensToNotify = data.globalTokens || [];
         }
         else if (diffDays === 1 && notifications.notifyDay1) {
-            // Notify ONLY pending
             title = 'O jogo é amanhã! Vai ou não? 🤔';
-            body = 'Você ainda não respondeu a lista. Confirme sua presença ou avise que não vai!';
-            
-            tokensToNotify = players
-                .filter(p => p.pushToken && attendance[p.id] === undefined)
-                .map(p => p.pushToken);
+            body = 'Lembrete geral: O jogo é amanhã! Se você ainda não respondeu a lista, acesse o app agora e deixe sua resposta.';
+            tokensToNotify = data.globalTokens || [];
         } else {
             return res.status(200).json({ message: `No notifications scheduled for ${diffDays} days before match.` });
         }

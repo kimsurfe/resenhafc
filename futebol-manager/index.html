@@ -1825,24 +1825,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </button>
     </div>
 
-    <!-- Push Notification Modal -->
-    <div class="modal-overlay" id="push-modal">
-        <div class="modal-content glass-card">
-            <h2 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-bell-ringing"></i> Ativar Notificações</h2>
-            <div class="form-group">
-                <label>Quem é você?</label>
-                <select id="push-player-select" class="glass-input-field">
-                    <!-- Populated by JS -->
-                </select>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Isso nos ajuda a mandar avisos apenas quando você estiver pendente na lista.</p>
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn btn-danger" onclick="document.getElementById('push-modal').classList.remove('active')">Cancelar</button>
-                <button class="btn btn-primary" onclick="app.savePushToken()">Salvar</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Modals -->
     <div id="player-modal" class="modal-overlay">
@@ -1954,7 +1937,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>
 

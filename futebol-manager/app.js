@@ -514,7 +514,6 @@ class FootballApp {
                 <td data-label="Jogador">
                     <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">
                         ${p.nickname || p.name}
-                        ${p.pushToken ? '<i class="ph ph-bell-ringing" style="color: var(--neon-purple); margin-left: 4px; font-size: 14px;" title="Recebe Notificações"></i>' : ''}
                     </div>
                     <div style="font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px;">${p.fullName || ''}</div>
                 </td>
@@ -2170,7 +2169,6 @@ class FootballApp {
                         <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Tudo certo! Você receberá os avisos aqui.</p>
                     </div>
                 </div>
-                <button class="btn" onclick="app.openPushModal()" style="background: transparent; color: var(--neon-green); border: 1px solid var(--neon-green); padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 12px;">Vincular a um Jogador</button>
             `;
         } else if (Notification.permission === 'default') {
             banner.style.display = 'flex';
@@ -2198,59 +2196,27 @@ class FootballApp {
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            this.checkNotificationPermission();
-            this.openPushModal();
+            try {
+                const messaging = firebase.messaging();
+                const token = await messaging.getToken({ vapidKey: 'BH4F-JK-x-WRnsk4W9L1bg70I7zTevMXgkKKdVHCo7XKR_mtXebB3Oyui5-LU6Aei22C4Ji_-lJgAPQAMQ_Vt6E' });
+                
+                if (token) {
+                    if (!this.data.globalTokens) this.data.globalTokens = [];
+                    if (!this.data.globalTokens.includes(token)) {
+                        this.data.globalTokens.push(token);
+                        await this.saveData();
+                    }
+                    this.checkNotificationPermission();
+                    alert('Notificações ativadas com sucesso! 🔔');
+                }
+            } catch (err) {
+                console.error('Erro ao obter token:', err);
+                alert('Erro ao ativar notificações. O Google bloqueou a geração do código.\n\nDetalhe técnico: ' + err.message);
+                this.checkNotificationPermission();
+            }
         } else {
             alert('Permissão de notificação negada.');
             this.checkNotificationPermission();
-        }
-    }
-
-    openPushModal() {
-        const select = document.getElementById('push-player-select');
-        select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
-        
-        const sortedPlayers = [...this.data.players]
-            .filter(p => p.type === 'mensalista')
-            .sort((a, b) => {
-            const nameA = a.nickname || a.fullName || '';
-            const nameB = b.nickname || b.fullName || '';
-            return nameA.localeCompare(nameB);
-        });
-        
-        sortedPlayers.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.id;
-            opt.textContent = p.nickname || p.fullName || 'Sem nome';
-            select.appendChild(opt);
-        });
-
-        document.getElementById('push-modal').classList.add('active');
-    }
-
-    async savePushToken() {
-        const playerId = document.getElementById('push-player-select').value;
-        if (!playerId) {
-            alert('Por favor, selecione seu nome.');
-            return;
-        }
-
-        try {
-            const messaging = firebase.messaging();
-            const token = await messaging.getToken({ vapidKey: 'BH4F-JK-x-WRnsk4W9L1bg70I7zTevMXgkKKdVHCo7XKR_mtXebB3Oyui5-LU6Aei22C4Ji_-lJgAPQAMQ_Vt6E' });
-            
-            if (token) {
-                const playerIndex = this.data.players.findIndex(p => String(p.id) === String(playerId));
-                if (playerIndex !== -1) {
-                    this.data.players[playerIndex].pushToken = token;
-                    await this.saveData();
-                    document.getElementById('push-modal').classList.remove('active');
-                    alert('Notificações ativadas com sucesso! 🔔');
-                }
-            }
-        } catch (err) {
-            console.error('Erro ao obter token:', err);
-            alert('Erro ao ativar notificações. O Google bloqueou a geração do código.\n\nDetalhe técnico: ' + err.message);
         }
     }
 
