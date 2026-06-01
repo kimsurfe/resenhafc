@@ -10,6 +10,15 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const messaging = firebase.messaging();
+
+messaging.onMessage((payload) => {
+    console.log('Mensagem recebida em primeiro plano:', payload);
+    if (payload.notification) {
+        // Se o usuário estiver com o app aberto, mostra um alerta na tela
+        alert(`🔔 NOVA MENSAGEM DO RESENHA FC\n\n${payload.notification.title}\n${payload.notification.body}`);
+    }
+});
 
 const DEFAULT_DATA = {
     players: [],
