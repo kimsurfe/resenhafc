@@ -94,8 +94,29 @@ export default async function handler(req, res) {
                 try {
                     const response = await messaging.sendMulticast(message);
                     totalSent += response.successCount;
+                    
+                    if (response.failureCount > 0) {
+                        const failedReasons = [];
+                        response.responses.forEach(resp => {
+                            if (!resp.success && resp.error) {
+                                failedReasons.push(resp.error.message);
+                            }
+                        });
+                        
+                        // Delete processed schedule before returning early
+                        await docRef.update({
+                            customPushes: remainingPushes
+                        });
+                        
+                        return res.status(200).json({ 
+                            success: true, 
+                            message: `Tokens found, but Firebase refused to send. Errors: ${failedReasons.join(', ')}`,
+                            remaining: remainingPushes.length
+                        });
+                    }
                 } catch (e) {
                     console.error("Error sending custom push", e);
+                    return res.status(500).json({ error: e.message });
                 }
             }
         }
