@@ -1199,13 +1199,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <span id="app-name-sidebar">RESENHA F.C</span>
             </div>
             <nav class="nav-menu">
-                <button class="nav-item active" data-target="dashboard">
+                <button class="nav-item" data-target="dashboard">
                     <i class="ph ph-squares-four"></i> Dashboard
                 </button>
                 <button class="nav-item" data-target="mensalistas">
                     <i class="ph ph-users"></i> Mensalistas
                 </button>
-                <button class="nav-item" data-target="presenca">
+                <button class="nav-item active" data-target="presenca">
                     <i class="ph ph-clipboard-text"></i> Lista de Presença
                 </button>
                 <button class="nav-item" data-target="sorteio">
@@ -1231,7 +1231,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <img id="app-logo-mobile" src="resenha_logotipo.jpg" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
                         <span id="app-name-mobile" style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
-                    <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Dashboard</h1>
+                    <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Lista de Presença</h1>
                 </div>
                 <div class="actions">
                     <div class="date-display" id="current-date"></div>
@@ -1246,7 +1246,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
             <div class="content-wrapper">
                 <!-- Dashboard View -->
-                <section id="dashboard" class="view-section active">
+                <section id="dashboard" class="view-section">
                     <!-- Notification Banner -->
                     <div id="notification-banner" class="glass-card" style="display: none; margin-bottom: 24px; border-color: var(--neon-blue); align-items: center; justify-content: space-between; padding: 16px 24px; flex-wrap: wrap; gap: 16px;">
                         <div style="display: flex; align-items: center; gap: 16px;">
@@ -1412,7 +1412,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 </section>
 
                 <!-- Presença View -->
-                <section id="presenca" class="view-section">
+                <section id="presenca" class="view-section active">
                     <div class="section-header">
                         <div class="date-selector glass-input" style="width: auto; min-width: 200px;">
                             <i class="ph ph-calendar" style="color: var(--neon-blue); font-size: 20px;"></i>
@@ -1752,14 +1752,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <textarea id="custom-push-body" class="glass-input-field" style="height: 80px; resize: none;" placeholder="Ex: Galera, logo depois do jogo teremos churrasco. Não faltem!"></textarea>
                         </div>
                         
-                        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
-                            <div class="form-group" style="margin: 0; flex: 1; min-width: 140px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                            <div class="form-group" style="margin: 0;">
                                 <label>Data de Envio</label>
-                                <input type="date" id="custom-push-date" class="glass-input-field">
+                                <input type="date" id="custom-push-date" class="glass-input-field" style="width: 100%; box-sizing: border-box; -webkit-appearance: none; appearance: none;">
                             </div>
-                            <div class="form-group" style="margin: 0; flex: 1; min-width: 140px;">
+                            <div class="form-group" style="margin: 0;">
                                 <label>Hora Exata</label>
-                                <input type="time" id="custom-push-time" class="glass-input-field">
+                                <input type="time" id="custom-push-time" class="glass-input-field" style="width: 100%; box-sizing: border-box; -webkit-appearance: none; appearance: none;">
                             </div>
                         </div>
 
@@ -1815,7 +1815,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     <!-- Menu de Navegação Inferior (Mobile Only) -->
     <nav class="bottom-nav">
-        <button class="nav-item-mobile active" data-target="dashboard">
+        <button class="nav-item-mobile" data-target="dashboard">
             <i class="ph ph-squares-four"></i>
             <span>Início</span>
         </button>
@@ -1823,7 +1823,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             <i class="ph ph-users"></i>
             <span>Mensalistas</span>
         </button>
-        <button class="nav-item-mobile" data-target="presenca">
+        <button class="nav-item-mobile active" data-target="presenca">
             <i class="ph ph-clipboard-text"></i>
             <span>Presença</span>
         </button>
@@ -1963,7 +1963,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=12"></script>
+    <script src="app.js?v=15"></script>
 </body>
 </html>
 

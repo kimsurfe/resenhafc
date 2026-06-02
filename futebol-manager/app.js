@@ -1510,14 +1510,28 @@ class FootballApp {
             });
         });
 
-        // 2. Associar nomes aos IDs e ordenar (Critério: Pontos DESC, Nome ASC)
-        const ranking = this.data.players
-            .map(p => ({
-                name: p.nickname || p.name,
-                fullName: p.fullName,
-                score: scores[p.id] || 0
-            }))
-            .filter(item => item.score > 0)
+        // 2. Associar nomes aos IDs, agrupar nomes iguais (para avulsos repetidos) e ordenar
+        const rankingMap = new Map();
+        
+        this.data.players.forEach(p => {
+            const score = scores[p.id] || 0;
+            if (score > 0) {
+                const displayName = p.nickname || p.name || 'Sem Nome';
+                const key = displayName.trim().toLowerCase();
+                
+                if (rankingMap.has(key)) {
+                    rankingMap.get(key).score += score;
+                } else {
+                    rankingMap.set(key, {
+                        name: displayName,
+                        fullName: p.fullName || '',
+                        score: score
+                    });
+                }
+            }
+        });
+
+        const ranking = Array.from(rankingMap.values())
             .sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
                 return a.name.localeCompare(b.name);
@@ -2295,17 +2309,17 @@ class FootballApp {
         const overlay = document.getElementById('more-menu-overlay');
         if (overlay) overlay.classList.remove('active');
 
-        // Voltar para o Dashboard
+        // Voltar para Lista de Presença
         document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-        const dash = document.getElementById('dashboard');
-        if (dash) dash.classList.add('active');
+        const presenca = document.getElementById('presenca');
+        if (presenca) presenca.classList.add('active');
         
         const pageTitle = document.getElementById('page-title');
-        if (pageTitle) pageTitle.textContent = 'Dashboard';
+        if (pageTitle) pageTitle.textContent = 'Lista de Presença';
         
         // Resetar itens ativos na nav
         document.querySelectorAll('.nav-item, .nav-item-mobile').forEach(b => {
-            if (b.dataset.target === 'dashboard') b.classList.add('active');
+            if (b.dataset.target === 'presenca') b.classList.add('active');
             else b.classList.remove('active');
         });
 
