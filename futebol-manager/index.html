@@ -1899,13 +1899,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <input type="hidden" id="player-id">
                 <div class="form-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="player-fullname" required class="glass-input-field" autocomplete="off" onfocus="app.showAutocomplete('fullname')" oninput="app.filterAutocomplete('fullname')" onblur="setTimeout(() => app.hideAutocomplete('fullname'), 200)">
-                    <div id="autocomplete-fullname" class="autocomplete-list"></div>
+                    <div style="position: relative;">
+                        <input type="text" id="player-fullname" required class="glass-input-field" autocomplete="off" onfocus="app.showAutocomplete('fullname')" oninput="app.filterAutocomplete('fullname')" onblur="setTimeout(() => app.hideAutocomplete('fullname'), 200)" style="padding-right: 36px;">
+                        <i class="ph ph-caret-down" style="position: absolute; right: 12px; top: 14px; color: var(--text-muted); pointer-events: none;"></i>
+                        <div id="autocomplete-fullname" class="autocomplete-list"></div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Apelido</label>
-                    <input type="text" id="player-nickname" required class="glass-input-field" autocomplete="off" onfocus="app.showAutocomplete('nickname')" oninput="app.filterAutocomplete('nickname')" onblur="setTimeout(() => app.hideAutocomplete('nickname'), 200)">
-                    <div id="autocomplete-nickname" class="autocomplete-list"></div>
+                    <div style="position: relative;">
+                        <input type="text" id="player-nickname" required class="glass-input-field" autocomplete="off" onfocus="app.showAutocomplete('nickname')" oninput="app.filterAutocomplete('nickname')" onblur="setTimeout(() => app.hideAutocomplete('nickname'), 200)" style="padding-right: 36px;">
+                        <i class="ph ph-caret-down" style="position: absolute; right: 12px; top: 14px; color: var(--text-muted); pointer-events: none;"></i>
+                        <div id="autocomplete-nickname" class="autocomplete-list"></div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Telefone (WhatsApp)</label>
@@ -2003,7 +2009,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=19"></script>
+    <script src="app.js?v=20"></script>
 </body>
 </html>
 
