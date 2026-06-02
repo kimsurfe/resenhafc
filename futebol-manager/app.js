@@ -1053,8 +1053,8 @@ class FootballApp {
         const cards = document.querySelectorAll('#attendance-list .player-card');
         
         cards.forEach(card => {
-            const name = card.querySelector('.player-info div div').textContent.toLowerCase();
-            card.style.display = name.includes(term) ? '' : 'none';
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(term) ? '' : 'none';
         });
     }
 
