@@ -1323,6 +1323,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     
+                    <div class="dashboard-widgets" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        <div class="widget glass-card">
+                            <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-confirmed-list', this)">
+                                <i class="ph ph-check-circle" style="color: var(--neon-green)"></i> Presentes (<span id="dash-confirmed-count">0</span>)
+                                <i class="ph ph-caret-up" style="margin-left: auto;"></i>
+                            </h2>
+                            <div id="dash-confirmed-list" class="dash-collapsible">
+                                <!-- JS -->
+                            </div>
+                        </div>
+                        <div class="widget glass-card">
+                            <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-pending-list', this)">
+                                <i class="ph ph-question" style="color: var(--neon-orange)"></i> Dúvidas (<span id="dash-pending-count">0</span>)
+                                <i class="ph ph-caret-up" style="margin-left: auto;"></i>
+                            </h2>
+                            <div id="dash-pending-list" class="dash-collapsible">
+                                <!-- JS -->
+                            </div>
+                        </div>
+                        <div class="widget glass-card">
+                            <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-absent-list', this)">
+                                <i class="ph ph-x-circle" style="color: var(--neon-red)"></i> Ausentes (<span id="dash-absent-count">0</span>)
+                                <i class="ph ph-caret-up" style="margin-left: auto;"></i>
+                            </h2>
+                            <div id="dash-absent-list" class="dash-collapsible">
+                                <!-- JS -->
+                            </div>
+                        </div>
+                    </div>
                     <div class="dashboard-widgets financial-section admin-only" style="margin-bottom: 24px;">
                         <div class="widget glass-card">
                             <h2>Últimos Pagamentos</h2>
@@ -1355,35 +1384,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
 
-                    <div class="dashboard-widgets" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
-                        <div class="widget glass-card">
-                            <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-confirmed-list', this)">
-                                <i class="ph ph-check-circle" style="color: var(--neon-green)"></i> Presentes (<span id="dash-confirmed-count">0</span>)
-                                <i class="ph ph-caret-up" style="margin-left: auto;"></i>
-                            </h2>
-                            <div id="dash-confirmed-list" class="dash-collapsible">
-                                <!-- JS -->
-                            </div>
-                        </div>
-                        <div class="widget glass-card">
-                            <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-pending-list', this)">
-                                <i class="ph ph-question" style="color: var(--neon-orange)"></i> Dúvidas (<span id="dash-pending-count">0</span>)
-                                <i class="ph ph-caret-up" style="margin-left: auto;"></i>
-                            </h2>
-                            <div id="dash-pending-list" class="dash-collapsible">
-                                <!-- JS -->
-                            </div>
-                        </div>
-                        <div class="widget glass-card">
-                            <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-absent-list', this)">
-                                <i class="ph ph-x-circle" style="color: var(--neon-red)"></i> Ausentes (<span id="dash-absent-count">0</span>)
-                                <i class="ph ph-caret-up" style="margin-left: auto;"></i>
-                            </h2>
-                            <div id="dash-absent-list" class="dash-collapsible">
-                                <!-- JS -->
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <!-- Mensalistas View -->
@@ -2056,7 +2056,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=28"></script>
+    <script src="app.js?v=29"></script>
 </body>
 </html>
 
