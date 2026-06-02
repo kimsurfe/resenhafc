@@ -1054,31 +1054,53 @@ class FootballApp {
             document.getElementById('player-id').value = "";
         }
         
-        // Popular Datalists para Autocompletar Avulsos do histórico
-        const fullnameList = document.getElementById('avulsos-list-fullname');
-        const nicknameList = document.getElementById('avulsos-list-nickname');
-        if (fullnameList && nicknameList) {
-            fullnameList.innerHTML = '';
-            nicknameList.innerHTML = '';
-            
-            const avulsos = this.data.players.filter(p => p.type === 'avulso');
-            const uniqueFullNames = [...new Set(avulsos.map(p => p.fullName).filter(n => n))].sort();
-            const uniqueNicknames = [...new Set(avulsos.map(p => p.nickname).filter(n => n))].sort();
-            
-            uniqueFullNames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                fullnameList.appendChild(option);
-            });
-            uniqueNicknames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                nicknameList.appendChild(option);
-            });
-        }
+        // Preparar listas para o autocomplete customizado
+        const avulsos = this.data.players.filter(p => p.type === 'avulso');
+        this.avulsosFullNames = [...new Set(avulsos.map(p => p.fullName).filter(n => n))].sort();
+        this.avulsosNicknames = [...new Set(avulsos.map(p => p.nickname).filter(n => n))].sort();
 
         this.toggleGuestDateField();
         this.openModal('player-modal');
+    }
+
+    showAutocomplete(field) {
+        this.filterAutocomplete(field);
+    }
+
+    filterAutocomplete(field) {
+        const input = document.getElementById(`player-${field}`);
+        const listContainer = document.getElementById(`autocomplete-${field}`);
+        if (!input || !listContainer) return;
+        
+        const val = input.value.toLowerCase();
+        const sourceList = field === 'fullname' ? this.avulsosFullNames : this.avulsosNicknames;
+        if (!sourceList) return;
+        
+        const filtered = sourceList.filter(name => name.toLowerCase().includes(val));
+        
+        listContainer.innerHTML = '';
+        if (filtered.length > 0) {
+            filtered.forEach(name => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.textContent = name;
+                item.onclick = () => {
+                    input.value = name;
+                    listContainer.classList.remove('active');
+                };
+                listContainer.appendChild(item);
+            });
+            listContainer.classList.add('active');
+        } else {
+            listContainer.classList.remove('active');
+        }
+    }
+
+    hideAutocomplete(field) {
+        const listContainer = document.getElementById(`autocomplete-${field}`);
+        if (listContainer) {
+            listContainer.classList.remove('active');
+        }
     }
 
     toggleGuestDateField() {
