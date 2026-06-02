@@ -1442,6 +1442,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             </tbody>
                         </table>
                     </div>
+
+                    <div style="margin-top: 32px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px;">
+                        <h3 style="margin: 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Avulsos</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Avulsos que já jogaram e aparecem no autocompletar</p>
+                    </div>
+                    <div class="table-container glass-card">
+                        <table class="data-table">
+                            <thead>
+                            <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th>Jogador</th>
+                                    <th>Posição</th>
+                                    <th class="admin-only" style="text-align: right;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="avulsos-tbody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
 
                 <!-- Presença View -->
@@ -1935,8 +1955,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     </select>
                 </div>
                 <div class="form-group" id="guest-date-group" style="display: none;">
-                    <label>Data da Partida</label>
-                    <input type="date" id="guest-match-date" class="glass-input-field">
+                    <div style="margin-bottom: 16px;">
+                        <label>Data da Partida</label>
+                        <input type="date" id="guest-match-date" class="glass-input-field">
+                    </div>
+                    <div>
+                        <label>Indicado por (Opcional)</label>
+                        <input type="text" id="guest-invited-by" placeholder="Ex: Marlon" class="glass-input-field">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Status (Mês Atual)</label>
@@ -2009,7 +2035,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=21"></script>
+    <script src="app.js?v=25"></script>
 </body>
 </html>
 

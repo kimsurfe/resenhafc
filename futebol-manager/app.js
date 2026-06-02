@@ -554,6 +554,37 @@ class FootballApp {
         };
 
         mensalistas.forEach(p => tbody.appendChild(renderRow(p, countMensalista++)));
+
+        // Render Avulsos Históricos
+        const avulsosTbody = document.getElementById('avulsos-tbody');
+        if (avulsosTbody) {
+            avulsosTbody.innerHTML = '';
+            let avulsos = sorted.filter(p => p.type === 'avulso');
+            let countAvulso = 1;
+            
+            const renderAvulsoRow = (p, rowNumber) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td data-label="#" style="color: var(--text-muted); font-weight: 700; font-size: 15px; width: 44px;">${rowNumber}</td>
+                    <td data-label="Jogador">
+                        <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">
+                            ${p.nickname || p.name || p.fullName}
+                            ${p.invitedBy ? `<span style="font-size: 12px; color: var(--text-muted); opacity: 0.8; font-weight: 400; margin-left: 4px;">(por: ${p.invitedBy})</span>` : ''}
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px;">${p.phone || ''}</div>
+                    </td>
+                    <td data-label="Posição">${p.position || 'Linha'}</td>
+                    <td data-label="Ações" class="admin-only" style="text-align: right;">
+                        ${localStorage.getItem('resenha_admin') === 'true' ? `
+                        <button class="action-btn" title="Editar" onclick="app.openPlayerModal('${p.id}')" style="font-size:22px;"><i class="ph ph-pencil-simple"></i></button>
+                        <button class="action-btn" title="Excluir" onclick="app.deletePlayer('${p.id}')" style="color:var(--neon-red);font-size:22px;"><i class="ph ph-trash"></i></button>` : ''}
+                    </td>
+                `;
+                return tr;
+            };
+
+            avulsos.forEach(p => avulsosTbody.appendChild(renderAvulsoRow(p, countAvulso++)));
+        }
     }
 
     renderAttendance() {
@@ -592,6 +623,7 @@ class FootballApp {
                             <div>
                                 <div style="font-weight: 600; display: flex; align-items: center; gap: 6px; font-size: 15px;">
                                     ${p.nickname || p.name || p.fullName} 
+                                    ${p.invitedBy ? `<span style="font-size: 12px; color: var(--text-muted); opacity: 0.8; font-weight: 400;">(por: ${p.invitedBy})</span>` : ''}
                                     ${isGuest ? '<span style="font-size: 9px; color: var(--neon-blue); border: 1px solid var(--neon-blue); padding: 0 4px; border-radius: 4px; text-transform: uppercase;">Hoje</span>' : ''}
                                     ${p.type === 'avulso' && !isGuest ? '<span style="font-size: 9px; color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 0 4px; border-radius: 4px; text-transform: uppercase;">Fixo</span>' : ''}
                                 </div>
@@ -633,8 +665,15 @@ class FootballApp {
         }
 
         if (avulsos.length > 0) {
-            list.innerHTML += `<div style="font-size: 11px; font-weight: bold; color: var(--neon-purple); padding: 16px 0 4px 0; letter-spacing: 1.5px; width: 100%; text-transform: uppercase;">Avulsos (${avulsos.length})</div>`;
-            avulsos.forEach(p => list.innerHTML += getCardHTML(p));
+            list.innerHTML += `
+                <div onclick="app.toggleDashList('attendance-avulsos-list', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; padding: 16px 0 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px;">
+                    <span style="font-size: 11px; font-weight: bold; color: var(--neon-purple); letter-spacing: 1.5px; text-transform: uppercase;">Avulsos (${avulsos.length})</span>
+                    <i class="ph ph-caret-down" style="color: var(--text-muted); font-size: 14px;"></i>
+                </div>
+                <div id="attendance-avulsos-list" class="dash-collapsible collapsed">
+                    ${avulsos.map(p => getCardHTML(p)).join('')}
+                </div>
+            `;
         }
 
         const countEl = document.getElementById('presenca-count');
@@ -673,7 +712,8 @@ class FootballApp {
 
         this.getSortedPlayers().forEach(p => {
             const status = this.getAttendanceStatus(dateValue, p.id);
-            const line = `${p.nickname || p.fullName} ${p.type === 'avulso' ? '(Avulso)' : ''}`.trim();
+            const invited = p.invitedBy ? ` (por: ${p.invitedBy})` : '';
+            const line = `${p.nickname || p.fullName}${invited} ${p.type === 'avulso' ? '(Avulso)' : ''}`.trim();
             
             if (status === 'present') present.push(line);
             else if (status === 'absent') absent.push(line);
@@ -1045,6 +1085,7 @@ class FootballApp {
             document.getElementById('player-position').value = player.position;
             document.getElementById('player-type').value = player.type;
             document.getElementById('player-status').value = player.status || 'unpaid';
+            document.getElementById('guest-invited-by').value = player.invitedBy || '';
             
             if (player.isTemporary) {
                 document.getElementById('guest-match-date').value = player.validDate;
@@ -1104,6 +1145,7 @@ class FootballApp {
                         if (matchedPlayer.position) {
                             document.getElementById('player-position').value = matchedPlayer.position;
                         }
+                        document.getElementById('guest-invited-by').value = matchedPlayer.invitedBy || '';
                     }
                 };
                 listContainer.appendChild(item);
@@ -1150,7 +1192,8 @@ class FootballApp {
             type: type,
             status: newStatus,
             isTemporary: isGuest,
-            validDate: isGuest ? document.getElementById('guest-match-date').value : null
+            validDate: isGuest ? document.getElementById('guest-match-date').value : null,
+            invitedBy: isGuest ? document.getElementById('guest-invited-by').value.trim() : null
         };
 
         if (this.editingPlayerId) {
