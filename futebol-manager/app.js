@@ -1087,6 +1087,24 @@ class FootballApp {
                 item.onclick = () => {
                     input.value = name;
                     listContainer.classList.remove('active');
+                    
+                    // Autofill other fields
+                    const avulsos = this.data.players.filter(p => p.type === 'avulso');
+                    const matchedPlayer = field === 'fullname' 
+                        ? avulsos.find(p => p.fullName === name) 
+                        : avulsos.find(p => p.nickname === name);
+                        
+                    if (matchedPlayer) {
+                        if (field === 'fullname') {
+                            document.getElementById('player-nickname').value = matchedPlayer.nickname || '';
+                        } else {
+                            document.getElementById('player-fullname').value = matchedPlayer.fullName || '';
+                        }
+                        document.getElementById('player-phone').value = matchedPlayer.phone || '';
+                        if (matchedPlayer.position) {
+                            document.getElementById('player-position').value = matchedPlayer.position;
+                        }
+                    }
                 };
                 listContainer.appendChild(item);
             });
