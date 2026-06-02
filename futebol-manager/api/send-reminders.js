@@ -90,6 +90,10 @@ export default async function handler(req, res) {
             title = t.day1?.title || 'O jogo é amanhã! Vai ou não? 🤔';
             body = t.day1?.body || 'Lembrete geral: O jogo é amanhã! Se você ainda não respondeu a lista, acesse o app agora e deixe sua resposta.';
             tokensToNotify = data.globalTokens || [];
+        } else if (diffDays === 0 && notifications.notifyDay0) {
+            title = t.day0?.title || 'É HOJE! Dia de jogo! 🔥';
+            body = t.day0?.body || 'Lembrete final: O jogo é hoje! Prepare a chuteira e confirme sua presença na lista se ainda não fez isso.';
+            tokensToNotify = data.globalTokens || [];
         } else {
             return res.status(200).json({ message: `No notifications scheduled for ${diffDays} days before match.` });
         }

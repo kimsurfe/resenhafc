@@ -1818,10 +1818,12 @@ class FootballApp {
         const cb3 = document.getElementById('config-notify-day-3');
         const cb2 = document.getElementById('config-notify-day-2');
         const cb1 = document.getElementById('config-notify-day-1');
+        const cb0 = document.getElementById('config-notify-day-0');
         
         if (cb3) cb3.checked = this.data.notifications.notifyDay3;
         if (cb2) cb2.checked = this.data.notifications.notifyDay2;
         if (cb1) cb1.checked = this.data.notifications.notifyDay1;
+        if (cb0) cb0.checked = this.data.notifications.notifyDay0;
 
         if (this.data.notifications.templates) {
             const t = this.data.notifications.templates;
@@ -1831,6 +1833,8 @@ class FootballApp {
             if (document.getElementById('config-notify-body-2')) document.getElementById('config-notify-body-2').value = t.day2?.body || '';
             if (document.getElementById('config-notify-title-1')) document.getElementById('config-notify-title-1').value = t.day1?.title || '';
             if (document.getElementById('config-notify-body-1')) document.getElementById('config-notify-body-1').value = t.day1?.body || '';
+            if (document.getElementById('config-notify-title-0')) document.getElementById('config-notify-title-0').value = t.day0?.title || '';
+            if (document.getElementById('config-notify-body-0')) document.getElementById('config-notify-body-0').value = t.day0?.body || '';
         }
     }
 
@@ -1895,6 +1899,7 @@ class FootballApp {
         const notifyDay3 = document.getElementById('config-notify-day-3').checked;
         const notifyDay2 = document.getElementById('config-notify-day-2').checked;
         const notifyDay1 = document.getElementById('config-notify-day-1').checked;
+        const notifyDay0 = document.getElementById('config-notify-day-0').checked;
         
         const templates = {
             day3: {
@@ -1908,6 +1913,10 @@ class FootballApp {
             day1: {
                 title: document.getElementById('config-notify-title-1').value.trim(),
                 body: document.getElementById('config-notify-body-1').value.trim()
+            },
+            day0: {
+                title: document.getElementById('config-notify-title-0').value.trim(),
+                body: document.getElementById('config-notify-body-0').value.trim()
             }
         };
 
@@ -1918,6 +1927,7 @@ class FootballApp {
             notifyDay3,
             notifyDay2,
             notifyDay1,
+            notifyDay0,
             templates
         };
 
@@ -1930,7 +1940,6 @@ class FootballApp {
         const body = document.getElementById('custom-push-body').value.trim();
         const date = document.getElementById('custom-push-date').value;
         const time = document.getElementById('custom-push-time').value;
-        const target = document.getElementById('custom-push-target').value;
 
         if (!title || !body || !date || !time) {
             alert('Preencha todos os campos do agendamento.');
@@ -1947,7 +1956,6 @@ class FootballApp {
                 this.data.customPushes[index].title = title;
                 this.data.customPushes[index].body = body;
                 this.data.customPushes[index].scheduledFor = scheduledFor;
-                this.data.customPushes[index].target = target;
             }
         } else {
             const id = 'push_' + Date.now();
@@ -1956,7 +1964,6 @@ class FootballApp {
                 title,
                 body,
                 scheduledFor,
-                target,
                 createdAt: new Date().toISOString()
             });
         }
@@ -1974,7 +1981,6 @@ class FootballApp {
 
         document.getElementById('custom-push-title').value = push.title || '';
         document.getElementById('custom-push-body').value = push.body || '';
-        document.getElementById('custom-push-target').value = push.target || 'all';
 
         if (push.scheduledFor) {
             const [date, time] = push.scheduledFor.split('T');
@@ -1996,7 +2002,6 @@ class FootballApp {
         document.getElementById('custom-push-body').value = '';
         document.getElementById('custom-push-date').value = '';
         document.getElementById('custom-push-time').value = '';
-        document.getElementById('custom-push-target').value = 'all';
 
         const btnText = document.getElementById('custom-push-btn-text');
         if (btnText) btnText.textContent = 'Agendar Hora Exata';

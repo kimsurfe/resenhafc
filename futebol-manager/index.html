@@ -1718,7 +1718,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     </div>
                                 </div>
 
-                                <div>
+                                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
                                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0 0 8px 0;">
                                         <input type="checkbox" id="config-notify-day-1" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
                                         Avisar 1 dia antes
@@ -1726,6 +1726,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     <div style="display: flex; flex-direction: column; gap: 8px; padding-left: 28px;">
                                         <input type="text" id="config-notify-title-1" placeholder="Título. Ex: O Jogo é Amanhã!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
                                         <textarea id="config-notify-body-1" placeholder="Texto da notificação" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0 0 8px 0;">
+                                        <input type="checkbox" id="config-notify-day-0" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
+                                        Avisar no dia do jogo
+                                    </label>
+                                    <div style="display: flex; flex-direction: column; gap: 8px; padding-left: 28px;">
+                                        <input type="text" id="config-notify-title-0" placeholder="Título. Ex: É Hoje!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
+                                        <textarea id="config-notify-body-0" placeholder="Texto da notificação" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1763,13 +1774,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 24px;">
-                            <label>Destinatários</label>
-                            <select id="custom-push-target" class="glass-input-field">
-                                <option value="all">Todos os jogadores cadastrados</option>
-                                <option value="pending">Apenas quem NÃO confirmou presença</option>
-                            </select>
-                        </div>
+
 
                         <div style="display: flex; gap: 12px; margin-bottom: 24px;">
                             <button class="btn" id="custom-push-btn" onclick="app.scheduleCustomPush()" style="flex: 1; background: rgba(139, 92, 246, 0.1); color: var(--neon-purple); border: 1px solid var(--neon-purple);">
@@ -1963,7 +1968,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=15"></script>
+    <script src="app.js?v=17"></script>
 </body>
 </html>
 
