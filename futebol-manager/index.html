@@ -1866,11 +1866,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <input type="hidden" id="player-id">
                 <div class="form-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="player-fullname" required class="glass-input-field">
+                    <input type="text" id="player-fullname" required class="glass-input-field" list="avulsos-list-fullname">
+                    <datalist id="avulsos-list-fullname"></datalist>
                 </div>
                 <div class="form-group">
                     <label>Apelido</label>
-                    <input type="text" id="player-nickname" required class="glass-input-field">
+                    <input type="text" id="player-nickname" required class="glass-input-field" list="avulsos-list-nickname">
+                    <datalist id="avulsos-list-nickname"></datalist>
                 </div>
                 <div class="form-group">
                     <label>Telefone (WhatsApp)</label>
@@ -1968,7 +1970,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=17"></script>
+    <script src="app.js?v=18"></script>
 </body>
 </html>
 

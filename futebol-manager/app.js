@@ -1054,6 +1054,29 @@ class FootballApp {
             document.getElementById('player-id').value = "";
         }
         
+        // Popular Datalists para Autocompletar Avulsos do histórico
+        const fullnameList = document.getElementById('avulsos-list-fullname');
+        const nicknameList = document.getElementById('avulsos-list-nickname');
+        if (fullnameList && nicknameList) {
+            fullnameList.innerHTML = '';
+            nicknameList.innerHTML = '';
+            
+            const avulsos = this.data.players.filter(p => p.type === 'avulso');
+            const uniqueFullNames = [...new Set(avulsos.map(p => p.fullName).filter(n => n))].sort();
+            const uniqueNicknames = [...new Set(avulsos.map(p => p.nickname).filter(n => n))].sort();
+            
+            uniqueFullNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                fullnameList.appendChild(option);
+            });
+            uniqueNicknames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                nicknameList.appendChild(option);
+            });
+        }
+
         this.toggleGuestDateField();
         this.openModal('player-modal');
     }
