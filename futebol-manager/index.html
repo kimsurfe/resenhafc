@@ -1467,26 +1467,47 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <!-- Presença View -->
                 <section id="presenca" class="view-section active">
                     <div class="section-header">
-                        <div class="date-selector glass-input" style="width: auto; min-width: 200px;">
-                            <i class="ph ph-calendar" style="color: var(--neon-blue); font-size: 20px;"></i>
-                            <input type="date" id="match-date-select" class="glass-input-field" style="background: transparent; border: none; color: var(--text-light); outline: none; font-family: inherit; font-size: 14px; width: 100%; cursor: pointer;">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <h2 style="margin: 0;"><i class="ph ph-clipboard-text"></i> Presença</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Confirmações do próximo jogo</p>
                         </div>
-                        <div class="attendance-stats" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.toggleDashList('dash-confirmed-list', this)">
-                                <i class="ph ph-check-circle"></i> <span id="presenca-count">0</span> Confirmados
-                            </button>
-                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.toggleDashList('dash-absent-list', this)">
-                                <i class="ph ph-x-circle"></i> <span id="absent-count">0</span> Ausentes
-                            </button>
-                            <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyDoubtListToWhatsApp()">
-                                <i class="ph ph-question"></i> <span id="doubt-count">0</span> Dúvidas
-                            </button>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" class="admin-only">
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyAttendanceToWhatsApp()">
                                 <i class="ph ph-whatsapp-logo"></i> Copiar Lista
                             </button>
                             <button class="att-stat-btn admin-only" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.promptTemporaryPlayer()">
                                 <i class="ph ph-user-plus"></i> Add Avulso
                             </button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Filtros / Data -->
+                        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                            <!-- Data -->
+                            <div class="date-selector glass-input" style="width: auto; min-width: 200px; padding: 6px 12px; margin: 0;">
+                                <i class="ph ph-calendar" style="color: var(--neon-blue); font-size: 20px;"></i>
+                                <input type="date" id="match-date-select" class="glass-input-field" style="background: transparent; border: none; color: var(--text-light); outline: none; font-family: inherit; font-size: 14px; width: 100%; cursor: pointer;">
+                            </div>
+                            
+                            <!-- Botoes de Stats -->
+                            <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-self: flex-start; flex-wrap: wrap;">
+                                <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.toggleDashList('dash-confirmed-list', this)">
+                                    <i class="ph ph-check-circle"></i> <span id="presenca-count">0</span> Confirmados
+                                </button>
+                                <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.toggleDashList('dash-absent-list', this)">
+                                    <i class="ph ph-x-circle"></i> <span id="absent-count">0</span> Ausentes
+                                </button>
+                                <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.copyDoubtListToWhatsApp()">
+                                    <i class="ph ph-question"></i> <span id="doubt-count">0</span> Dúvidas
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Busca -->
+                        <div class="search-bar glass-input" style="width: 100%; max-width: 100%;">
+                            <i class="ph ph-magnifying-glass"></i>
+                            <input type="text" id="search-attendance" placeholder="Buscar jogador na lista de presença..." oninput="app.filterAttendance()" style="width: 100%;">
                         </div>
                     </div>
                     <div class="pitch-container glass-card">
@@ -2035,7 +2056,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=25"></script>
+    <script src="app.js?v=27"></script>
 </body>
 </html>
 

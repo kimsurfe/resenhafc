@@ -590,6 +590,10 @@ class FootballApp {
     renderAttendance() {
         const list = document.getElementById('attendance-list');
         if (!list) return;
+        
+        const avulsosListEl = document.getElementById('attendance-avulsos-list');
+        const avulsosWasCollapsed = avulsosListEl ? avulsosListEl.classList.contains('collapsed') : true;
+        
         list.innerHTML = '';
         let presentCount = 0;
 
@@ -610,7 +614,7 @@ class FootballApp {
         const getCardHTML = (p) => {
             const status = this.getAttendanceStatus(dateSelect, p.id);
             if (status === 'present') presentCount++;
-            if (status === 'doubt') doubtCount++;
+            if (status === 'doubt' && p.type !== 'avulso') doubtCount++;
             if (status === 'absent') absentCount++;
 
             const isGuest = p.isTemporary;
@@ -668,9 +672,9 @@ class FootballApp {
             list.innerHTML += `
                 <div onclick="app.toggleDashList('attendance-avulsos-list', this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; padding: 16px 0 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px;">
                     <span style="font-size: 11px; font-weight: bold; color: var(--neon-purple); letter-spacing: 1.5px; text-transform: uppercase;">Avulsos (${avulsos.length})</span>
-                    <i class="ph ph-caret-down" style="color: var(--text-muted); font-size: 14px;"></i>
+                    <i class="ph ph-caret-${avulsosWasCollapsed ? 'down' : 'up'}" style="color: var(--text-muted); font-size: 14px;"></i>
                 </div>
-                <div id="attendance-avulsos-list" class="dash-collapsible collapsed">
+                <div id="attendance-avulsos-list" class="dash-collapsible ${avulsosWasCollapsed ? 'collapsed' : ''}">
                     ${avulsos.map(p => getCardHTML(p)).join('')}
                 </div>
             `;
@@ -821,7 +825,7 @@ class FootballApp {
 
         this.getSortedPlayers(dateValue).forEach(p => {
             const status = this.getAttendanceStatus(dateValue, p.id);
-            if (status === 'doubt') {
+            if (status === 'doubt' && p.type !== 'avulso') {
                 const name = (p.nickname || p.name || p.fullName).trim();
                 const phone = p.phone ? p.phone.replace(/\D/g, '') : '';
                 doubt.push({ name, phone });
@@ -1033,14 +1037,24 @@ class FootballApp {
 
     filterPlayers() {
         const term = document.getElementById('search-player').value.toLowerCase();
-        const rows = document.querySelectorAll('#mensalistas-tbody tr');
+        const rows = document.querySelectorAll('#mensalistas-tbody tr, #avulsos-tbody tr');
         
         rows.forEach(row => {
-            // Ignora a linha separadora de "AVULSOS"
-            if(row.children.length === 1) return;
-            
             const text = row.innerText.toLowerCase();
             row.style.display = text.includes(term) ? '' : 'none';
+        });
+    }
+
+    filterAttendance() {
+        const searchInput = document.getElementById('search-attendance');
+        if (!searchInput) return;
+        
+        const term = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll('#attendance-list .player-card');
+        
+        cards.forEach(card => {
+            const name = card.querySelector('.player-info div div').textContent.toLowerCase();
+            card.style.display = name.includes(term) ? '' : 'none';
         });
     }
 
