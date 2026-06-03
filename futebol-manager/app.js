@@ -606,7 +606,7 @@ class FootballApp {
 
         const sorted = this.getSortedPlayers(dateSelect);
         const mensalistas = sorted.filter(p => p.type === 'mensalista');
-        const avulsos = sorted.filter(p => p.type === 'avulso');
+        const avulsos = sorted.filter(p => p.type === 'avulso' && (!p.isTemporary || p.validDate === dateSelect));
 
         let doubtCount = 0;
         let absentCount = 0;
@@ -644,7 +644,7 @@ class FootballApp {
                                 </button>
                             ` : ''}
                             <button class="action-btn" onclick="app.openPlayerModal('${p.id}')" style="padding: 4px; font-size: 16px; color: var(--text-muted); opacity: 0.6;"><i class="ph ph-pencil-simple"></i></button>
-                            <button class="action-btn" onclick="app.deletePlayer('${p.id}')" style="padding: 4px; font-size: 16px; color: var(--neon-red); opacity: 0.6;"><i class="ph ph-trash"></i></button>
+                            <button class="action-btn" onclick="app.removePlayerFromWeek('${p.id}', '${dateSelect}')" style="padding: 4px; font-size: 16px; color: var(--neon-red); opacity: 0.6;" title="Remover da semana"><i class="ph ph-trash"></i></button>
                             ` : ''}
                         </div>
                     </div>
@@ -1255,7 +1255,7 @@ class FootballApp {
     }
 
     deletePlayer(id) {
-        if(confirm('Tem certeza que deseja excluir este jogador?')) {
+        if(confirm('Tem certeza que deseja excluir este jogador completamente do sistema? O histórico será perdido.')) {
             this.data.players = this.data.players.filter(p => p.id != id);
             // Also clean up attendance for this player
             for (const date in this.data.attendance) {
@@ -1267,6 +1267,28 @@ class FootballApp {
             this.renderPlayers();
             this.updateDashboard();
             this.renderAttendance();
+        }
+    }
+
+    removePlayerFromWeek(id, date) {
+        const player = this.data.players.find(p => p.id == id);
+        if (!player) return;
+        
+        const isAvulso = player.type === 'avulso';
+        const msg = isAvulso 
+            ? 'Tem certeza que deseja remover este avulso do jogo desta semana? O histórico dele será mantido.'
+            : 'Tem certeza que deseja limpar a presença deste jogador no jogo desta semana?';
+            
+        if (confirm(msg)) {
+            if (player.validDate === date) {
+                player.validDate = null;
+            }
+            if (this.data.attendance[date] && this.data.attendance[date][id]) {
+                delete this.data.attendance[date][id];
+            }
+            this.saveData();
+            this.renderAttendance();
+            this.renderDashboard();
         }
     }
 
