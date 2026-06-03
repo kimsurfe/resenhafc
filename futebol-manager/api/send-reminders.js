@@ -76,21 +76,26 @@ export default async function handler(req, res) {
 
         const t = notifications.templates || {};
 
-        if (diffDays === 3 && notifications.notifyDay3) {
+        const notifyDay3 = notifications.notifyDay3 !== false;
+        const notifyDay2 = notifications.notifyDay2 !== false;
+        const notifyDay1 = notifications.notifyDay1 !== false;
+        const notifyDay0 = notifications.notifyDay0 !== false;
+
+        if (diffDays === 3 && notifyDay3) {
             title = t.day3?.title || 'A Lista da Rodada abriu! ⚽';
             body = t.day3?.body || 'Garanta sua vaga para o próximo jogo! Acesse o app agora e confirme sua presença.';
             tokensToNotify = data.globalTokens || [];
         } 
-        else if (diffDays === 2 && notifications.notifyDay2) {
+        else if (diffDays === 2 && notifyDay2) {
             title = t.day2?.title || 'Faltam 2 dias para o jogo! ⏳';
             body = t.day2?.body || 'Lembrete geral: Se você ainda não confirmou sua presença, responda na lista para ajudar na divisão dos times!';
             tokensToNotify = data.globalTokens || [];
         }
-        else if (diffDays === 1 && notifications.notifyDay1) {
+        else if (diffDays === 1 && notifyDay1) {
             title = t.day1?.title || 'O jogo é amanhã! Vai ou não? 🤔';
             body = t.day1?.body || 'Lembrete geral: O jogo é amanhã! Se você ainda não respondeu a lista, acesse o app agora e deixe sua resposta.';
             tokensToNotify = data.globalTokens || [];
-        } else if (diffDays === 0 && notifications.notifyDay0) {
+        } else if (diffDays === 0 && notifyDay0) {
             title = t.day0?.title || 'É HOJE! Dia de jogo! 🔥';
             body = t.day0?.body || 'Lembrete final: O jogo é hoje! Prepare a chuteira e confirme sua presença na lista se ainda não fez isso.';
             tokensToNotify = data.globalTokens || [];
