@@ -1952,6 +1952,10 @@ class FootballApp {
         if (rotationDayEl) rotationDayEl.value = this.data.config.rotationDay !== undefined ? this.data.config.rotationDay : 4;
 
         // Update Notification Settings
+        const tokensCount = (this.data.globalTokens || []).length;
+        const countEl = document.getElementById('registered-devices-count');
+        if (countEl) countEl.textContent = `${tokensCount} dispositivo${tokensCount !== 1 ? 's' : ''} ativo${tokensCount !== 1 ? 's' : ''}`;
+
         if (!this.data.notifications) this.data.notifications = DEFAULT_DATA.notifications;
         const notifyOpenCb = document.getElementById('config-notify-open');
         
