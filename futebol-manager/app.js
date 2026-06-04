@@ -107,6 +107,22 @@ class FootballApp {
             if (doc.exists) {
                 this.data = doc.data();
                 console.log("Dados carregados da nuvem.");
+                
+                // --- RESCUE MISSION ---
+                // Se a nuvem estiver vazia (0 jogadores), mas o celular/PC tiver um backup local, restaura!
+                if ((!this.data.players || this.data.players.length === 0)) {
+                    const localRescue = localStorage.getItem('futManagerData');
+                    if (localRescue) {
+                        const parsedRescue = JSON.parse(localRescue);
+                        if (parsedRescue.players && parsedRescue.players.length > 0) {
+                            console.log("RESCUE MISSION: Restaurando backup local para a nuvem!");
+                            this.data = parsedRescue;
+                            await this.saveData();
+                            alert("Seus dados foram recuperados com sucesso do backup deste aparelho! ??");
+                        }
+                    }
+                }
+                // ----------------------
             } else {
                 console.log("Nenhum dado na nuvem. Verificando migração local...");
                 const local = localStorage.getItem('futManagerData');
