@@ -1,0 +1,17 @@
+{
+  "name": "Resenha FC",
+  "short_name": "Resenha FC",
+  "description": "Futebol Manager para controle financeiro e presença",
+  "start_url": "/?pwa=true",
+  "display": "standalone",
+  "background_color": "#0B0E14",
+  "theme_color": "#0B0E14",
+  "icons": [
+    {
+      "src": "resenha_logotipo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
