@@ -1683,22 +1683,30 @@ class FootballApp {
                     rankingMap.set(key, {
                         name: displayName,
                         fullName: p.fullName || '',
-                        score: score
+                        score: score,
+                        type: p.type || 'mensalista'
                     });
                 }
             }
         });
 
-        const ranking = Array.from(rankingMap.values())
+        const rankingMensalistas = [];
+        const rankingAvulsos = [];
+
+        Array.from(rankingMap.values())
             .sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
                 return a.name.localeCompare(b.name);
+            })
+            .forEach(item => {
+                if (item.type === 'mensalista') rankingMensalistas.push(item);
+                else rankingAvulsos.push(item);
             });
 
-        // Exibir contêiner de expansão apenas se houver mais de 10 itens
+        // Exibir contêiner de expansão apenas se houver mais de 10 itens em algum deles
         const toggleContainer = document.getElementById('dash-ranking-toggle-container');
         if (toggleContainer) {
-            if (ranking.length > 10) {
+            if (rankingMensalistas.length > 10 || rankingAvulsos.length > 10) {
                 toggleContainer.style.display = 'block';
                 const btn = document.getElementById('btn-toggle-ranking');
                 if (btn) {
@@ -1713,32 +1721,38 @@ class FootballApp {
             }
         }
 
-        const itemsToShow = this.showFullRanking ? ranking : ranking.slice(0, 10);
+        const renderItems = (items) => {
+            const itemsToShow = this.showFullRanking ? items : items.slice(0, 10);
+            return itemsToShow.length ? itemsToShow.map((item, index) => {
+                let rankLabel = `${index + 1}º`;
+                let color = 'var(--text-muted)';
+                
+                if (index === 0) { rankLabel = 'TOP 1'; color = 'var(--neon-orange)'; }
+                else if (index === 1) { rankLabel = 'TOP 2'; color = 'var(--neon-blue)'; }
+                else if (index === 2) { rankLabel = 'TOP 3'; color = 'var(--neon-green)'; }
 
-        // 3. Renderizar
-        rankingContainer.innerHTML = itemsToShow.length ? itemsToShow.map((item, index) => {
-            let rankLabel = `${index + 1}º`;
-            let color = 'var(--text-muted)';
-            
-            if (index === 0) { rankLabel = 'TOP 1'; color = 'var(--neon-orange)'; }
-            else if (index === 1) { rankLabel = 'TOP 2'; color = 'var(--neon-blue)'; }
-            else if (index === 2) { rankLabel = 'TOP 3'; color = 'var(--neon-green)'; }
-
-            return `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="font-weight: 800; color: ${color}; font-size: 11px; letter-spacing: 0.5px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; min-width: 48px; text-align: center;">${rankLabel}</div>
-                    <div>
-                        <div style="font-weight: 600; font-size: 14px;">${item.name}</div>
-                        <div style="font-size: 10px; color: var(--text-muted);">${item.fullName || ''}</div>
+                return `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-weight: 800; color: ${color}; font-size: 11px; letter-spacing: 0.5px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; min-width: 48px; text-align: center;">${rankLabel}</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px;">${item.name}</div>
+                            <div style="font-size: 10px; color: var(--text-muted);">${item.fullName || ''}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 4px; color: ${color}; font-weight: 800;">
+                        ${item.score} <span style="font-size: 12px; opacity: 0.6; font-weight: 400;">PTS</span>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 4px; color: ${color}; font-weight: 800;">
-                    ${item.score} <span style="font-size: 12px; opacity: 0.6; font-weight: 400;">PTS</span>
-                </div>
-            </div>
-            `;
-        }).join('') : '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 20px;">Nenhuma presença confirmada no histórico.</p>';
+                `;
+            }).join('') : '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: left; padding: 10px;">Nenhuma presença neste grupo.</p>';
+        };
+
+        const containerMensalistas = document.getElementById('ranking-mensalistas');
+        const containerAvulsos = document.getElementById('ranking-avulsos');
+
+        if (containerMensalistas) containerMensalistas.innerHTML = renderItems(rankingMensalistas);
+        if (containerAvulsos) containerAvulsos.innerHTML = renderItems(rankingAvulsos);
     }
 
     toggleRankingExpand() {

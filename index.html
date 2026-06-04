@@ -1374,8 +1374,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             </div>
                             <i class="ph ph-caret-up" style="font-size: 14px; opacity: 0.5;"></i>
                         </h2>
-                        <div id="dash-ranking-list" class="dash-collapsible" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
-                            <!-- Populated by JS -->
+                        <div id="dash-ranking-list" class="dash-collapsible" style="margin-top: 16px; display: flex; flex-direction: column; gap: 24px;">
+                            <div>
+                                <h3 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Mensalistas</h3>
+                                <div id="ranking-mensalistas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;"></div>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Avulsos</h3>
+                                <div id="ranking-avulsos" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;"></div>
+                            </div>
                         </div>
                         <div id="dash-ranking-toggle-container" style="text-align: center; margin-top: 16px; display: none;">
                             <button class="btn" id="btn-toggle-ranking" onclick="app.toggleRankingExpand()" style="background: rgba(255,255,255,0.05); color: var(--text-main); font-size: 13px; padding: 8px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); width: auto; min-width: 150px; justify-content: center;">
@@ -2064,7 +2071,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=33"></script>
+    <script src="app.js?v=34"></script>
 </body>
 </html>
 
