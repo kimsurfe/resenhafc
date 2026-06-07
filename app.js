@@ -1787,7 +1787,7 @@ class FootballApp {
     }
 
     exportFinanceToExcel() {
-        if (!this.data.finance || this.data.finance.length === 0) {
+        if (!this.data.transactions || this.data.transactions.length === 0) {
             alert("Nenhum lançamento financeiro para exportar.");
             return;
         }
@@ -1795,7 +1795,7 @@ class FootballApp {
         let csvContent = "\uFEFF";
         csvContent += "Data;Descrição;Tipo;Valor (R$)\n";
 
-        const sortedFinance = [...this.data.finance].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedFinance = [...this.data.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
 
         sortedFinance.forEach(f => {
             const dateStr = new Date(f.date).toLocaleDateString('pt-BR');
