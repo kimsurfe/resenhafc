@@ -24,3 +24,8 @@ self.addEventListener('notificationclick', function(event) {
         clients.openWindow('https://gestaoresenhafc.vercel.app/')
     );
 });
+
+// Requisito obrigatório do Chrome para habilitar o botão de instalação nativo (PWA)
+self.addEventListener('fetch', function(event) {
+    // Apenas pass-through, não intercepta nada mas satisfaz o requisito PWA
+});

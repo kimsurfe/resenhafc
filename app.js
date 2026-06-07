@@ -12,6 +12,17 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const messaging = firebase.messaging();
 
+// Register Service Worker for PWA explicitly
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(function(registration) {
+            console.log('Service Worker registrado com sucesso:', registration.scope);
+        })
+        .catch(function(error) {
+            console.log('Falha ao registrar Service Worker:', error);
+        });
+}
+
 messaging.onMessage((payload) => {
     console.log('Mensagem recebida em primeiro plano:', payload);
     if (payload.notification) {
