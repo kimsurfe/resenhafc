@@ -1559,11 +1559,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
                     <div class="table-container glass-card mt-4">
-                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <div class="search-bar glass-input" style="width: 100%; max-width: 100%; height: 45px; padding: 0 20px;">
+                        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; align-items: center;">
+                            <div class="search-bar glass-input" style="flex: 1; height: 45px; padding: 0 20px;">
                                 <i class="ph ph-magnifying-glass"></i>
                                 <input type="text" id="search-finance" placeholder="Buscar no histórico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
                             </div>
+                            <button class="btn" onclick="app.exportFinanceToExcel()" style="background: rgba(33, 150, 243, 0.1); color: #2196F3; border: 1px solid rgba(33, 150, 243, 0.3); height: 45px; padding: 0 20px; white-space: nowrap;">
+                                <i class="ph ph-file-csv"></i> Exportar
+                            </button>
                         </div>
                         <table class="data-table">
                             <thead>
@@ -2071,7 +2074,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=34"></script>
+    <script src="app.js?v=35"></script>
 </body>
 </html>
 

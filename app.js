@@ -1786,6 +1786,35 @@ class FootballApp {
         }
     }
 
+    exportFinanceToExcel() {
+        if (!this.data.finance || this.data.finance.length === 0) {
+            alert("Nenhum lançamento financeiro para exportar.");
+            return;
+        }
+
+        let csvContent = "\uFEFF";
+        csvContent += "Data;Descrição;Tipo;Valor (R$)\n";
+
+        const sortedFinance = [...this.data.finance].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        sortedFinance.forEach(f => {
+            const dateStr = new Date(f.date).toLocaleDateString('pt-BR');
+            const desc = (f.description || '').replace(/;/g, ',');
+            const type = f.type === 'in' ? 'Receita' : 'Despesa';
+            const val = parseFloat(f.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            csvContent += `${dateStr};${desc};${type};${val}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `resenha_financeiro_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
     /* Payment Filters for Mensalistas View */
     setPlayerPaymentFilter(filter) {
         this.playerPaymentFilter = filter;
