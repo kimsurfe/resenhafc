@@ -2485,10 +2485,14 @@ class FootballApp {
             if (iosGuide) iosGuide.style.display = 'block';
         }
 
-        // Se já tiver notificação ativada, oculta o botão
-        if ('Notification' in window && Notification.permission === 'granted') {
-            const btnNotif = document.getElementById('btn-enable-notifications');
-            if (btnNotif) btnNotif.style.display = 'none';
+        // Se já tiver notificação ativada, atualiza o botão em vez de esconder
+        const btnNotif = document.getElementById('btn-enable-notifications');
+        if ('Notification' in window && Notification.permission === 'granted' && btnNotif) {
+            btnNotif.innerHTML = '<i class="ph ph-check-circle" style="font-size: 20px;"></i> Notificações Ativadas';
+            btnNotif.style.background = 'rgba(255,255,255,0.05)';
+            btnNotif.style.color = 'var(--neon-green)';
+            btnNotif.style.border = '1px solid rgba(255,255,255,0.1)';
+            btnNotif.onclick = null;
         }
 
         // Liga o botão de instalar do Android/Chrome
@@ -2526,7 +2530,11 @@ class FootballApp {
         await this.requestNotificationPermission();
         const btnNotif = document.getElementById('btn-enable-notifications');
         if ('Notification' in window && Notification.permission === 'granted' && btnNotif) {
-            btnNotif.style.display = 'none';
+            btnNotif.innerHTML = '<i class="ph ph-check-circle" style="font-size: 20px;"></i> Notificações Ativadas';
+            btnNotif.style.background = 'rgba(255,255,255,0.05)';
+            btnNotif.style.color = 'var(--neon-green)';
+            btnNotif.style.border = '1px solid rgba(255,255,255,0.1)';
+            btnNotif.onclick = null;
         }
     }
 
