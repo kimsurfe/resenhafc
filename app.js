@@ -2505,6 +2505,7 @@ class FootballApp {
                     const { outcome } = await this.deferredPrompt.userChoice;
                     if (outcome === 'accepted') {
                         btnInstall.style.display = 'none';
+                        setTimeout(() => this.closeWelcomeModal(), 800);
                     }
                     this.deferredPrompt = null;
                 } else {
@@ -2535,6 +2536,7 @@ class FootballApp {
             btnNotif.style.color = 'var(--neon-green)';
             btnNotif.style.border = '1px solid rgba(255,255,255,0.1)';
             btnNotif.onclick = null;
+            setTimeout(() => this.closeWelcomeModal(), 1200);
         }
     }
 
