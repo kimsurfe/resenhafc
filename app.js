@@ -2483,6 +2483,7 @@ class FootballApp {
         // Liga o botão de instalar do Android/Chrome
         const btnInstall = document.getElementById('btn-install-app');
         if (btnInstall) {
+            btnInstall.style.display = 'block'; // Sempre mostrar
             btnInstall.onclick = async () => {
                 if (this.deferredPrompt) {
                     this.deferredPrompt.prompt();
@@ -2492,7 +2493,11 @@ class FootballApp {
                     }
                     this.deferredPrompt = null;
                 } else {
-                    alert("A instalação não está disponível no momento ou já foi realizada.");
+                    if (isIos()) {
+                        alert("Para instalar no iPhone, clique no ícone de Compartilhar e depois em 'Adicionar à Tela de Início'.");
+                    } else {
+                        alert("Para instalar, abra o menu do seu navegador (três pontinhos no canto superior) e clique em 'Instalar Aplicativo' ou 'Adicionar à Tela Inicial'.");
+                    }
                 }
             };
         }
