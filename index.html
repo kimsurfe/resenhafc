@@ -2071,10 +2071,41 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <button type="submit" class="btn btn-primary" style="flex:1;">Entrar</button>
                 </div>
             </form>
+    <!-- Welcome / Install Modal -->
+    <div id="welcome-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 32px 24px;">
+            <div style="background: rgba(33, 150, 243, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                <i class="ph ph-rocket-launch" style="font-size: 40px; color: var(--neon-blue);"></i>
+            </div>
+            
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Bem-vindo ao Resenha FC!</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
+                Para a melhor experiência, instale nosso aplicativo e ative as notificações para nunca perder um jogo ou sorteio.
+            </p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                <button id="btn-install-app" class="btn" style="background: var(--neon-blue); color: white; width: 100%; height: 48px; font-weight: 600; font-size: 15px; border-radius: 12px; display: none;">
+                    <i class="ph ph-download-simple" style="font-size: 20px;"></i> Instalar Aplicativo
+                </button>
+                
+                <div id="ios-install-guide" style="display: none; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 16px; border-radius: 12px; font-size: 13px; color: var(--text-light); text-align: left;">
+                    <strong style="color: white; display: block; margin-bottom: 8px;">Para instalar no iPhone:</strong>
+                    1. Toque no ícone de <b>Compartilhar</b> <i class="ph ph-export"></i> na barra de navegação.<br>
+                    2. Role para baixo e toque em <b>Adicionar à Tela de Início</b> <i class="ph ph-plus-square"></i>.
+                </div>
+
+                <button id="btn-enable-notifications" class="btn" onclick="app.requestNotificationPermissionFromModal()" style="background: rgba(34, 197, 94, 0.15); color: var(--neon-green); width: 100%; height: 48px; font-weight: 600; font-size: 15px; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.3);">
+                    <i class="ph ph-bell-ringing" style="font-size: 20px;"></i> Ativar Notificações
+                </button>
+            </div>
+            
+            <button onclick="app.closeWelcomeModal()" style="background: none; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; text-decoration: underline; opacity: 0.7;">
+                Agora não, obrigado
+            </button>
         </div>
     </div>
 
-    <script src="app.js?v=37"></script>
+    <script src="app.js?v=39"></script>
 </body>
 </html>
 

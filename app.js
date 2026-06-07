@@ -86,6 +86,15 @@ class FootballApp {
         this.drawSelections = new Set();
         this.playerPaymentFilter = 'all'; // New state for filtering
         this.docId = 'mainData'; // Documento único no Firestore
+        this.deferredPrompt = null;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredPrompt = e;
+            const btnInstall = document.getElementById('btn-install-app');
+            if (btnInstall) btnInstall.style.display = 'flex';
+        });
+
         this.init();
     }
 
@@ -99,6 +108,7 @@ class FootballApp {
         this.initPullToRefresh();
         this.checkNotificationPermission();
         this.renderAll();
+        setTimeout(() => this.checkWelcomeModal(), 1000);
     }
 
     async loadDataFromCloud() {
@@ -2425,27 +2435,10 @@ class FootballApp {
 
     checkNotificationPermission() {
         const banner = document.getElementById('notification-banner');
-        if (!banner) return;
-        
-        if (!('Notification' in window)) {
-            banner.style.display = 'none';
-            return;
-        }
+        if (banner) banner.style.display = 'none'; // Desativa o banner antigo
 
-        if (Notification.permission === 'granted') {
-            banner.style.display = 'flex';
-            banner.style.borderColor = 'var(--neon-green)';
-            banner.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <i class="ph ph-check-circle" style="font-size: 28px; color: var(--neon-green);"></i>
-                    <div>
-                        <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--neon-green);">Notificações Ativas neste Aparelho</h3>
-                        <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Tudo certo! Você receberá os avisos aqui.</p>
-                    </div>
-                </div>
-            `;
-            
-            // Silent token registration if already granted
+        // Silent token registration se já estiver permitido
+        if ('Notification' in window && Notification.permission === 'granted') {
             try {
                 const messaging = firebase.messaging();
                 messaging.getToken({ vapidKey: 'BH4F-JK-x-WRnsk4W9L1bg70I7zTevMXgkKKdVHCo7XKR_mtXebB3Oyui5-LU6Aei22C4Ji_-lJgAPQAMQ_Vt6E' })
@@ -2455,27 +2448,69 @@ class FootballApp {
                             if (!this.data.globalTokens.includes(token)) {
                                 this.data.globalTokens.push(token);
                                 await this.saveData();
-                                console.log("Token global registrado com sucesso no background.");
                             }
                         }
                     })
                     .catch(err => console.error("Silenced background token error", err));
             } catch(e){}
-        } else if (Notification.permission === 'default') {
-            banner.style.display = 'flex';
-            banner.style.borderColor = 'var(--neon-blue)';
-            banner.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <i class="ph ph-bell-ringing" style="font-size: 28px; color: var(--neon-blue);"></i>
-                    <div>
-                        <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Ativar Notificações</h3>
-                        <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Receba avisos dos próximos jogos e mensalidades direto no celular.</p>
-                    </div>
-                </div>
-                <button class="btn" onclick="app.requestNotificationPermission()" style="background: var(--neon-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(59,130,246,0.4);">Ativar</button>
-            `;
-        } else {
-            banner.style.display = 'none';
+        }
+    }
+
+    checkWelcomeModal() {
+        const hasSeenModal = localStorage.getItem('hasSeenWelcomeModal');
+        if (hasSeenModal) return; // Já viu
+
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+
+        const modal = document.getElementById('welcome-modal');
+        if (!modal) return;
+
+        // Se for iOS e não estiver em modo standalone (já instalado)
+        if (isIos() && !window.navigator.standalone) {
+            const iosGuide = document.getElementById('ios-install-guide');
+            if (iosGuide) iosGuide.style.display = 'block';
+        }
+
+        // Se já tiver notificação ativada, oculta o botão
+        if ('Notification' in window && Notification.permission === 'granted') {
+            const btnNotif = document.getElementById('btn-enable-notifications');
+            if (btnNotif) btnNotif.style.display = 'none';
+        }
+
+        // Liga o botão de instalar do Android/Chrome
+        const btnInstall = document.getElementById('btn-install-app');
+        if (btnInstall) {
+            btnInstall.onclick = async () => {
+                if (this.deferredPrompt) {
+                    this.deferredPrompt.prompt();
+                    const { outcome } = await this.deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        btnInstall.style.display = 'none';
+                    }
+                    this.deferredPrompt = null;
+                } else {
+                    alert("A instalação não está disponível no momento ou já foi realizada.");
+                }
+            };
+        }
+
+        modal.classList.add('active');
+    }
+
+    closeWelcomeModal() {
+        localStorage.setItem('hasSeenWelcomeModal', 'true');
+        const modal = document.getElementById('welcome-modal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    async requestNotificationPermissionFromModal() {
+        await this.requestNotificationPermission();
+        const btnNotif = document.getElementById('btn-enable-notifications');
+        if ('Notification' in window && Notification.permission === 'granted' && btnNotif) {
+            btnNotif.style.display = 'none';
         }
     }
 
