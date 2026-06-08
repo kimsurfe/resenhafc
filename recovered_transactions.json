@@ -1,0 +1,352 @@
+﻿[
+    {
+        "id":  1780335159972,
+        "date":  "2026-06-01",
+        "description":  "Pgto. Mensal - Rodrigo Costa (Luiz Rodrigo Fiordomo Costa)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1780329755730,
+        "date":  "2026-06-01",
+        "description":  "Pgto. Mensal - Alvaro (Alvaro Silva De Oliveira)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1780327949474,
+        "date":  "2026-06-01",
+        "description":  "Pgto. Mensal - Arthur (Arthur G. da Costa Neto)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1779935808761,
+        "date":  "2026-05-28",
+        "description":  "Acerto de caixa",
+        "amount":  30.05,
+        "type":  "in"
+    },
+    {
+        "id":  1779934291237,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Marco (amigo Kim) (Marco Antonio Sant Ana Francisco)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779934091295,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Haddad (Thiago Haddad)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779933590988,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Pedro Ursini (amigo Kim) (Pedro Ursini)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779933393134,
+        "date":  "2026-05-28",
+        "description":  "Nei Goleiro",
+        "amount":  "85",
+        "type":  "out"
+    },
+    {
+        "id":  1779932865373,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Kawan (amigo Kim) (Kawan)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779932512003,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Enzo (amigo Caio) (Enzo)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779926746281,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Guilherme (amigo Caio) (Guilherme)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779926742212,
+        "date":  "2026-05-28",
+        "description":  "Pgto. Avulso - Dalvan (amigo Kadu) (Dalvan)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779909220579,
+        "date":  "2026-05-27",
+        "description":  "Pgto. Avulso - Alvaro (amigo João) (Alvaro)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779909216919,
+        "date":  "2026-05-27",
+        "description":  "Pgto. Avulso - Almir (amigo João) (Almir)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779909212176,
+        "date":  "2026-05-27",
+        "description":  "Pgto. Avulso - Wesley (amigo João) (Wesley)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779909207938,
+        "date":  "2026-05-27",
+        "description":  "Pgto. Avulso - João Pamplona (ex-atleta) (João Pamplona)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779331247533,
+        "date":  "2026-05-21",
+        "description":  "Coca-cola",
+        "amount":  "20",
+        "type":  "out"
+    },
+    {
+        "id":  1779330736493,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - Matheus Palermo",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779330722047,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - Felipe Vieira",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779327942957,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - Jeff",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779327902921,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - Adriel  (Adriel)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779327900978,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - Enzo (Caio) (Enzo)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779327888278,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - Jeff",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1779327885799,
+        "date":  "2026-05-21",
+        "description":  "Pgto. Avulso - João Pamplona",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1778723978286,
+        "date":  "2026-05-14",
+        "description":  "Pgto. Avulso - Guilherme (Caio) (Guilherme)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1778723927933,
+        "date":  "2026-05-14",
+        "description":  "Pgto. Avulso - Matheus  (Gabriel) (Matheus)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1778723898265,
+        "date":  "2026-05-14",
+        "description":  "Pgto. Avulso - Leandro  (Gabriel) (Leandro)",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1778723620190,
+        "date":  "2026-05-14",
+        "description":  "Pgto. Mensal - Cadu (Carlos Eduardo Chagas)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778722358519,
+        "date":  "2026-05-14",
+        "description":  "Pgto. Mensal - Marlon (Marlon Duarte Junior)",
+        "amount":  "53",
+        "type":  "in"
+    },
+    {
+        "id":  1778721757592,
+        "date":  "2026-05-14",
+        "description":  "Goleiro Luiz Eduardo",
+        "amount":  "70",
+        "type":  "out"
+    },
+    {
+        "id":  1778534332999,
+        "date":  "2026-05-11",
+        "description":  "Camisa 10 - mensalidade",
+        "amount":  "1200",
+        "type":  "out"
+    },
+    {
+        "id":  1778533928951,
+        "date":  "2026-04-15",
+        "description":  "André Ribeiro - Avulso",
+        "amount":  "20",
+        "type":  "in"
+    },
+    {
+        "id":  1778501736677,
+        "date":  "2026-05-11",
+        "description":  "Pgto. Mensal - Teles (Lucas Teles do Nascimento)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778341488694,
+        "date":  "2026-05-09",
+        "description":  "Pgto. Mensal - Gabriel Nascimento (Gabriel Santos do Nascimento)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778341470095,
+        "date":  "2026-05-09",
+        "description":  "Pgto. Mensal - Leandro Pirata (Leandro da Silva Grzebinski)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778326097353,
+        "date":  "2026-05-09",
+        "description":  "Pgto. Mensal - Caio (Caio Felipe Gomes Schmidt)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778273313297,
+        "date":  "2026-05-08",
+        "description":  "Pgto. Mensal - Ulisses (Ulisses da Silva Alvarez)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778257273903,
+        "date":  "2026-05-08",
+        "description":  "Pgto. Mensal - Leandro Bumbum (Leandro Andrade dos Santos Nascimento)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778254353462,
+        "date":  "2026-05-08",
+        "description":  "Pgto. Mensal - Kaue (Kaue Miguel)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778245354419,
+        "date":  "2026-05-08",
+        "description":  "Pgto. Mensal - Betão (Roberto Luiz P. F. de Almeida)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778172103969,
+        "date":  "2026-05-07",
+        "description":  "Pgto. Mensal - Arroz (Diego Sanches Nunes)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778170728561,
+        "date":  "2026-05-07",
+        "description":  "Pagto. Mensal - Marlon (amigo Marcelo) (Marlon)",
+        "amount":  "17",
+        "type":  "in"
+    },
+    {
+        "id":  1778170663301,
+        "date":  "2026-05-07",
+        "description":  "Pgto. Mensal - Kim (Leandro Moraes da Silva)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778160680897,
+        "date":  "2026-05-07",
+        "description":  "Pgto. Mensal - Saccomani (Rodrigo Saccomani)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778120916638,
+        "date":  "2026-05-07",
+        "description":  "Pgto. Mensal - Didi (Claudio Pereira da Silva)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778118780314,
+        "date":  "2026-05-07",
+        "description":  "Nei - goleiro",
+        "amount":  "50",
+        "type":  "out"
+    },
+    {
+        "id":  1778102197208,
+        "date":  "2026-05-06",
+        "description":  "Pgto. Mensal - Renan Soares (Renan Soares Silva)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778085392558,
+        "date":  "2026-05-05",
+        "description":  "Pgto. Mensal - Marcelo (Marcelo Henrique Giora)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1778085387768,
+        "date":  "2026-05-05",
+        "description":  "Pgto. Mensal - Arthur (Arthur G. da Costa Neto)",
+        "amount":  "70",
+        "type":  "in"
+    },
+    {
+        "id":  1777997669647,
+        "date":  "2026-04-30",
+        "description":  "Saldo inicial (remanescente)",
+        "amount":  "315",
+        "type":  "in"
+    }
+]

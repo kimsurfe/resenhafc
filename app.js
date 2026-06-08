@@ -98,6 +98,7 @@ class FootballApp {
         this.playerPaymentFilter = 'all'; // New state for filtering
         this.docId = 'mainData'; // Documento único no Firestore
         this.deferredPrompt = null;
+        this.dataLoaded = false; // Flag de segurança contra overwrite acidental
         
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -127,6 +128,7 @@ class FootballApp {
             const doc = await db.collection('appData').doc(this.docId).get();
             if (doc.exists) {
                 this.data = doc.data();
+                this.dataLoaded = true;
                 console.log("Dados carregados da nuvem.");
                 
                 // --- RESCUE MISSION ---
@@ -149,14 +151,27 @@ class FootballApp {
                 const local = localStorage.getItem('futManagerData');
                 if (local) {
                     this.data = JSON.parse(local);
+                    this.dataLoaded = true;
                     await this.saveData();
                     console.log("Dados locais migrados para a nuvem.");
                 } else {
                     this.data = DEFAULT_DATA;
+                    this.dataLoaded = true;
                     await this.saveData();
                     console.log("Novo banco de dados criado na nuvem.");
                 }
             }
+            
+            // Garantir integridade estrutural para evitar erro de tela branca/crash
+            this.data.players = this.data.players || [];
+            this.data.transactions = this.data.transactions || [];
+            this.data.attendance = this.data.attendance || {};
+            this.data.customPushes = this.data.customPushes || [];
+            this.data.config = this.data.config || DEFAULT_DATA.config;
+            this.data.appSettings = this.data.appSettings || DEFAULT_DATA.appSettings;
+            this.data.adminSettings = this.data.adminSettings || DEFAULT_DATA.adminSettings;
+            this.data.notifications = this.data.notifications || DEFAULT_DATA.notifications;
+            
         } catch (error) {
             console.error("Erro ao carregar do Firebase:", error);
             alert("Erro ao carregar dados da nuvem. Verifique sua internet.");
@@ -164,6 +179,10 @@ class FootballApp {
     }
 
     async saveData() {
+        if (!this.dataLoaded) {
+            console.warn("Save abortado: Dados não foram carregados corretamente da nuvem.");
+            return;
+        }
         try {
             await db.collection('appData').doc(this.docId).set(this.data);
             localStorage.setItem('futManagerData', JSON.stringify(this.data)); // Backup local
