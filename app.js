@@ -1352,6 +1352,16 @@ class FootballApp {
         // Normaliza ID para string na busca para evitar erros de tipo (Number vs String)
         const player = this.data.players.find(p => String(p.id) === String(id));
         if(!player) return;
+
+        const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
+            ? `${player.nickname} (${player.fullName})` 
+            : (player.nickname || player.fullName || 'Jogador');
+
+        if (!skipSave) {
+            if (!confirm(`Confirmar o pagamento de ${displayName}? \nIsso adicionará o valor ao caixa financeiro.`)) {
+                return;
+            }
+        }
         
         // Evita duplicar transação se já estiver marcada como paga (proteção extra)
         // Só criamos a transação se o status estava pendente ou se for um fluxo forçado
@@ -1360,9 +1370,6 @@ class FootballApp {
         const descStr = player.type === 'avulso' ? 'Avulso' : 'Mensal';
 
         player.status = 'paid';
-        const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
-            ? `${player.nickname} (${player.fullName})` 
-            : (player.nickname || player.fullName || 'Jogador');
         
         // Verifica se já não existe uma transação idêntica nas últimas 5 segundos (prevenção de duplo clique)
         const now = Date.now();
@@ -1388,6 +1395,16 @@ class FootballApp {
         const player = this.data.players.find(p => String(p.id) === String(id));
         if(!player) return;
         
+        const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
+            ? `${player.nickname} (${player.fullName})` 
+            : (player.nickname || player.fullName || 'Jogador');
+
+        if (!skipSave) {
+            if (!confirm(`Desfazer o pagamento de ${displayName}? \nIsso removerá a entrada correspondente do caixa financeiro.`)) {
+                return;
+            }
+        }
+
         player.status = 'unpaid';
         
         // Remove a transação do financeiro associada a esse pagamento (a mais recente atrelada a ele)
