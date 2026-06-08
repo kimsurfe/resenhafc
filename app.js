@@ -444,7 +444,7 @@ class FootballApp {
         recentList.innerHTML = '';
         
         const recentIn = [...this.data.transactions]
-            .sort((a,b) => b.id - a.id)
+            .sort((a,b) => new Date(b.date) - new Date(a.date) || b.id - a.id)
             .filter(t => t.type === 'in')
             .slice(0, 4);
             
@@ -930,7 +930,7 @@ class FootballApp {
         
         let balance = 0;
         
-        const sortedTransactions = [...this.data.transactions].sort((a,b) => b.id - a.id);
+        const sortedTransactions = [...this.data.transactions].sort((a,b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
 
         sortedTransactions.forEach(t => {
             if(t.type === 'in') balance += t.amount;
@@ -1835,7 +1835,7 @@ class FootballApp {
         let csvContent = "\uFEFF";
         csvContent += "Data;Descrição;Tipo;Valor (R$)\n";
 
-        const sortedFinance = [...this.data.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedFinance = [...this.data.transactions].sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
 
         sortedFinance.forEach(f => {
             const dateStr = new Date(f.date).toLocaleDateString('pt-BR');
