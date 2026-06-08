@@ -375,8 +375,6 @@ class FootballApp {
         this.getSortedPlayers().forEach(p => {
             const status = this.getAttendanceStatus(nextMatchDate, p.id);
             const badge = p.type === 'avulso' ? '<span style="font-size: 10px; color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: 600;">Avulso</span>' : '';
-            
-            if (p.type === 'avulso' && status === 'doubt') return;
 
             let color = 'var(--neon-orange)';
             let iconHtml = '<i class="ph-fill ph-question" style="color: var(--neon-orange);"></i>';
@@ -670,7 +668,7 @@ class FootballApp {
         const getCardHTML = (p) => {
             const status = this.getAttendanceStatus(dateSelect, p.id);
             if (status === 'present') presentCount++;
-            if (status === 'doubt' && p.type !== 'avulso') doubtCount++;
+            if (status === 'doubt') doubtCount++;
             if (status === 'absent') absentCount++;
 
             const isGuest = p.isTemporary;
@@ -881,7 +879,7 @@ class FootballApp {
 
         this.getSortedPlayers(dateValue).forEach(p => {
             const status = this.getAttendanceStatus(dateValue, p.id);
-            if (status === 'doubt' && p.type !== 'avulso') {
+            if (status === 'doubt') {
                 const name = (p.nickname || p.name || p.fullName).trim();
                 const phone = p.phone ? p.phone.replace(/\D/g, '') : '';
                 doubt.push({ name, phone });
