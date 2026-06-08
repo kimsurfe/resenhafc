@@ -664,7 +664,7 @@ class FootballApp {
 
         const sorted = this.getSortedPlayers(dateSelect);
         const mensalistas = sorted.filter(p => p.type === 'mensalista');
-        const avulsos = sorted.filter(p => p.type === 'avulso' && (!p.isTemporary || p.validDate === dateSelect));
+        const avulsos = sorted.filter(p => p.type === 'avulso');
 
         let doubtCount = 0;
         let absentCount = 0;
