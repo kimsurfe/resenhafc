@@ -537,6 +537,10 @@ class FootballApp {
                 // Se a data for null, mostramos todos (para a tabela de gestão)
                 if (filterDate === null) return true;
                 
+                if (this.data.attendance && this.data.attendance[filterDate] && this.data.attendance[filterDate][p.id]) {
+                    return true;
+                }
+                
                 // Se o jogador é temporário (Avulso da Semana), só aparece se for a data dele
                 if (p.isTemporary) {
                     return filterDate === p.validDate;
