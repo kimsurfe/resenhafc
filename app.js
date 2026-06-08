@@ -767,6 +767,7 @@ class FootballApp {
         
         let present = [];
         let absent = [];
+        let doubt = [];
 
         this.getSortedPlayers().forEach(p => {
             const status = this.getAttendanceStatus(dateValue, p.id);
@@ -775,6 +776,7 @@ class FootballApp {
             
             if (status === 'present') present.push(line);
             else if (status === 'absent') absent.push(line);
+            else if (status === 'doubt') doubt.push(line);
         });
 
         // Garantir que as configurações existam
@@ -827,7 +829,12 @@ class FootballApp {
         const includeWaiting = config.includeWaiting !== false;
         if (includeWaiting) {
             let waitingListStr = `📋 *Lista de espera (avulsos)*`;
-            for (let i = 1; i <= 5; i++) {
+            doubt.forEach((name, idx) => {
+                waitingListStr += `\n${idx + 1}. ${name}`;
+            });
+            const startEmpty = doubt.length + 1;
+            const endEmpty = Math.max(startEmpty + 2, 5);
+            for (let i = startEmpty; i <= endEmpty; i++) {
                 waitingListStr += `\n${i}.`;
             }
             parts.push(waitingListStr);
