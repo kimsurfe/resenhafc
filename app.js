@@ -1860,7 +1860,7 @@ class FootballApp {
         const sortedFinance = [...this.data.transactions].sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
 
         sortedFinance.forEach(f => {
-            const dateStr = new Date(f.date).toLocaleDateString('pt-BR');
+            const dateStr = this.formatDateBR(f.date);
             const desc = (f.description || '').replace(/;/g, ',');
             const type = f.type === 'in' ? 'Receita' : 'Despesa';
             const val = parseFloat(f.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
