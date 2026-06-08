@@ -769,7 +769,7 @@ class FootballApp {
         let absent = [];
         let doubt = [];
 
-        this.getSortedPlayers().forEach(p => {
+        this.getSortedPlayers(dateValue).forEach(p => {
             const status = this.getAttendanceStatus(dateValue, p.id);
             const invited = p.invitedBy ? ` (por: ${p.invitedBy})` : '';
             const line = `${p.nickname || p.fullName}${invited} ${p.type === 'avulso' ? '(Avulso)' : ''}`.trim();
