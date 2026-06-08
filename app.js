@@ -776,7 +776,7 @@ class FootballApp {
             
             if (status === 'present') present.push(line);
             else if (status === 'absent') absent.push(line);
-            else if (status === 'doubt') doubt.push(line);
+            else if (status === 'doubt' && p.type === 'avulso') doubt.push(line);
         });
 
         // Garantir que as configurações existam
@@ -886,7 +886,7 @@ class FootballApp {
 
         this.getSortedPlayers(dateValue).forEach(p => {
             const status = this.getAttendanceStatus(dateValue, p.id);
-            if (status === 'doubt') {
+            if (status === 'doubt' && p.type !== 'avulso') {
                 const name = (p.nickname || p.name || p.fullName).trim();
                 const phone = p.phone ? p.phone.replace(/\D/g, '') : '';
                 doubt.push({ name, phone });
