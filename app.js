@@ -413,7 +413,7 @@ class FootballApp {
                     presentAvulsosCount++;
                 }
             }
-            else if (status === 'doubt' && p.type === 'mensalista') { doubtHTML += html; doubtCount++; }
+            else if (status === 'doubt') { doubtHTML += html; doubtCount++; }
             else if (status === 'absent') { absentHTML += html; absentCount++; }
         });
 
