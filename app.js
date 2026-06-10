@@ -372,7 +372,7 @@ class FootballApp {
         let doubtCount = 0;
         let absentCount = 0;
 
-        this.getSortedPlayers().forEach(p => {
+        this.getSortedPlayers(nextMatchDate).forEach(p => {
             const status = this.getAttendanceStatus(nextMatchDate, p.id);
             const badge = p.type === 'avulso' ? '<span style="font-size: 10px; color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: 600;">Avulso</span>' : '';
 
@@ -413,7 +413,7 @@ class FootballApp {
                     presentAvulsosCount++;
                 }
             }
-            else if (status === 'doubt') { doubtHTML += html; doubtCount++; }
+            else if (status === 'doubt' && p.type === 'mensalista') { doubtHTML += html; doubtCount++; }
             else if (status === 'absent') { absentHTML += html; absentCount++; }
         });
 
