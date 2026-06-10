@@ -364,12 +364,14 @@ class FootballApp {
 
         let presentMensalistasHTML = '';
         let presentAvulsosHTML = '';
-        let doubtHTML = '';
+        let doubtMensalistasHTML = '';
+        let doubtAvulsosHTML = '';
         let absentHTML = '';
         
         let presentMensalistasCount = 0;
         let presentAvulsosCount = 0;
-        let doubtCount = 0;
+        let doubtMensalistasCount = 0;
+        let doubtAvulsosCount = 0;
         let absentCount = 0;
 
         this.getSortedPlayers(nextMatchDate).forEach(p => {
@@ -413,7 +415,15 @@ class FootballApp {
                     presentAvulsosCount++;
                 }
             }
-            else if (status === 'doubt') { doubtHTML += html; doubtCount++; }
+            else if (status === 'doubt') {
+                if (p.type === 'mensalista') {
+                    doubtMensalistasHTML += html;
+                    doubtMensalistasCount++;
+                } else {
+                    doubtAvulsosHTML += html;
+                    doubtAvulsosCount++;
+                }
+            }
             else if (status === 'absent') { absentHTML += html; absentCount++; }
         });
 
@@ -428,8 +438,19 @@ class FootballApp {
         }
         const totalPresentCount = presentMensalistasCount + presentAvulsosCount;
 
+        let finalDoubtHTML = '';
+        if (doubtMensalistasCount > 0) {
+            finalDoubtHTML += `<div style="font-size: 11px; font-weight: bold; color: var(--text-muted); padding: 4px 0 8px 0; letter-spacing: 1px;">MENSALISTAS (${doubtMensalistasCount})</div>`;
+            finalDoubtHTML += doubtMensalistasHTML;
+        }
+        if (doubtAvulsosCount > 0) {
+            finalDoubtHTML += `<div style="font-size: 11px; font-weight: bold; color: var(--neon-purple); padding: 8px 0 8px 0; letter-spacing: 1px;">AVULSOS (${doubtAvulsosCount})</div>`;
+            finalDoubtHTML += doubtAvulsosHTML;
+        }
+        const doubtCount = doubtMensalistasCount + doubtAvulsosCount;
+
         document.getElementById('dash-confirmed-list').innerHTML = finalPresentHTML || '<p style="color: var(--text-muted); font-size: 14px; padding: 12px;">Nenhum presente.</p>';
-        document.getElementById('dash-pending-list').innerHTML = doubtHTML || '<p style="color: var(--text-muted); font-size: 14px; padding: 12px;">Nenhuma dúvida.</p>';
+        document.getElementById('dash-pending-list').innerHTML = finalDoubtHTML || '<p style="color: var(--text-muted); font-size: 14px; padding: 12px;">Nenhuma dúvida.</p>';
         document.getElementById('dash-absent-list').innerHTML = absentHTML || '<p style="color: var(--text-muted); font-size: 14px; padding: 12px;">Nenhum ausente.</p>';
         
         document.getElementById('dash-confirmed-count').textContent = totalPresentCount;
