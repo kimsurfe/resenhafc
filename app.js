@@ -611,12 +611,21 @@ class FootballApp {
                     : `<button class="action-btn" title="Mudar para Pendente" onclick="app.undoPayment('${p.id}')" style="color: var(--neon-orange); font-size: 22px;"><i class="ph ph-arrow-counter-clockwise"></i></button>`;
             }
 
+            let starBadge = '';
+            if (localStorage.getItem('resenha_admin') === 'true' && p.rating > 0) {
+                starBadge = `<span style="color: var(--neon-yellow, #fbbf24); font-size: 14px; margin-left: 6px;" title="Qualidade: ${p.rating} estrelas">`;
+                for (let i = 0; i < p.rating; i++) {
+                    starBadge += '<i class="ph-fill ph-star"></i>';
+                }
+                starBadge += `</span>`;
+            }
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td data-label="#" style="color: var(--text-muted); font-weight: 700; font-size: 15px; width: 44px;">${rowNumber}</td>
                 <td data-label="Jogador">
                     <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">
-                        ${p.nickname || p.name}
+                        ${p.nickname || p.name} ${starBadge}
                     </div>
                     <div style="font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px;">${p.fullName || ''}</div>
                 </td>
@@ -642,12 +651,20 @@ class FootballApp {
             let countAvulso = 1;
             
             const renderAvulsoRow = (p, rowNumber) => {
+                let starBadge = '';
+                if (localStorage.getItem('resenha_admin') === 'true' && p.rating > 0) {
+                    starBadge = `<span style="color: var(--neon-yellow, #fbbf24); font-size: 14px; margin-left: 6px;" title="Qualidade: ${p.rating} estrelas">`;
+                    for (let i = 0; i < p.rating; i++) {
+                        starBadge += '<i class="ph-fill ph-star"></i>';
+                    }
+                    starBadge += `</span>`;
+                }
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td data-label="#" style="color: var(--text-muted); font-weight: 700; font-size: 15px; width: 44px;">${rowNumber}</td>
                     <td data-label="Jogador">
                         <div style="font-weight: 600; font-size: 16px; line-height: 1.2;">
-                            ${p.nickname || p.name || p.fullName}
+                            ${p.nickname || p.name || p.fullName} ${starBadge}
                             ${p.invitedBy ? `<span style="font-size: 12px; color: var(--text-muted); opacity: 0.8; font-weight: 400; margin-left: 4px;">(por: ${p.invitedBy})</span>` : ''}
                         </div>
                         <div style="font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px;">${p.phone || ''}</div>
@@ -1170,6 +1187,23 @@ class FootballApp {
     }
 
     /* Player CRUD */
+    setPlayerRating(val) {
+        const ratingInput = document.getElementById('player-rating');
+        if (ratingInput) ratingInput.value = val;
+        
+        const stars = document.querySelectorAll('#star-rating-container i');
+        stars.forEach(s => {
+            const starVal = parseInt(s.dataset.val);
+            if (starVal <= val) {
+                s.className = 'ph-fill ph-star';
+                s.style.color = 'var(--neon-yellow, #fbbf24)';
+            } else {
+                s.className = 'ph ph-star';
+                s.style.color = 'var(--text-muted)';
+            }
+        });
+    }
+
     openPlayerModal(id = null) {
         const form = document.getElementById('player-form');
         form.reset();
@@ -1187,12 +1221,20 @@ class FootballApp {
             document.getElementById('player-status').value = player.status || 'unpaid';
             document.getElementById('guest-invited-by').value = player.invitedBy || '';
             
+            this.setPlayerRating(player.rating || 0);
+
             if (player.isTemporary) {
                 document.getElementById('guest-match-date').value = player.validDate;
             }
         } else {
             document.getElementById('player-modal-title').textContent = "Adicionar Jogador";
             document.getElementById('player-id').value = "";
+            this.setPlayerRating(0);
+        }
+        
+        const ratingGroup = document.getElementById('player-rating-group');
+        if (ratingGroup) {
+            ratingGroup.style.display = localStorage.getItem('resenha_admin') === 'true' ? 'block' : 'none';
         }
         
         // Preparar listas para o autocomplete customizado
@@ -1293,7 +1335,8 @@ class FootballApp {
             status: newStatus,
             isTemporary: isGuest,
             validDate: isGuest ? document.getElementById('guest-match-date').value : null,
-            invitedBy: isGuest ? document.getElementById('guest-invited-by').value.trim() : null
+            invitedBy: isGuest ? document.getElementById('guest-invited-by').value.trim() : null,
+            rating: parseInt(document.getElementById('player-rating').value) || 0
         };
 
         if (this.editingPlayerId) {
@@ -1640,18 +1683,27 @@ class FootballApp {
             }
         };
 
-        Object.values(positions).forEach(shuffle);
+        Object.values(positions).forEach(posArray => {
+            shuffle(posArray);
+            posArray.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        });
 
         const teams = Array.from({ length: numTeams }, () => []);
         let currentTeamIdx = 0;
+        let direction = 1;
 
         const distribute = (players) => {
             players.forEach(p => {
                 teams[currentTeamIdx].push(p);
-                currentTeamIdx = (currentTeamIdx + 1) % numTeams;
+                currentTeamIdx += direction;
+                if (currentTeamIdx >= numTeams) {
+                    currentTeamIdx = numTeams - 1;
+                    direction = -1;
+                } else if (currentTeamIdx < 0) {
+                    currentTeamIdx = 0;
+                    direction = 1;
+                }
             });
-            shuffle(teams);
-            currentTeamIdx = 0;
         };
 
         distribute(positions.goleiros);
@@ -1684,18 +1736,31 @@ class FootballApp {
                     return (weight[posA] || 6) - (weight[posB] || 6);
                 });
 
+                let sumRating = team.reduce((sum, p) => sum + (p.rating || 0), 0);
+                const avgRating = team.length > 0 ? (sumRating / team.length).toFixed(1) : 0;
+                const adminRatingInfo = localStorage.getItem('resenha_admin') === 'true' ? `<div style="font-size: 12px; color: var(--neon-yellow, #fbbf24); margin-top: 4px;">Força: ${avgRating} <i class="ph-fill ph-star"></i></div>` : '';
+
                 return `
                 <div class="widget glass-card">
                     <h3 style="color: var(--neon-orange); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-                        Time ${i + 1} 
+                        <div>
+                            Time ${i + 1}
+                            ${adminRatingInfo}
+                        </div>
                         <span style="font-size: 14px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 12px;">${team.length} jogadores</span>
                     </h3>
                     <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;">
                         ${sortedTeam.map(p => {
                             const posColor = getPositionColor(p.position);
                             const isGoleiro = p.position && p.position.toLowerCase().trim() === 'goleiro';
+                            let starBadge = '';
+                            if (localStorage.getItem('resenha_admin') === 'true' && p.rating > 0) {
+                                starBadge = '<span style="color: var(--neon-yellow, #fbbf24); font-size: 12px; margin-left: 6px;">';
+                                for(let j=0; j<p.rating; j++) starBadge += '<i class="ph-fill ph-star"></i>';
+                                starBadge += '</span>';
+                            }
                             return `<li style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; color: ${isGoleiro ? 'var(--neon-blue)' : 'var(--text-light)'}; ${isGoleiro ? 'font-weight: bold;' : ''}">
-                                <span><i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-soccer-ball'}"></i> ${p.nickname || p.name || p.fullName || 'Sem Nome'}</span>
+                                <span><i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-soccer-ball'}"></i> ${p.nickname || p.name || p.fullName || 'Sem Nome'} ${starBadge}</span>
                                 <span style="font-size: 11px; color: ${posColor}; border: 1px solid ${posColor}; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2); font-weight: 500;">${p.position || 'Sem Posição'}</span>
                             </li>`;
                         }).join('')}
