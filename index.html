@@ -1504,7 +1504,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             
                             <!-- Botoes de Stats -->
                             <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-self: flex-start; flex-wrap: wrap;">
-                                <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.toggleDashList('dash-confirmed-list', this)">
+                                <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.copyPresentListToWhatsApp()">
                                     <i class="ph ph-check-circle"></i> <span id="presenca-count">0</span> Confirmados
                                 </button>
                                 <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.toggleDashList('dash-absent-list', this)">
@@ -2119,7 +2119,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <script src="app.js?v=58"></script>
+    <script src="app.js?v=59"></script>
 </body>
 </html>
 

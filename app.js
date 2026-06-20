@@ -919,6 +919,57 @@ class FootballApp {
         }
     }
 
+    copyPresentListToWhatsApp() {
+        const dateSelect = document.getElementById('match-date-select');
+        const dateValue = dateSelect ? dateSelect.value : new Date().toISOString().split('T')[0];
+        const dateText = this.getSelectedMatchDateText();
+        
+        let present = [];
+
+        this.getSortedPlayers(dateValue).forEach(p => {
+            const status = this.getAttendanceStatus(dateValue, p.id);
+            if (status === 'present') {
+                const name = (p.nickname || p.name || p.fullName).trim();
+                const type = p.type === 'avulso' ? ' (Avulso)' : '';
+                present.push(name + type);
+            }
+        });
+
+        if (present.length === 0) {
+            alert('Não há jogadores confirmados!');
+            return;
+        }
+
+        let text = `✅ *RESENHA F.C - Confirmados* ✅\n📅 Data: ${dateText}\n\n`;
+        text += `Jogadores já garantidos na partida:\n\n`;
+        present.forEach((player, index) => { 
+            text += `${index + 1}. ${player}\n`; 
+        });
+        text += `\n${present.length + 1}. `;
+
+        const copyFallback = (t) => {
+            const textArea = document.createElement("textarea");
+            textArea.value = t;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert('Lista de confirmados copiada! Cole no WhatsApp.');
+            } catch (err) {
+                alert('Erro ao copiar.');
+            }
+            document.body.removeChild(textArea);
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Lista de confirmados copiada! Cole no WhatsApp.');
+            }).catch(() => copyFallback(text));
+        } else {
+            copyFallback(text);
+        }
+    }
+
     copyDoubtListToWhatsApp() {
         const dateSelect = document.getElementById('match-date-select');
         const dateValue = dateSelect ? dateSelect.value : new Date().toISOString().split('T')[0];
@@ -1736,31 +1787,18 @@ class FootballApp {
                     return (weight[posA] || 6) - (weight[posB] || 6);
                 });
 
-                let sumRating = team.reduce((sum, p) => sum + (p.rating || 0), 0);
-                const avgRating = team.length > 0 ? (sumRating / team.length).toFixed(1) : 0;
-                const adminRatingInfo = localStorage.getItem('resenha_admin') === 'true' ? `<div style="font-size: 12px; color: var(--neon-yellow, #fbbf24); margin-top: 4px;">Força: ${avgRating} <i class="ph-fill ph-star"></i></div>` : '';
-
                 return `
                 <div class="widget glass-card">
                     <h3 style="color: var(--neon-orange); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            Time ${i + 1}
-                            ${adminRatingInfo}
-                        </div>
+                        Time ${i + 1} 
                         <span style="font-size: 14px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 12px;">${team.length} jogadores</span>
                     </h3>
                     <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;">
                         ${sortedTeam.map(p => {
                             const posColor = getPositionColor(p.position);
                             const isGoleiro = p.position && p.position.toLowerCase().trim() === 'goleiro';
-                            let starBadge = '';
-                            if (localStorage.getItem('resenha_admin') === 'true' && p.rating > 0) {
-                                starBadge = '<span style="color: var(--neon-yellow, #fbbf24); font-size: 12px; margin-left: 6px;">';
-                                for(let j=0; j<p.rating; j++) starBadge += '<i class="ph-fill ph-star"></i>';
-                                starBadge += '</span>';
-                            }
                             return `<li style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; color: ${isGoleiro ? 'var(--neon-blue)' : 'var(--text-light)'}; ${isGoleiro ? 'font-weight: bold;' : ''}">
-                                <span><i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-soccer-ball'}"></i> ${p.nickname || p.name || p.fullName || 'Sem Nome'} ${starBadge}</span>
+                                <span><i class="ph ${isGoleiro ? 'ph-hand-fist' : 'ph-soccer-ball'}"></i> ${p.nickname || p.name || p.fullName || 'Sem Nome'}</span>
                                 <span style="font-size: 11px; color: ${posColor}; border: 1px solid ${posColor}; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.2); font-weight: 500;">${p.position || 'Sem Posição'}</span>
                             </li>`;
                         }).join('')}
