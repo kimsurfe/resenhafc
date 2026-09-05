@@ -344,8 +344,8 @@ class FootballApp {
     }
 
     renderDashboard() {
-        const todosMensalistas = this.data.players.filter(p => p.type === 'mensalista');
-        const mensalistasPagantes = todosMensalistas.filter(p => (p.position || '').toLowerCase().trim() !== 'goleiro');
+        const todosMensalistas = this.data.players.filter(p => p.type && p.type.startsWith('mensalista'));
+        const mensalistasPagantes = todosMensalistas.filter(p => (p.position || '').toLowerCase().trim() !== 'goleiro' && p.type !== 'mensalista_isento');
         
         const totalMensalistas = todosMensalistas.length;
         const totalEsperados = mensalistasPagantes.length;
@@ -407,7 +407,7 @@ class FootballApp {
             `;
 
             if (status === 'present') {
-                if (p.type === 'mensalista') {
+                if (p.type && p.type.startsWith('mensalista')) {
                     presentMensalistasHTML += html;
                     presentMensalistasCount++;
                 } else {
@@ -416,7 +416,7 @@ class FootballApp {
                 }
             }
             else if (status === 'doubt') {
-                if (p.type === 'mensalista') {
+                if (p.type && p.type.startsWith('mensalista')) {
                     doubtMensalistasHTML += html;
                     doubtMensalistasCount++;
                 } else {
@@ -581,13 +581,13 @@ class FootballApp {
         tbody.innerHTML = '';
         
         const sorted = this.getSortedPlayers();
-        let mensalistas = sorted.filter(p => p.type === 'mensalista');
+        let mensalistas = sorted.filter(p => p.type && p.type.startsWith('mensalista'));
         
         // Apply Payment Filter
         if (this.playerPaymentFilter === 'paid') {
-            mensalistas = mensalistas.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro');
+            mensalistas = mensalistas.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro' || p.type === 'mensalista_isento');
         } else if (this.playerPaymentFilter === 'pending') {
-            mensalistas = mensalistas.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro');
+            mensalistas = mensalistas.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro' && p.type !== 'mensalista_isento');
         }
 
         let countMensalista = 1;
@@ -701,7 +701,7 @@ class FootballApp {
         }
 
         const sorted = this.getSortedPlayers(dateSelect);
-        const mensalistas = sorted.filter(p => p.type === 'mensalista');
+        const mensalistas = sorted.filter(p => p.type && p.type.startsWith('mensalista'));
         const avulsos = sorted.filter(p => p.type === 'avulso');
 
         let doubtCount = 0;
@@ -732,7 +732,7 @@ class FootballApp {
                         </div>
                         <div class="card-actions" style="display: flex; gap: 4px; align-items: center;">
                             ${localStorage.getItem('resenha_admin') === 'true' ? `
-                            ${(p.position || '').toLowerCase().trim() !== 'goleiro' ? `
+                            ${(p.position || '').toLowerCase().trim() !== 'goleiro' && p.type !== 'mensalista_isento' ? `
                                 <button class="action-btn" title="${p.status === 'paid' ? 'Mudar para Pendente' : 'Registrar Pagamento'}" 
                                         onclick="app.${p.status === 'paid' ? 'undoPayment' : 'registerPayment'}('${p.id}')" 
                                         style="padding: 4px; font-size: 16px; color: ${p.status === 'paid' ? 'var(--neon-orange)' : 'var(--neon-green)'}; opacity: 0.8;">
@@ -852,7 +852,7 @@ class FootballApp {
             parts.push(warningText + customMessage);
         }
 
-        const mensalistas = this.data.players.filter(p => p.type === 'mensalista');
+        const mensalistas = this.data.players.filter(p => p.type && p.type.startsWith('mensalista'));
         const totalM = mensalistas.length;
 
         // 4. Lista de Presentes (se ativa)
@@ -1889,7 +1889,7 @@ class FootballApp {
                 return a.name.localeCompare(b.name);
             })
             .forEach(item => {
-                if (item.type === 'mensalista') rankingMensalistas.push(item);
+                if (item.type && item.type.startsWith('mensalista')) rankingMensalistas.push(item);
                 else rankingAvulsos.push(item);
             });
 
@@ -2034,9 +2034,9 @@ class FootballApp {
         const monthName = now.toLocaleDateString('pt-BR', { month: 'long' });
         const year = now.getFullYear();
         
-        const sortedPlayers = this.getSortedPlayers().filter(p => p.type === 'mensalista');
-        const paid = sortedPlayers.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro');
-        const pending = sortedPlayers.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro');
+        const sortedPlayers = this.getSortedPlayers().filter(p => p.type && p.type.startsWith('mensalista'));
+        const paid = sortedPlayers.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro' || p.type === 'mensalista_isento');
+        const pending = sortedPlayers.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro' && p.type !== 'mensalista_isento');
         
         let text = `💰 *RESENHA F.C - Mensalidade (${monthName.toUpperCase()} / ${year})* 💰\n\n`;
         

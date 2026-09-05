@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Resenha FC | Gestão</title>
+    <title>Resenha FC | GestÃ£o</title>
     
     <!-- PWA Config para iPhone e Web Push -->
     <link rel="manifest" href="manifest.json">
@@ -603,7 +603,7 @@ body {
     color: var(--text-main);
 }
 
-/* Presença View */
+/* PresenÃ§a View */
 .attendance-stats { display: flex; align-items: center; }
 .team-list {
     display: grid;
@@ -801,7 +801,7 @@ body {
     display: none !important;
 }
 
-/* Ocultar elementos mobile por padrão no Desktop */
+/* Ocultar elementos mobile por padrÃ£o no Desktop */
 .bottom-nav, .more-menu-overlay {
     display: none;
 }
@@ -815,7 +815,7 @@ body {
     .app-container {
         flex-direction: column;
         height: auto;
-        padding-bottom: 80px; /* Espaço para o menu inferior */
+        padding-bottom: 80px; /* EspaÃ§o para o menu inferior */
     }
 
     .main-content {
@@ -863,7 +863,7 @@ body {
     .stat-value { font-size: 16px; }
     #dash-next-game { font-size: 14px !important; }
 
-    /* Harmonização do Header Mobile */
+    /* HarmonizaÃ§Ã£o do Header Mobile */
     .topbar {
         padding: 16px 20px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -887,7 +887,7 @@ body {
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    /* Título da Área na Direita */
+    /* TÃ­tulo da Ãrea na Direita */
     .topbar > div:first-child {
         width: 100%;
         justify-content: space-between;
@@ -898,7 +898,7 @@ body {
         font-size: 24px !important;
     }
 
-    /* Financeiro: Saldo e Botões Uniformes */
+    /* Financeiro: Saldo e BotÃµes Uniformes */
     .balance-amount {
         font-size: 26px !important;
     }
@@ -932,7 +932,7 @@ body {
         white-space: nowrap;
     }
 
-    /* Configurações de Valores Financeiros */
+    /* ConfiguraÃ§Ãµes de Valores Financeiros */
     .config-row {
         flex-direction: column;
         align-items: stretch !important;
@@ -997,17 +997,17 @@ body {
         font-size: 13px;
     }
 
-    /* Forçar a descrição a ficar em uma nova linha no mobile */
-    .data-table td[data-label="Descrição"] {
+    /* ForÃ§ar a descriÃ§Ã£o a ficar em uma nova linha no mobile */
+    .data-table td[data-label="DescriÃ§Ã£o"] {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
     }
-    .data-table td[data-label="Descrição"]::before {
+    .data-table td[data-label="DescriÃ§Ã£o"]::before {
         margin-bottom: 2px;
     }
 
-    /* Menu de Navegação Inferior */
+    /* Menu de NavegaÃ§Ã£o Inferior */
     .bottom-nav {
         display: flex !important;
         position: fixed;
@@ -1087,7 +1087,7 @@ body {
         text-shadow: 0 0 10px var(--neon-green-glow);
     }
 
-    /* Ajuste Header Seções */
+    /* Ajuste Header SeÃ§Ãµes */
     .section-header {
         flex-direction: column;
         align-items: stretch;
@@ -1114,7 +1114,7 @@ body {
         grid-column: span 2;
     }
 
-    /* Cards de Presença Compactos */
+    /* Cards de PresenÃ§a Compactos */
     .player-card {
         flex-direction: column !important;
         align-items: stretch !important;
@@ -1143,7 +1143,7 @@ body {
         grid-template-columns: 1fr;
     }
 
-    /* As listas de Presentes/Dúvidas/Ausentes no Dashboard */
+    /* As listas de Presentes/DÃºvidas/Ausentes no Dashboard */
     section#dashboard > div[style*="display: grid"] {
         grid-template-columns: 1fr !important;
         gap: 16px !important;
@@ -1160,10 +1160,10 @@ body {
 .bottom-nav { display: none; }
 
 /* ==============================================
-   CAMADA DE SEGURANÇA ADMINISTRATIVA
+   CAMADA DE SEGURANÃ‡A ADMINISTRATIVA
    ============================================== */
 
-/* Esconde tudo que é admin-only por padrão */
+/* Esconde tudo que Ã© admin-only por padrÃ£o */
 .admin-only { display: none !important; }
 
 /* Quando logado: mostra cada tipo com o display correto */
@@ -1180,13 +1180,13 @@ body.is-admin .financial-section.admin-only { display: flex !important; }
 body.is-admin div.financial-section.admin-only { display: flex !important; }
 body.is-admin .dashboard-widgets.financial-section.admin-only { display: grid !important; }
 
-/* Ocultar financeiro ao clicar no olhinho - Especificidade Máxima */
+/* Ocultar financeiro ao clicar no olhinho - Especificidade MÃ¡xima */
 body.is-admin.hide-finances .financial-section.admin-only,
 body.hide-finances .financial-section { 
     display: none !important; 
 }
 
-/* Utilitários de visibilidade */
+/* UtilitÃ¡rios de visibilidade */
 @media (min-width: 992px) {
     .mobile-only-flex { display: none !important; }
 }
@@ -1196,7 +1196,7 @@ body.hide-finances .financial-section {
 }
 
 
-/* Botões de Presença Uniformes */
+/* BotÃµes de PresenÃ§a Uniformes */
 .att-stat-btn {
     border-radius: 6px !important;
     padding: 8px 16px !important;
@@ -1216,7 +1216,7 @@ body.hide-finances .financial-section {
     z-index: 99999; display: none; align-items: center; justify-content: center;
 }
 #login-modal.active { display: flex; }
-/* Estilizar o ícone nativo do calendário para aparecer no modo escuro */
+/* Estilizar o Ã­cone nativo do calendÃ¡rio para aparecer no modo escuro */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1) brightness(1.5) sepia(100%) saturate(10000%) hue-rotate(180deg); /* Faz ficar azulado/claro */
     cursor: pointer;
@@ -1239,7 +1239,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <i class="ph ph-users"></i> Mensalistas
                 </button>
                 <button class="nav-item active" data-target="presenca">
-                    <i class="ph ph-clipboard-text"></i> Lista de Presença
+                    <i class="ph ph-clipboard-text"></i> Lista de PresenÃ§a
                 </button>
                 <button class="nav-item" data-target="sorteio">
                     <i class="ph ph-users-three"></i> Sorteio de Times
@@ -1259,17 +1259,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <main class="main-content" id="main-content">
             <header class="topbar">
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <!-- Logo no Topbar: Só aparece no Mobile porque o Desktop já tem na Sidebar -->
+                    <!-- Logo no Topbar: SÃ³ aparece no Mobile porque o Desktop jÃ¡ tem na Sidebar -->
                     <div onclick="document.getElementById('login-modal').classList.add('active')" class="logo-trigger mobile-only-flex" style="align-items: center; gap: 10px; cursor: pointer; flex-direction: row; white-space: nowrap;">
                         <img id="app-logo-mobile" src="resenha_logotipo.jpg" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-green);">
                         <span id="app-name-mobile" style="font-weight: 800; font-size: 13px; color: var(--neon-green); letter-spacing: 1px;">RESENHA F.C</span>
                     </div>
-                    <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Lista de Presença</h1>
+                    <h1 id="page-title" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Lista de PresenÃ§a</h1>
                 </div>
                 <div class="actions">
                     <div class="date-display" id="current-date"></div>
                     <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.1); margin: 0 8px;" class="desktop-only-flex"></div>
-                    <a href="manual/manual_resenha.html" target="_blank" class="action-btn" style="font-size: 22px; color: var(--neon-orange); text-decoration: none; display: flex; align-items: center; justify-content: center;" title="Abrir Manual do Usuário">
+                    <a href="manual/manual_resenha.html" target="_blank" class="action-btn" style="font-size: 22px; color: var(--neon-orange); text-decoration: none; display: flex; align-items: center; justify-content: center;" title="Abrir Manual do UsuÃ¡rio">
                         <i class="ph ph-question"></i>
                     </a>
                     <button class="action-btn" onclick="app.shareDashboard()" style="font-size: 22px; color: var(--neon-blue);" title="Gerar Foto do Dashboard"><i class="ph ph-camera"></i></button>
@@ -1285,8 +1285,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <i class="ph ph-bell-ringing" style="font-size: 28px; color: var(--neon-blue);"></i>
                             <div>
-                                <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Ativar Notificações</h3>
-                                <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Receba avisos dos próximos jogos e mensalidades direto no celular.</p>
+                                <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Ativar NotificaÃ§Ãµes</h3>
+                                <p style="margin: 4px 0 0 0; font-size: 14px; color: var(--text-muted);">Receba avisos dos prÃ³ximos jogos e mensalidades direto no celular.</p>
                             </div>
                         </div>
                         <button class="btn" onclick="app.requestNotificationPermission()" style="background: var(--neon-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(59,130,246,0.4);">Ativar</button>
@@ -1303,7 +1303,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <div class="stat-card glass-card">
                             <div class="stat-icon neon-blue"><i class="ph ph-hand-coins"></i></div>
                             <div class="stat-info">
-                                <h3>Pagantes (Mês Atual)</h3>
+                                <h3>Pagantes (MÃªs Atual)</h3>
                                 <p class="stat-value" id="dash-pagantes">0</p>
                             </div>
                         </div>
@@ -1317,7 +1317,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <div class="stat-card glass-card">
                             <div class="stat-icon neon-orange"><i class="ph ph-calendar-check"></i></div>
                             <div class="stat-info">
-                                <h3>Próximo Jogo</h3>
+                                <h3>PrÃ³ximo Jogo</h3>
                                 <p class="stat-value" id="dash-next-game" style="font-size: 20px;">Quarta, 21:00</p>
                             </div>
                         </div>
@@ -1335,7 +1335,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                         <div class="widget glass-card">
                             <h2 style="display: flex; align-items: center; gap: 8px; font-size: 16px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-pending-list', this)">
-                                <i class="ph ph-question" style="color: var(--neon-orange)"></i> Dúvidas (<span id="dash-pending-count">0</span>)
+                                <i class="ph ph-question" style="color: var(--neon-orange)"></i> DÃºvidas (<span id="dash-pending-count">0</span>)
                                 <i class="ph ph-caret-up" style="margin-left: auto;"></i>
                             </h2>
                             <div id="dash-pending-list" class="dash-collapsible">
@@ -1354,13 +1354,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     </div>
                     <div class="dashboard-widgets financial-section admin-only" style="margin-bottom: 24px;">
                         <div class="widget glass-card">
-                            <h2>Últimos Pagamentos</h2>
+                            <h2>Ãšltimos Pagamentos</h2>
                             <ul class="activity-list" id="dash-recent-payments">
                                 <!-- Populated by JS -->
                             </ul>
                         </div>
                         <div class="widget glass-card">
-                            <h3 style="color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 24px;">Análise Mensal (Entradas vs Gastos)</h3>
+                            <h3 style="color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 24px;">AnÃ¡lise Mensal (Entradas vs Gastos)</h3>
                             <div class="chart-placeholder" id="financial-summary-chart" style="height: 250px;">
                                 <!-- JS -->
                             </div>
@@ -1370,7 +1370,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <div class="widget glass-card" style="margin-bottom: 24px;">
                         <h2 style="display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; user-select: none;" onclick="app.toggleDashList('dash-ranking-list', this)">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <i class="ph ph-crown" style="color: var(--neon-orange)"></i> Ranking de presença
+                                <i class="ph ph-crown" style="color: var(--neon-orange)"></i> Ranking de presenÃ§a
                             </div>
                             <i class="ph ph-caret-up" style="font-size: 14px; opacity: 0.5;"></i>
                         </h2>
@@ -1398,14 +1398,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <div class="section-header">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <h2 style="margin: 0;"><i class="ph ph-users"></i> Mensalistas</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Gestão de pagamentos e cadastro</p>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">GestÃ£o de pagamentos e cadastro</p>
                         </div>
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" class="admin-only">
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.shareDefaulters()">
                                 <i class="ph ph-whatsapp-logo"></i> Copiar Mensalidade
                             </button>
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(239, 68, 68, 0.1); color: var(--neon-red); border: 1px solid var(--neon-red); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.resetMonth()">
-                                <i class="ph ph-arrows-clockwise"></i> Virar o Mês
+                                <i class="ph ph-arrows-clockwise"></i> Virar o MÃªs
                             </button>
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: var(--neon-green); color: #000; border: 1px solid var(--neon-green); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.openPlayerModal()">
                                 <i class="ph ph-user-plus"></i> Novo Jogador
@@ -1439,9 +1439,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <tr>
                                     <th style="width: 50px;">#</th>
                                     <th>Jogador</th>
-                                    <th>Posição</th>
-                                    <th>Status (Mês)</th>
-                                    <th class="admin-only" style="text-align: right;">Ações</th>
+                                    <th>PosiÃ§Ã£o</th>
+                                    <th>Status (MÃªs)</th>
+                                    <th class="admin-only" style="text-align: right;">AÃ§Ãµes</th>
                                 </tr>
                             </thead>
                             <tbody id="mensalistas-tbody">
@@ -1452,8 +1452,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
                     <div onclick="app.toggleDashList('historico-avulsos-list', this)" style="margin-top: 32px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <h3 style="margin: 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Avulsos</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Avulsos que já jogaram e aparecem no autocompletar</p>
+                            <h3 style="margin: 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-clock-counter-clockwise"></i> HistÃ³rico de Avulsos</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Avulsos que jÃ¡ jogaram e aparecem no autocompletar</p>
                         </div>
                         <i class="ph ph-caret-down" style="color: var(--text-muted); font-size: 20px;"></i>
                     </div>
@@ -1464,8 +1464,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                 <tr>
                                         <th style="width: 50px;">#</th>
                                         <th>Jogador</th>
-                                        <th>Posição</th>
-                                        <th class="admin-only" style="text-align: right;">Ações</th>
+                                        <th>PosiÃ§Ã£o</th>
+                                        <th class="admin-only" style="text-align: right;">AÃ§Ãµes</th>
                                     </tr>
                                 </thead>
                                 <tbody id="avulsos-tbody">
@@ -1476,12 +1476,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     </div>
                 </section>
 
-                <!-- Presença View -->
+                <!-- PresenÃ§a View -->
                 <section id="presenca" class="view-section active">
                     <div class="section-header">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <h2 style="margin: 0;"><i class="ph ph-clipboard-text"></i> Presença</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Confirmações do próximo jogo</p>
+                            <h2 style="margin: 0;"><i class="ph ph-clipboard-text"></i> PresenÃ§a</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">ConfirmaÃ§Ãµes do prÃ³ximo jogo</p>
                         </div>
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" class="admin-only">
                             <button class="att-stat-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" onclick="app.copyAttendanceToWhatsApp()">
@@ -1511,7 +1511,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     <i class="ph ph-x-circle"></i> <span id="absent-count">0</span> Ausentes
                                 </button>
                                 <button style="padding: 6px 14px; font-size: 12px; border-radius: 6px; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="app.copyDoubtListToWhatsApp()">
-                                    <i class="ph ph-question"></i> <span id="doubt-count">0</span> Dúvidas
+                                    <i class="ph ph-question"></i> <span id="doubt-count">0</span> DÃºvidas
                                 </button>
                             </div>
                         </div>
@@ -1519,7 +1519,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <!-- Busca -->
                         <div class="search-bar glass-input" style="width: 100%; max-width: 100%;">
                             <i class="ph ph-magnifying-glass"></i>
-                            <input type="text" id="search-attendance" placeholder="Buscar jogador na lista de presença..." oninput="app.filterAttendance()" style="width: 100%;">
+                            <input type="text" id="search-attendance" placeholder="Buscar jogador na lista de presenÃ§a..." oninput="app.filterAttendance()" style="width: 100%;">
                         </div>
                     </div>
                     <div class="pitch-container glass-card">
@@ -1547,7 +1547,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <div class="glass-card config-row" style="display: flex; gap: 24px; align-items: center; padding: 16px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05);">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <i class="ph ph-gear" style="color: var(--neon-blue); font-size: 20px;"></i>
-                            <span style="font-weight: 600; font-size: 14px; color: var(--text-light);">Configurações de Valores:</span>
+                            <span style="font-weight: 600; font-size: 14px; color: var(--text-light);">ConfiguraÃ§Ãµes de Valores:</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <label style="font-size: 13px; color: var(--text-muted);">Mensalidade R$:</label>
@@ -1562,7 +1562,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; align-items: center;">
                             <div class="search-bar glass-input" style="flex: 1; height: 45px; padding: 0 20px;">
                                 <i class="ph ph-magnifying-glass"></i>
-                                <input type="text" id="search-finance" placeholder="Buscar no histórico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
+                                <input type="text" id="search-finance" placeholder="Buscar no histÃ³rico..." oninput="app.filterTransactions()" style="background: transparent; border: none; color: var(--text-light); width: 100%; outline: none; font-size: 14px;">
                             </div>
                             <button class="btn" onclick="app.exportFinanceToExcel()" style="background: rgba(33, 150, 243, 0.1); color: #2196F3; border: 1px solid rgba(33, 150, 243, 0.3); height: 45px; padding: 0 20px; white-space: nowrap;">
                                 <i class="ph ph-file-csv"></i> Exportar
@@ -1572,10 +1572,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <thead>
                                 <tr>
                                     <th>Data</th>
-                                    <th>Descrição</th>
+                                    <th>DescriÃ§Ã£o</th>
                                     <th>Tipo</th>
                                     <th>Valor</th>
-                                    <th style="text-align: right;">Ações</th>
+                                    <th style="text-align: right;">AÃ§Ãµes</th>
                                 </tr>
                             </thead>
                             <tbody id="financeiro-tbody">
@@ -1590,7 +1590,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <div class="section-header">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <h2 style="margin: 0;"><i class="ph ph-users-three"></i> Sorteio de Times</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Equilíbrio tático por posição (Society)</p>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">EquilÃ­brio tÃ¡tico por posiÃ§Ã£o (Society)</p>
                         </div>
                         <div style="display: flex; gap: 12px;">
                             <div class="glass-input" style="width: 140px; padding: 4px 12px;">
@@ -1630,7 +1630,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <div id="sorteio-results" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px;">
                         <div class="widget glass-card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
                             <i class="ph ph-users-three" style="font-size: 48px; color: var(--text-muted); opacity: 0.3; margin-bottom: 16px; display: block;"></i>
-                            <p style="color: var(--text-muted);">Confirme os presentes na aba "Lista de Presença" e clique em "Sortear Agora".</p>
+                            <p style="color: var(--text-muted);">Confirme os presentes na aba "Lista de PresenÃ§a" e clique em "Sortear Agora".</p>
                         </div>
                     </div>
                 </section>
@@ -1639,7 +1639,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <section id="ajustes" class="view-section">
                     <div class="section-header">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <h2 style="margin: 0;"><i class="ph ph-gear"></i> Configurações do App</h2>
+                            <h2 style="margin: 0;"><i class="ph ph-gear"></i> ConfiguraÃ§Ãµes do App</h2>
                             <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Personalize a identidade do seu clube</p>
                         </div>
                     </div>
@@ -1677,47 +1677,47 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </div>
                     </div>
 
-                    <!-- Modelo da Lista de Presença -->
+                    <!-- Modelo da Lista de PresenÃ§a -->
                     <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
-                        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: var(--neon-green);"><i class="ph ph-clipboard-text"></i> Configuração do Texto da Lista</h3>
+                        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: var(--neon-green);"><i class="ph ph-clipboard-text"></i> ConfiguraÃ§Ã£o do Texto da Lista</h3>
                         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">
-                            Edite o texto personalizado (Pix, links ou avisos) que fica no topo da lista, e ative/desative as outras seções dinâmicas que serão copiadas para o WhatsApp.
+                            Edite o texto personalizado (Pix, links ou avisos) que fica no topo da lista, e ative/desative as outras seÃ§Ãµes dinÃ¢micas que serÃ£o copiadas para o WhatsApp.
                         </p>
                         
-                        <!-- Configurações de Data/Hora e Rotação -->
+                        <!-- ConfiguraÃ§Ãµes de Data/Hora e RotaÃ§Ã£o -->
                         <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 24px;">
-                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;"><i class="ph ph-calendar"></i> Dia, Hora e Rotação do Jogo:</label>
+                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;"><i class="ph ph-calendar"></i> Dia, Hora e RotaÃ§Ã£o do Jogo:</label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                                 <div class="form-group" style="margin: 0;">
                                     <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Dia do Jogo</label>
                                     <select id="config-match-day" class="glass-input-field" style="width: 100%; height: 42px; padding: 8px 12px; font-size: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;">
                                         <option value="0">Domingo</option>
                                         <option value="1">Segunda-feira</option>
-                                        <option value="2">Terça-feira</option>
+                                        <option value="2">TerÃ§a-feira</option>
                                         <option value="3">Quarta-feira</option>
                                         <option value="4">Quinta-feira</option>
                                         <option value="5">Sexta-feira</option>
-                                        <option value="6">Sábado</option>
+                                        <option value="6">SÃ¡bado</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin: 0;">
-                                    <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Horário do Jogo</label>
+                                    <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">HorÃ¡rio do Jogo</label>
                                     <input type="text" id="config-match-time" class="glass-input-field" style="width: 100%; height: 42px; padding: 8px 12px; font-size: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;" placeholder="Ex: 21:00">
                                 </div>
                             </div>
                             <div class="form-group" style="margin: 0;">
-                                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Dia que a lista "vira" (Rotação para a próxima semana)</label>
+                                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: block;">Dia que a lista "vira" (RotaÃ§Ã£o para a prÃ³xima semana)</label>
                                 <select id="config-rotation-day" class="glass-input-field" style="width: 100%; height: 42px; padding: 8px 12px; font-size: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;">
                                     <option value="0">Domingo</option>
                                     <option value="1">Segunda-feira</option>
-                                    <option value="2">Terça-feira</option>
+                                    <option value="2">TerÃ§a-feira</option>
                                     <option value="3">Quarta-feira</option>
                                     <option value="4">Quinta-feira</option>
                                     <option value="5">Sexta-feira</option>
-                                    <option value="6">Sábado</option>
+                                    <option value="6">SÃ¡bado</option>
                                 </select>
                                 <span style="font-size: 10px; color: var(--text-muted); display: block; margin-top: 6px; line-height: 1.4;">
-                                    * A lista exibirá o jogo atual até que chegue o Dia da Rotação escolhido. Se o Dia da Rotação for o mesmo dia do jogo, a lista vira logo após o horário da partida.
+                                    * A lista exibirÃ¡ o jogo atual atÃ© que chegue o Dia da RotaÃ§Ã£o escolhido. Se o Dia da RotaÃ§Ã£o for o mesmo dia do jogo, a lista vira logo apÃ³s o horÃ¡rio da partida.
                                 </span>
                             </div>
                         </div>
@@ -1728,14 +1728,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <textarea id="config-attendance-msg" class="glass-input-field" rows="6" style="width: 100%; font-family: inherit; font-size: 14px; line-height: 1.5; resize: vertical; min-height: 130px;" placeholder="Digite o texto personalizado (Ex: PIX, links, regras)..."></textarea>
                         </div>
 
-                        <!-- Opções de Seções -->
+                        <!-- OpÃ§Ãµes de SeÃ§Ãµes -->
                         <div class="form-group" style="margin-bottom: 24px;">
-                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;">Seções para Incluir na Mensagem:</label>
+                            <label style="font-weight: bold; color: var(--text-main); margin-bottom: 12px; display: block;">SeÃ§Ãµes para Incluir na Mensagem:</label>
                             
                             <div style="display: flex; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
                                     <input type="checkbox" id="config-include-date" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Data da Partida (Ex: "📅 Data: Quarta-feira...")
+                                    Incluir Data da Partida (Ex: "ðŸ“… Data: Quarta-feira...")
                                 </label>
                                 
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
@@ -1745,42 +1745,42 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                 
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
                                     <input type="checkbox" id="config-include-present" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Lista de Presentes (✅ Presentes)
+                                    Incluir Lista de Presentes (âœ… Presentes)
                                 </label>
                                 
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
                                     <input type="checkbox" id="config-include-waiting" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Lista de Espera de Avulsos (📋 Lista de espera)
+                                    Incluir Lista de Espera de Avulsos (ðŸ“‹ Lista de espera)
                                 </label>
                                 
                                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
                                     <input type="checkbox" id="config-include-absent" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-green);">
-                                    Incluir Lista de Ausentes (❌ Ausentes)
+                                    Incluir Lista de Ausentes (âŒ Ausentes)
                                 </label>
                             </div>
                         </div>
 
                         <div style="display: flex; gap: 12px;">
                             <button class="btn" onclick="app.saveAttendanceTemplate()" style="flex: 1; background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green);">
-                                <i class="ph ph-floppy-disk"></i> Salvar Configuração
+                                <i class="ph ph-floppy-disk"></i> Salvar ConfiguraÃ§Ã£o
                             </button>
                         </div>
                     </div>
 
-                    <!-- Configurações de Notificações -->
+                    <!-- ConfiguraÃ§Ãµes de NotificaÃ§Ãµes -->
                     <div class="glass-card" style="max-width: 600px; margin-top: 24px; padding: 20px; border-color: var(--neon-orange); margin-bottom: 24px;">
                         <h3 style="margin: 0 0 12px 0; font-size: 16px; color: var(--neon-orange); display: flex; justify-content: space-between; align-items: center;">
-                            <span><i class="ph ph-bell-ringing"></i> Notificações (PWA)</span>
+                            <span><i class="ph ph-bell-ringing"></i> NotificaÃ§Ãµes (PWA)</span>
                             <span id="registered-devices-count" style="font-size: 12px; font-weight: 500; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px;">0 dispositivos ativos</span>
                         </h3>
                         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">
-                            Configure os alertas que os jogadores receberão (integração de Web Push em breve).
+                            Configure os alertas que os jogadores receberÃ£o (integraÃ§Ã£o de Web Push em breve).
                         </p>
                         
                         <div class="form-group" style="margin-bottom: 16px;">
                             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-main); margin: 0;">
                                 <input type="checkbox" id="config-notify-open" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--neon-orange);">
-                                Enviar notificação quando a lista da rodada abrir
+                                Enviar notificaÃ§Ã£o quando a lista da rodada abrir
                             </label>
                         </div>
                         
@@ -1794,8 +1794,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                         Avisar 3 dias antes
                                     </label>
                                     <div style="display: flex; flex-direction: column; gap: 8px; padding-left: 28px;">
-                                        <input type="text" id="config-notify-title-3" placeholder="Título. Ex: A Lista Abriu!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
-                                        <textarea id="config-notify-body-3" placeholder="Texto da notificação" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
+                                        <input type="text" id="config-notify-title-3" placeholder="TÃ­tulo. Ex: A Lista Abriu!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
+                                        <textarea id="config-notify-body-3" placeholder="Texto da notificaÃ§Ã£o" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
                                     </div>
                                 </div>
                                 
@@ -1805,8 +1805,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                         Avisar 2 dias antes
                                     </label>
                                     <div style="display: flex; flex-direction: column; gap: 8px; padding-left: 28px;">
-                                        <input type="text" id="config-notify-title-2" placeholder="Título. Ex: Faltam 2 dias!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
-                                        <textarea id="config-notify-body-2" placeholder="Texto da notificação" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
+                                        <input type="text" id="config-notify-title-2" placeholder="TÃ­tulo. Ex: Faltam 2 dias!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
+                                        <textarea id="config-notify-body-2" placeholder="Texto da notificaÃ§Ã£o" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
                                     </div>
                                 </div>
 
@@ -1816,8 +1816,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                         Avisar 1 dia antes
                                     </label>
                                     <div style="display: flex; flex-direction: column; gap: 8px; padding-left: 28px;">
-                                        <input type="text" id="config-notify-title-1" placeholder="Título. Ex: O Jogo é Amanhã!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
-                                        <textarea id="config-notify-body-1" placeholder="Texto da notificação" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
+                                        <input type="text" id="config-notify-title-1" placeholder="TÃ­tulo. Ex: O Jogo Ã© AmanhÃ£!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
+                                        <textarea id="config-notify-body-1" placeholder="Texto da notificaÃ§Ã£o" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
                                     </div>
                                 </div>
                                 
@@ -1827,8 +1827,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                         Avisar no dia do jogo
                                     </label>
                                     <div style="display: flex; flex-direction: column; gap: 8px; padding-left: 28px;">
-                                        <input type="text" id="config-notify-title-0" placeholder="Título. Ex: É Hoje!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
-                                        <textarea id="config-notify-body-0" placeholder="Texto da notificação" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
+                                        <input type="text" id="config-notify-title-0" placeholder="TÃ­tulo. Ex: Ã‰ Hoje!" class="glass-input-field" style="padding: 8px; font-size: 13px;">
+                                        <textarea id="config-notify-body-0" placeholder="Texto da notificaÃ§Ã£o" class="glass-input-field" style="padding: 8px; font-size: 13px; resize: vertical; min-height: 40px;"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1836,7 +1836,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
                         <div style="display: flex; gap: 12px;">
                             <button class="btn" onclick="app.saveNotificationSettings()" style="flex: 1; background: rgba(245, 158, 11, 0.1); color: var(--neon-orange); border: 1px solid var(--neon-orange);">
-                                <i class="ph ph-floppy-disk"></i> Salvar Notificações
+                                <i class="ph ph-floppy-disk"></i> Salvar NotificaÃ§Ãµes
                             </button>
                         </div>
                     </div>
@@ -1846,13 +1846,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--neon-purple);"><i class="ph ph-paper-plane-tilt"></i> Disparo Personalizado</h3>
                         
                         <div class="form-group">
-                            <label>Título da Notificação</label>
+                            <label>TÃ­tulo da NotificaÃ§Ã£o</label>
                             <input type="text" id="custom-push-title" class="glass-input-field" placeholder="Ex: Vai ter churrasco!">
                         </div>
                         
                         <div class="form-group">
                             <label>Mensagem</label>
-                            <textarea id="custom-push-body" class="glass-input-field" style="height: 80px; resize: none;" placeholder="Ex: Galera, logo depois do jogo teremos churrasco. Não faltem!"></textarea>
+                            <textarea id="custom-push-body" class="glass-input-field" style="height: 80px; resize: none;" placeholder="Ex: Galera, logo depois do jogo teremos churrasco. NÃ£o faltem!"></textarea>
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
@@ -1873,7 +1873,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                 <i class="ph ph-calendar-plus"></i> <span id="custom-push-btn-text">Agendar Hora Exata</span>
                             </button>
                             <button class="btn btn-danger" id="custom-push-cancel-btn" onclick="app.cancelEditCustomPush()" style="display: none; padding: 10px;">
-                                <i class="ph ph-x"></i> Cancelar Edição
+                                <i class="ph ph-x"></i> Cancelar EdiÃ§Ã£o
                             </button>
                         </div>
 
@@ -1883,11 +1883,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         </ul>
                     </div>
 
-                    <!-- Configurações de Acesso -->
+                    <!-- ConfiguraÃ§Ãµes de Acesso -->
                     <div class="glass-card" style="max-width: 600px; margin-top: 24px;">
                         <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--neon-blue);"><i class="ph ph-lock"></i> Acesso Administrativo</h3>
                         <div class="form-group" style="margin-bottom: 16px;">
-                            <label>Usuário Administrador</label>
+                            <label>UsuÃ¡rio Administrador</label>
                             <input type="text" id="config-admin-user" class="glass-input-field" placeholder="Ex: admin">
                         </div>
                         <div class="form-group" style="margin-bottom: 24px;">
@@ -1910,11 +1910,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </main>
     </div>
 
-    <!-- Menu de Navegação Inferior (Mobile Only) -->
+    <!-- Menu de NavegaÃ§Ã£o Inferior (Mobile Only) -->
     <nav class="bottom-nav">
         <button class="nav-item-mobile" data-target="dashboard">
             <i class="ph ph-squares-four"></i>
-            <span>Início</span>
+            <span>InÃ­cio</span>
         </button>
         <button class="nav-item-mobile" data-target="mensalistas">
             <i class="ph ph-users"></i>
@@ -1922,7 +1922,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         </button>
         <button class="nav-item-mobile active" data-target="presenca">
             <i class="ph ph-clipboard-text"></i>
-            <span>Presença</span>
+            <span>PresenÃ§a</span>
         </button>
         <button class="nav-item-mobile" data-target="sorteio">
             <i class="ph ph-users-three"></i>
@@ -1937,7 +1937,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <!-- Menu Mais (Mobile Only Overlay) -->
     <div id="more-menu-overlay" class="more-menu-overlay">
         <button class="more-menu-item" onclick="app.goToView('financeiro')">
-            <i class="ph ph-currency-dollar"></i> Finanças
+            <i class="ph ph-currency-dollar"></i> FinanÃ§as
         </button>
         <button class="more-menu-item" onclick="app.goToView('ajustes')">
             <i class="ph ph-gear"></i> Ajustes
@@ -1977,7 +1977,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <input type="text" id="player-phone" placeholder="Ex: 13997741390" class="glass-input-field">
                 </div>
                 <div class="form-group">
-                    <label>Posição</label>
+                    <label>PosiÃ§Ã£o</label>
                     <select id="player-position" required class="glass-input-field">
                         <option value="Goleiro">Goleiro</option>
                         <option value="Zagueiro">Zagueiro</option>
@@ -1990,6 +1990,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <label>Tipo de Jogador</label>
                     <select id="player-type" required class="glass-input-field" onchange="app.toggleGuestDateField()">
                         <option value="mensalista">Mensalista</option>
+                        <option value="mensalista_isento">Mensalista Isento</option>
                         <option value="avulso">Avulso</option>
                     </select>
                 </div>
@@ -2015,7 +2016,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <input type="hidden" id="player-rating" value="0">
                 </div>
                 <div class="form-group">
-                    <label>Status (Mês Atual)</label>
+                    <label>Status (MÃªs Atual)</label>
                     <select id="player-status" required class="glass-input-field">
                         <option value="unpaid">Pendente</option>
                         <option value="paid">Pago</option>
@@ -2031,7 +2032,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     <div id="transaction-modal" class="modal-overlay">
         <div class="modal-content glass-card">
-            <h2 id="transaction-modal-title">Nova Transação</h2>
+            <h2 id="transaction-modal-title">Nova TransaÃ§Ã£o</h2>
             <form id="transaction-form">
                 <input type="hidden" id="transaction-id">
                 <div class="form-group">
@@ -2039,14 +2040,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <input type="date" id="transaction-date" required class="glass-input-field">
                 </div>
                 <div class="form-group">
-                    <label>Descrição</label>
+                    <label>DescriÃ§Ã£o</label>
                     <input type="text" id="transaction-desc" required class="glass-input-field">
                 </div>
                 <div class="form-group">
                     <label>Tipo</label>
                     <select id="transaction-type" required class="glass-input-field">
                         <option value="in">Entrada (Receita)</option>
-                        <option value="out">Saída (Despesa)</option>
+                        <option value="out">SaÃ­da (Despesa)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2071,12 +2072,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             </div>
             <form id="admin-login-form">
                 <div style="margin-bottom: 12px;">
-                    <input type="text" id="admin-user" class="glass-input-field" placeholder="Usuário" autocomplete="username" required>
+                    <input type="text" id="admin-user" class="glass-input-field" placeholder="UsuÃ¡rio" autocomplete="username" required>
                 </div>
                 <div style="margin-bottom: 24px;">
                     <input type="password" id="admin-pass" class="glass-input-field" placeholder="Senha" autocomplete="current-password" required>
                 </div>
-                <p id="admin-login-error" style="color: var(--neon-red); font-size: 13px; margin-bottom: 16px; display: none;">Usuário ou senha incorretos.</p>
+                <p id="admin-login-error" style="color: var(--neon-red); font-size: 13px; margin-bottom: 16px; display: none;">UsuÃ¡rio ou senha incorretos.</p>
                 <div style="display: flex; gap: 12px;">
                     <button type="button" class="btn" style="flex:1; background:rgba(255,255,255,0.05); color:var(--text-muted);" onclick="document.getElementById('login-modal').classList.remove('active')">Cancelar</button>
                     <button type="submit" class="btn btn-primary" style="flex:1;">Entrar</button>
@@ -2094,7 +2095,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             
             <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Bem-vindo ao Resenha FC!</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
-                Para a melhor experiência, instale nosso aplicativo e ative as notificações para nunca perder um jogo ou sorteio.
+                Para a melhor experiÃªncia, instale nosso aplicativo e ative as notificaÃ§Ãµes para nunca perder um jogo ou sorteio.
             </p>
             
             <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
@@ -2104,22 +2105,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 
                 <div id="ios-install-guide" style="display: none; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 16px; border-radius: 12px; font-size: 13px; color: var(--text-light); text-align: left;">
                     <strong style="color: white; display: block; margin-bottom: 8px;">Para instalar no iPhone:</strong>
-                    1. Toque no ícone de <b>Compartilhar</b> <i class="ph ph-export"></i> na barra de navegação.<br>
-                    2. Role para baixo e toque em <b>Adicionar à Tela de Início</b> <i class="ph ph-plus-square"></i>.
+                    1. Toque no Ã­cone de <b>Compartilhar</b> <i class="ph ph-export"></i> na barra de navegaÃ§Ã£o.<br>
+                    2. Role para baixo e toque em <b>Adicionar Ã  Tela de InÃ­cio</b> <i class="ph ph-plus-square"></i>.
                 </div>
 
                 <button id="btn-enable-notifications" class="btn" onclick="app.requestNotificationPermissionFromModal()" style="background: rgba(34, 197, 94, 0.15); color: var(--neon-green); width: 100%; height: 48px; font-weight: 600; font-size: 15px; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.3);">
-                    <i class="ph ph-bell-ringing" style="font-size: 20px;"></i> Ativar Notificações
+                    <i class="ph ph-bell-ringing" style="font-size: 20px;"></i> Ativar NotificaÃ§Ãµes
                 </button>
             </div>
             
             <button onclick="app.closeWelcomeModal()" style="background: none; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; text-decoration: underline; opacity: 0.7;">
-                Agora não, obrigado
+                Agora nÃ£o, obrigado
             </button>
         </div>
     </div>
 
-    <script src="app.js?v=59"></script>
+    <script src="app.js?v=60"></script>
 </body>
 </html>
+
 
