@@ -1477,6 +1477,13 @@ class FootballApp {
         const player = this.data.players.find(p => String(p.id) === String(id));
         if(!player) return;
 
+        // Se for mensalista isento, não gera transação financeira
+        if (player.type === 'mensalista_isento') {
+            player.status = 'paid';
+            if (!skipSave) this.saveData();
+            return;
+        }
+
         const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
             ? `${player.nickname} (${player.fullName})` 
             : (player.nickname || player.fullName || 'Jogador');
@@ -1518,6 +1525,13 @@ class FootballApp {
     undoPayment(id, skipSave = false) {
         const player = this.data.players.find(p => String(p.id) === String(id));
         if(!player) return;
+
+        // Se for mensalista isento, não afeta transações financeiras
+        if (player.type === 'mensalista_isento') {
+            player.status = 'unpaid';
+            if (!skipSave) this.saveData();
+            return;
+        }
         
         const displayName = player.nickname && player.fullName && player.nickname !== player.fullName 
             ? `${player.nickname} (${player.fullName})` 
