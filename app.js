@@ -597,7 +597,9 @@ class FootballApp {
             const isGoleiro = (p.position || '').toLowerCase().trim() === 'goleiro';
 
             if (isGoleiro) {
-                statusBadge = '<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3)">Isento</span>';
+                statusBadge = '<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3)">Goleiro Isento</span>';
+            } else if (p.type === 'mensalista_isento') {
+                statusBadge = '<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3)">Mensalista Isento</span>';
             } else if (p.status === 'paid') {
                 statusBadge = '<span class="badge badge-success">Pago</span>';
             } else {
@@ -605,7 +607,7 @@ class FootballApp {
             }
 
             let paymentBtn = '';
-            if (!isGoleiro) {
+            if (!isGoleiro && p.type !== 'mensalista_isento') {
                 paymentBtn = p.status !== 'paid' 
                     ? `<button class="action-btn" title="Registrar Pagamento" onclick="app.registerPayment('${p.id}')" style="color: var(--neon-green); font-size: 22px;"><i class="ph ph-money"></i></button>` 
                     : `<button class="action-btn" title="Mudar para Pendente" onclick="app.undoPayment('${p.id}')" style="color: var(--neon-orange); font-size: 22px;"><i class="ph ph-arrow-counter-clockwise"></i></button>`;
