@@ -2049,8 +2049,9 @@ class FootballApp {
         const year = now.getFullYear();
         
         const sortedPlayers = this.getSortedPlayers().filter(p => p.type && p.type.startsWith('mensalista'));
-        const paid = sortedPlayers.filter(p => p.status === 'paid' || (p.position || '').toLowerCase().trim() === 'goleiro' || p.type === 'mensalista_isento');
-        const pending = sortedPlayers.filter(p => p.status !== 'paid' && (p.position || '').toLowerCase().trim() !== 'goleiro' && p.type !== 'mensalista_isento');
+        const playersToBill = sortedPlayers.filter(p => (p.position || '').toLowerCase().trim() !== 'goleiro' && p.type !== 'mensalista_isento');
+        const paid = playersToBill.filter(p => p.status === 'paid');
+        const pending = playersToBill.filter(p => p.status !== 'paid');
         
         let text = `💰 *RESENHA F.C - Mensalidade (${monthName.toUpperCase()} / ${year})* 💰\n\n`;
         
