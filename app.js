@@ -172,10 +172,91 @@ class FootballApp {
             this.data.adminSettings = this.data.adminSettings || DEFAULT_DATA.adminSettings;
             this.data.notifications = this.data.notifications || DEFAULT_DATA.notifications;
             
+            // Limpa e unifica avulsos duplicados que possam ter sido criados anteriormente
+            if (this.cleanDuplicateAvulsos()) {
+                console.log("Avulsos duplicados foram mesclados e limpos com sucesso.");
+                await this.saveData();
+            }
+            
         } catch (error) {
             console.error("Erro ao carregar do Firebase:", error);
             alert("Erro ao carregar dados da nuvem. Verifique sua internet.");
         }
+    }
+
+    cleanDuplicateAvulsos() {
+        if (!this.data || !this.data.players || !Array.isArray(this.data.players)) return false;
+        
+        let changed = false;
+        const avulsos = this.data.players.filter(p => p.type === 'avulso');
+        const toRemoveIds = new Set();
+        
+        for (let i = 0; i < avulsos.length; i++) {
+            const p1 = avulsos[i];
+            const p1IdStr = String(p1.id);
+            if (toRemoveIds.has(p1IdStr)) continue;
+            
+            const nick1 = (p1.nickname || '').trim().toLowerCase();
+            const full1 = (p1.fullName || '').trim().toLowerCase();
+            const phone1 = (p1.phone || '').replace(/\D/g, '');
+            
+            for (let j = i + 1; j < avulsos.length; j++) {
+                const p2 = avulsos[j];
+                const p2IdStr = String(p2.id);
+                if (toRemoveIds.has(p2IdStr)) continue;
+                
+                const nick2 = (p2.nickname || '').trim().toLowerCase();
+                const full2 = (p2.fullName || '').trim().toLowerCase();
+                const phone2 = (p2.phone || '').replace(/\D/g, '');
+                
+                const nickMatch = (nick1 && nick2 && nick1 === nick2);
+                const fullMatch = (full1 && full2 && full1 === full2);
+                const fullConflict = (full1 && full2 && full1 !== full2);
+                const phoneConflict = (phone1 && phone2 && phone1 !== phone2);
+                
+                if ((nickMatch || fullMatch) && !fullConflict && !phoneConflict) {
+                    console.log(`Mesclando avulso duplicado: ${p2.nickname || p2.fullName} (ID ${p2.id}) -> (ID ${p1.id})`);
+                    
+                    p1.fullName = p1.fullName || p2.fullName || '';
+                    p1.nickname = p1.nickname || p2.nickname || '';
+                    p1.phone = p1.phone || p2.phone || '';
+                    p1.position = p1.position || p2.position || 'Linha';
+                    p1.invitedBy = p1.invitedBy || p2.invitedBy || '';
+                    p1.rating = Math.max(p1.rating || 0, p2.rating || 0);
+                    if (p2.validDate) p1.validDate = p2.validDate;
+                    
+                    // Migra presenças de p2 para p1
+                    if (this.data.attendance) {
+                        for (const date in this.data.attendance) {
+                            if (this.data.attendance[date] && this.data.attendance[date][p2IdStr]) {
+                                if (!this.data.attendance[date][p1IdStr]) {
+                                    this.data.attendance[date][p1IdStr] = this.data.attendance[date][p2IdStr];
+                                }
+                                delete this.data.attendance[date][p2IdStr];
+                            }
+                        }
+                    }
+                    
+                    // Migra transações financeiras de p2 para p1
+                    if (this.data.transactions) {
+                        this.data.transactions.forEach(t => {
+                            if (String(t.playerId) === p2IdStr) {
+                                t.playerId = p1.id;
+                            }
+                        });
+                    }
+                    
+                    toRemoveIds.add(p2IdStr);
+                    changed = true;
+                }
+            }
+        }
+        
+        if (changed) {
+            this.data.players = this.data.players.filter(p => !toRemoveIds.has(String(p.id)));
+        }
+        
+        return changed;
     }
 
     async saveData() {
@@ -1261,9 +1342,10 @@ class FootballApp {
         const form = document.getElementById('player-form');
         form.reset();
         this.editingPlayerId = id;
+        this.isDirectEdit = !!id;
         
         if (id) {
-            const player = this.data.players.find(p => p.id == id);
+            const player = this.data.players.find(p => String(p.id) === String(id));
             document.getElementById('player-modal-title').textContent = "Editar Jogador";
             document.getElementById('player-id').value = player.id;
             document.getElementById('player-fullname').value = player.fullName || "";
@@ -1289,11 +1371,6 @@ class FootballApp {
         if (ratingGroup) {
             ratingGroup.style.display = localStorage.getItem('resenha_admin') === 'true' ? 'block' : 'none';
         }
-        
-        // Preparar listas para o autocomplete customizado
-        const avulsos = this.data.players.filter(p => p.type === 'avulso');
-        this.avulsosFullNames = [...new Set(avulsos.map(p => p.fullName).filter(n => n))].sort();
-        this.avulsosNicknames = [...new Set(avulsos.map(p => p.nickname).filter(n => n))].sort();
 
         this.toggleGuestDateField();
         this.openModal('player-modal');
@@ -1303,46 +1380,91 @@ class FootballApp {
         this.filterAutocomplete(field);
     }
 
+    selectExistingAvulso(player) {
+        if (!player) return;
+        this.editingPlayerId = player.id;
+        const idEl = document.getElementById('player-id');
+        if (idEl) idEl.value = player.id;
+        
+        const fullEl = document.getElementById('player-fullname');
+        if (fullEl) fullEl.value = player.fullName || player.nickname || '';
+        
+        const nickEl = document.getElementById('player-nickname');
+        if (nickEl) nickEl.value = player.nickname || player.fullName || '';
+        
+        const phoneEl = document.getElementById('player-phone');
+        if (phoneEl) phoneEl.value = player.phone || '';
+        
+        const posEl = document.getElementById('player-position');
+        if (posEl && player.position) posEl.value = player.position;
+        
+        const invitedEl = document.getElementById('guest-invited-by');
+        if (invitedEl) invitedEl.value = player.invitedBy || '';
+        
+        this.setPlayerRating(player.rating || 0);
+        
+        this.hideAutocomplete('fullname');
+        this.hideAutocomplete('nickname');
+    }
+
     filterAutocomplete(field) {
         const input = document.getElementById(`player-${field}`);
         const listContainer = document.getElementById(`autocomplete-${field}`);
         if (!input || !listContainer) return;
         
-        const val = input.value.toLowerCase();
-        const sourceList = field === 'fullname' ? this.avulsosFullNames : this.avulsosNicknames;
-        if (!sourceList) return;
+        const val = input.value.trim().toLowerCase();
         
-        const filtered = sourceList.filter(name => name.toLowerCase().includes(val));
+        // Se o usuário apagar ou alterar o nome e não for edição direta via lápis, desvincula o ID para não sobrescrever errado
+        const idEl = document.getElementById('player-id');
+        if (idEl && idEl.value && !this.isDirectEdit) {
+            const selected = this.data.players.find(p => String(p.id) === String(idEl.value));
+            if (selected) {
+                const selName = (field === 'fullname' ? (selected.fullName || selected.nickname) : (selected.nickname || selected.fullName)) || '';
+                if (val !== selName.trim().toLowerCase()) {
+                    idEl.value = '';
+                    this.editingPlayerId = null;
+                }
+            }
+        }
         
+        const avulsos = this.data.players.filter(p => p.type === 'avulso');
+        
+        // Filtra por apelido ou nome completo
+        const matches = avulsos.filter(p => {
+            const nick = (p.nickname || '').toLowerCase();
+            const full = (p.fullName || '').toLowerCase();
+            return nick.includes(val) || full.includes(val);
+        });
+
+        // Deduplica visualmente por nome
+        const unique = [];
+        const seen = new Set();
+        matches.forEach(p => {
+            const key = ((p.nickname || '') + ':::' + (p.fullName || '')).toLowerCase();
+            if (!seen.has(key)) {
+                seen.add(key);
+                unique.push(p);
+            }
+        });
+
         listContainer.innerHTML = '';
-        if (filtered.length > 0) {
-            filtered.forEach(name => {
+        if (unique.length > 0) {
+            unique.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'autocomplete-item';
-                item.textContent = name;
-                item.onclick = () => {
-                    input.value = name;
-                    listContainer.classList.remove('active');
-                    
-                    // Autofill other fields
-                    const avulsos = this.data.players.filter(p => p.type === 'avulso');
-                    const matchedPlayer = field === 'fullname' 
-                        ? avulsos.find(p => p.fullName === name) 
-                        : avulsos.find(p => p.nickname === name);
-                        
-                    if (matchedPlayer) {
-                        if (field === 'fullname') {
-                            document.getElementById('player-nickname').value = matchedPlayer.nickname || '';
-                        } else {
-                            document.getElementById('player-fullname').value = matchedPlayer.fullName || '';
-                        }
-                        document.getElementById('player-phone').value = matchedPlayer.phone || '';
-                        if (matchedPlayer.position) {
-                            document.getElementById('player-position').value = matchedPlayer.position;
-                        }
-                        document.getElementById('guest-invited-by').value = matchedPlayer.invitedBy || '';
-                    }
+                const mainName = p.nickname || p.fullName;
+                const subName = (p.fullName && p.nickname && p.fullName !== p.nickname) ? `(${p.fullName})` : (p.phone ? `(${p.phone})` : '');
+                item.innerHTML = `<span style="font-weight: 600;">${mainName}</span> ${subName ? `<span style="font-size: 11px; opacity: 0.7; margin-left: 4px;">${subName}</span>` : ''}`;
+                
+                const selectFn = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.selectExistingAvulso(p);
                 };
+                item.onmousedown = selectFn;
+                item.ontouchstart = selectFn;
+                item.onclick = selectFn;
+                
                 listContainer.appendChild(item);
             });
             listContainer.classList.add('active');
@@ -1375,43 +1497,108 @@ class FootballApp {
         const type = document.getElementById('player-type').value;
         const isGuest = type === 'avulso';
         
-        const oldPlayer = this.editingPlayerId ? this.data.players.find(p => p.id == this.editingPlayerId) : null;
+        const formPlayerId = document.getElementById('player-id').value;
+        let targetId = this.editingPlayerId || formPlayerId || null;
+        
+        const inputFullName = (document.getElementById('player-fullname').value || '').trim();
+        const inputNickname = (document.getElementById('player-nickname').value || '').trim();
+        const inputPhone = (document.getElementById('player-phone').value || '').trim();
+        const inputPosition = document.getElementById('player-position').value;
         const newStatus = document.getElementById('player-status').value;
+        const guestMatchDate = isGuest ? document.getElementById('guest-match-date').value : null;
+        const guestInvitedBy = isGuest ? (document.getElementById('guest-invited-by').value || '').trim() : null;
+        const playerRating = parseInt(document.getElementById('player-rating').value) || 0;
 
-        const playerData = {
-            id: this.editingPlayerId || Date.now(),
-            fullName: document.getElementById('player-fullname').value,
-            nickname: document.getElementById('player-nickname').value,
-            phone: document.getElementById('player-phone').value,
-            position: document.getElementById('player-position').value,
-            type: type,
-            status: newStatus,
-            isTemporary: isGuest,
-            validDate: isGuest ? document.getElementById('guest-match-date').value : null,
-            invitedBy: isGuest ? document.getElementById('guest-invited-by').value.trim() : null,
-            rating: parseInt(document.getElementById('player-rating').value) || 0
-        };
-
-        if (this.editingPlayerId) {
-            const index = this.data.players.findIndex(p => p.id == this.editingPlayerId);
-            this.data.players[index] = playerData;
+        // Se for avulso e não temos targetId explícito (ex: usuário digitou o nome sem clicar na sugestão),
+        // busca se já existe no sistema para NÃO DUPLICAR no histórico!
+        if (!targetId && isGuest) {
+            const nickLow = inputNickname.toLowerCase();
+            const fullLow = inputFullName.toLowerCase();
+            const phoneDigits = inputPhone.replace(/\D/g, '');
             
-            // Sincroniza financeiro se o status mudou via modal
-            if (oldPlayer && oldPlayer.status !== newStatus) {
-                if (newStatus === 'paid') this.registerPayment(playerData.id, true);
-                else if (newStatus === 'unpaid') this.undoPayment(playerData.id, true);
-            }
-        } else {
-            this.data.players.push(playerData);
-            if (isGuest && playerData.validDate) {
-                this.setAttendance(playerData.validDate, playerData.id, 'present');
-            }
-            // Se já cadastrar como pago, registra no financeiro
-            if (newStatus === 'paid') {
-                this.registerPayment(playerData.id, true);
+            const existingAvulso = this.data.players.find(p => {
+                if (p.type !== 'avulso') return false;
+                const pNick = (p.nickname || '').trim().toLowerCase();
+                const pFull = (p.fullName || '').trim().toLowerCase();
+                const pPhone = (p.phone || '').replace(/\D/g, '');
+                
+                const nickMatch = (nickLow && pNick && nickLow === pNick);
+                const fullMatch = (fullLow && pFull && fullLow === pFull);
+                const fullConflict = (fullLow && pFull && fullLow !== pFull);
+                const phoneConflict = (phoneDigits && pPhone && phoneDigits !== pPhone);
+                
+                return (nickMatch || fullMatch) && !fullConflict && !phoneConflict;
+            });
+            
+            if (existingAvulso) {
+                targetId = existingAvulso.id;
             }
         }
 
+        const oldPlayer = targetId ? this.data.players.find(p => String(p.id) === String(targetId)) : null;
+
+        if (oldPlayer) {
+            const oldStatus = oldPlayer.status;
+            
+            // Atualiza os dados do jogador
+            oldPlayer.fullName = inputFullName || oldPlayer.fullName;
+            oldPlayer.nickname = inputNickname || oldPlayer.nickname;
+            oldPlayer.phone = inputPhone || oldPlayer.phone;
+            oldPlayer.position = inputPosition || oldPlayer.position;
+            oldPlayer.type = type;
+            oldPlayer.status = newStatus;
+            oldPlayer.rating = playerRating;
+            
+            if (isGuest) {
+                oldPlayer.isTemporary = true;
+                if (guestMatchDate) oldPlayer.validDate = guestMatchDate;
+                if (guestInvitedBy) oldPlayer.invitedBy = guestInvitedBy;
+                
+                // Marca presença na partida da semana
+                if (guestMatchDate) {
+                    this.setAttendance(guestMatchDate, oldPlayer.id, 'present');
+                }
+                
+                // Se marcou como pago no modal, registra o pagamento no financeiro
+                if (newStatus === 'paid' && oldStatus !== 'paid') {
+                    this.registerPayment(oldPlayer.id, true);
+                }
+            } else {
+                // Mensalista: sincroniza financeiro se o status mudou via modal
+                if (oldStatus !== newStatus) {
+                    if (newStatus === 'paid') this.registerPayment(oldPlayer.id, true);
+                    else if (newStatus === 'unpaid') this.undoPayment(oldPlayer.id, true);
+                }
+            }
+        } else {
+            // Novo jogador adicionado pela primeira vez
+            const newId = Date.now();
+            const playerData = {
+                id: newId,
+                fullName: inputFullName,
+                nickname: inputNickname,
+                phone: inputPhone,
+                position: inputPosition,
+                type: type,
+                status: newStatus,
+                isTemporary: isGuest,
+                validDate: guestMatchDate,
+                invitedBy: guestInvitedBy,
+                rating: playerRating
+            };
+            
+            this.data.players.push(playerData);
+            
+            if (isGuest && guestMatchDate) {
+                this.setAttendance(guestMatchDate, newId, 'present');
+            }
+            if (newStatus === 'paid') {
+                this.registerPayment(newId, true);
+            }
+        }
+
+        this.editingPlayerId = null;
+        this.isDirectEdit = false;
         this.saveData();
         this.closeModal('player-modal');
         this.renderPlayers();
